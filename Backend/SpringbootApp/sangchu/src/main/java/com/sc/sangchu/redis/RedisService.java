@@ -32,20 +32,20 @@ public class RedisService {
         this.commDistService = commDistService;
     }
 
-    public void saveData(CommDistDTO data) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Integer coId = data.getCoId();
-        String key= data.getQuarterId() + "-" + data.getCoId() + "-" + data.getBigCateId() + data.getMidCateId();
-        ListOperations<String, Object> listOps = redisTemplate.opsForList();
-
-        Map<String,Object> combinedData = new HashMap<>();
-        combinedData.put("coId", data.getCoId());
-        String jsonData = objectMapper.writeValueAsString(combinedData);
-
-        listOps.rightPush(key, jsonData); // 2개씩 보내지는 버그(프론트) 고쳐지면 pop 기능 제거
-        log.info("Save data - Redis");
-        Long size = listOps.size(key);
-    }
+//    public void saveData(CommDistDTO data) throws JsonProcessingException {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        Integer coId = data.getCoId();
+//        String key = data.getCoId() + "-" + data.getBigCateId() + data.getMidCateId();
+//        ListOperations<String, Object> listOps = redisTemplate.opsForList();
+//
+//        Map<String,Object> combinedData = new HashMap<>();
+//        combinedData.put("coId", data.getCoId());
+//        String jsonData = objectMapper.writeValueAsString(combinedData);
+//
+//        listOps.rightPush(key, jsonData);
+//        log.info("Save data - Redis");
+//        Long size = listOps.size(key);
+//    }
 
     public Object getLastProjectData(Long coId, String userEmail) { // 되돌리기에서 사용
         String key = coId + ":" + userEmail;
@@ -53,8 +53,6 @@ public class RedisService {
             log.info("Get last data - Redis");
             redisTemplate.opsForList().rightPop(key);
             return redisTemplate.opsForList().rightPop(key);
-            // 마지막 값 pop 작업 수행 후 반환
-            // if 앞으로 돌리기 작업 추가시 꺼내온 값을 다른 곳에 임시 저장 필요
 
         }
         return null;
@@ -94,10 +92,9 @@ public class RedisService {
         return results;
     }
 
-    // coId + UserId 기준으로 어떤 사용자가 프로젝트를 종료했을때 호출하여
-    // 해당 사용자의 기록을 지움
-    public boolean deleteData(Long coId, String userEmail) {
-        String key = coId + ":" + userEmail;
+    // coId 기준으로 어떤 사용자가 프로젝트를 종료했을때 호출하여 기록 삭제
+    public boolean deleteData(Integer coId, Integer bigCateId, Integer midCateId) {
+        String key= coId + "-" + bigCateId + midCateId;
         redisTemplate.delete(key);
         return true;
     }

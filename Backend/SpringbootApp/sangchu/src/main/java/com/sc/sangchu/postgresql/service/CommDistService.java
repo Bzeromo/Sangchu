@@ -4,11 +4,17 @@ import com.sc.sangchu.dto.CommDistDTO;
 import com.sc.sangchu.postgresql.entity.CommDistEntity;
 import com.sc.sangchu.postgresql.repository.CommDistRepository;
 
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,22 +41,24 @@ public class CommDistService {
         CommDistDTO dto = new CommDistDTO();
 
         dto.setCoId(entity.getCoId());
-        dto.setAreaCode(entity.getAreaCode());
+        dto.setServiceCode(entity.getServiceCode());
+        dto.setServiceName(entity.getServiceName());
+        dto.setMajorCategoryCode(entity.getMajorCategoryCode());
+        dto.setMajorCategoryName(entity.getMajorCategoryName());
+        dto.setMiddleCategoryCode(entity.getMiddleCategoryCode());
+        dto.setMiddleCategoryCode(entity.getMiddleCategoryName());
+        dto.setCoName(entity.getCoName());
+        dto.setGuCode(entity.getGuCode());
+        dto.setGuName(entity.getGuName());
+        dto.setDongCode(entity.getDongCode());
+        dto.setDongName(entity.getDongName());
         dto.setCoArea(entity.getCoArea());
         dto.setCoX(entity.getCoX());
         dto.setCoY(entity.getCoY());
         dto.setCoScore(entity.getCoScore());
-        dto.setCoApart(entity.getCoApart());
-        dto.setCoIncome(entity.getCoIncome());
-        dto.setCoConsump(entity.getCoConsump());
-        dto.setCoChangeIndex(entity.getCoChangeIndex());
-        dto.setCoSales(entity.getCoSales());
         dto.setCoSalesScore(entity.getCoSalesScore());
-        dto.setCoFlPo(entity.getCoFlPo());
         dto.setCoFlPoScore(entity.getCoFlPoScore());
-        dto.setCoRePo(entity.getCoRePo());
         dto.setCoRePoScore(entity.getCoRePoScore());
-        dto.setCoWoPo(entity.getCoWoPo());
         dto.setCoCompScore(entity.getCoCompScore());
         dto.setCoDiversityScore(entity.getCoDiversityScore());
 
@@ -62,30 +70,31 @@ public class CommDistService {
         List <CommDistDTO> dtoList = new ArrayList<>();
 
         if(!commDistEntities.isEmpty()) {
-            int row_cnt = commDistEntities.size();
             CommDistEntity entity;
 
-            for(int i = 0; i < row_cnt; i++) {
+            for (CommDistEntity commDistEntity : commDistEntities) {
                 CommDistDTO dto = new CommDistDTO();
-                entity = commDistEntities.get(i);
+                entity = commDistEntity;
 
                 dto.setCoId(entity.getCoId());
-                dto.setAreaCode(entity.getAreaCode());
+                dto.setServiceCode(entity.getServiceCode());
+                dto.setServiceName(entity.getServiceName());
+                dto.setMajorCategoryCode(entity.getMajorCategoryCode());
+                dto.setMajorCategoryName(entity.getMajorCategoryName());
+                dto.setMiddleCategoryCode(entity.getMiddleCategoryCode());
+                dto.setMiddleCategoryCode(entity.getMiddleCategoryName());
+                dto.setCoName(entity.getCoName());
+                dto.setGuCode(entity.getGuCode());
+                dto.setGuName(entity.getGuName());
+                dto.setDongCode(entity.getDongCode());
+                dto.setDongName(entity.getDongName());
                 dto.setCoArea(entity.getCoArea());
                 dto.setCoX(entity.getCoX());
                 dto.setCoY(entity.getCoY());
                 dto.setCoScore(entity.getCoScore());
-                dto.setCoApart(entity.getCoApart());
-                dto.setCoIncome(entity.getCoIncome());
-                dto.setCoConsump(entity.getCoConsump());
-                dto.setCoChangeIndex(entity.getCoChangeIndex());
-                dto.setCoSales(entity.getCoSales());
                 dto.setCoSalesScore(entity.getCoSalesScore());
-                dto.setCoFlPo(entity.getCoFlPo());
                 dto.setCoFlPoScore(entity.getCoFlPoScore());
-                dto.setCoRePo(entity.getCoRePo());
                 dto.setCoRePoScore(entity.getCoRePoScore());
-                dto.setCoWoPo(entity.getCoWoPo());
                 dto.setCoCompScore(entity.getCoCompScore());
                 dto.setCoDiversityScore(entity.getCoDiversityScore());
 
@@ -93,12 +102,11 @@ public class CommDistService {
             }
         }
 
-
         return dtoList;
     }
 
     // 상권 데이터 조회 by coId
-    public CommDistEntity getCommDistById(int coId) {
+    public CommDistEntity getCommDistById(Integer coId) {
         return commDistRepository.findByCoId(coId);
     }
 
@@ -109,8 +117,35 @@ public class CommDistService {
 
     // 특정 조건에 따른 상권 데이터 조회
     // 지역 코드에 따라 조회
-    public List<CommDistEntity> getCommDistByAreaCode(int areaCode) {
-        return commDistRepository.findByAreaCode(areaCode);
+    public List<CommDistEntity> getCommDistByGuCode(Integer guCode) {
+        return commDistRepository.findByGuCode(guCode);
+    }
+
+    // 업종 코드에 따라 조회
+    public List<CommDistEntity> getCommDistByServiceCode(String serviceCode) {
+        return commDistRepository.findByServiceCode(serviceCode);
+    }
+
+    // 지역 및 업종 코드에 따라 조회
+    public List<CommDistEntity> getCommDistByServiceCodeAndGuCode(String serviceCode, Integer guCode) {
+        return commDistRepository.findByServiceCodeAndGuCode(serviceCode, guCode);
+    }
+
+    // 서울시 전체 상권을 조회 후 총점 기준으로 10개만 정렬
+    public List<CommDistDTO> getTopCommDistByCoScore(int limit) {
+        List<CommDistEntity> sortedEntities = commDistRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(CommDistEntity::getCoScore).reversed())
+                .limit(limit)
+                .collect(Collectors.toList());
+        return convertToDTOs(sortedEntities);
+    }
+
+    // 자치구 기준으로 조회된 상권에서 coScore가 높은 순으로 10개를 찾아 내림차순 정렬
+    public List<CommDistDTO> getTopCommDistByGuCodeAndCoScore(int guCode, int limit) {
+        Pageable topTen = PageRequest.of(0, limit, Sort.by("coScore").descending());
+        Page<CommDistEntity> topEntities = commDistRepository.findTopByGuCode(guCode, topTen);
+        return convertToDTOs(topEntities.getContent());
     }
 
 //    // 상권 데이터 업데이트
