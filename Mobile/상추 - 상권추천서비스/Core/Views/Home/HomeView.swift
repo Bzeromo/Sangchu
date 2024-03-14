@@ -141,7 +141,7 @@ struct MidView : View {
             VStack(){
                 Spacer()
                 // 상권지도 컴포넌트
-                NavigationLink (destination: ChooseBorough()) {
+                NavigationLink (destination: BDMapView()) {
                     HStack {
                         Spacer()
                         VStack (alignment: .leading) {
