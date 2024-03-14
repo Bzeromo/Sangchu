@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class CommDistDTO {
-    private Integer coId;
+    private Long coId;
     private String serviceCode;
     private String serviceName;
     private String coName;
@@ -14,9 +14,9 @@ public class CommDistDTO {
     private String middleCategoryName;
     private Integer majorCategoryCode;
     private String majorCategoryName;
-    private Integer guCode;
+    private Long guCode;
     private String guName;
-    private Integer dongCode;
+    private Long dongCode;
     private String dongName;
     private Double coArea;
     private Integer coX;

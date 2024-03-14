@@ -44,40 +44,40 @@ public class CommDistController {
     }
 
     // 상권 데이터 조회
-    @GetMapping("/{coId}")
+    @GetMapping("/commercial")
     @Operation(summary = "상권 정보 조회", description = "상권 ID를 기반으로 상권 정보를 조회합니다.")
     public ResponseEntity<CommDistDTO> getCommDistByCoId(
-            @PathVariable @Parameter(description = "상권 ID") int coId) {
+            @RequestParam(value = "coId") Long coId) {
         CommDistEntity commDistEntity = commDistService.getCommDistById(coId);
         CommDistDTO commDistDTO = commDistService.convertToDTO(commDistEntity);
         return ResponseEntity.ok(commDistDTO);
     }
 
     // 업종 기준 상권 데이터 조회
-    @GetMapping("/{serviceCode}")
+    @GetMapping("/service")
     @Operation(summary = "업종별 상권 정보 조회", description = "업종 ID를 기반으로 상권 정보를 조회합니다.")
     public ResponseEntity<List<CommDistDTO>> getCommDistByCategoryId(
-            @PathVariable @Parameter(description = "업종 ID") String serviceCode) {
+            @RequestParam(value = "serviceCode") String serviceCode) {
         List <CommDistEntity> commDistEntity = commDistService.getCommDistByServiceCode(serviceCode);
         List <CommDistDTO> commDistDTO = commDistService.convertToDTOs(commDistEntity);
         return ResponseEntity.ok(commDistDTO);
     }
 
     // 자치구 기준 상권 데이터 조회
-    @GetMapping("/{guCode}")
+    @GetMapping("/gu")
     @Operation(summary = "자치구 별 상권 정보 조회", description = "자치구를 기반으로 상권 정보를 조회합니다.")
     public ResponseEntity<List<CommDistDTO>> getCommDistByGuCode(
-            @PathVariable @Parameter(description = "자치구 코드") int guCode) {
+            @RequestParam(value = "guCode") Long guCode) {
         List <CommDistEntity> commDistEntity = commDistService.getCommDistByGuCode(guCode);
         List <CommDistDTO> commDistDTO = commDistService.convertToDTOs(commDistEntity);
-        return ResponseEntity.ok(commDistDTO);
+        return ResponseEntity.ok(commDistDTO); 
     }
 
     // 자치구 및 업종 기준 상권 데이터 조회
     @GetMapping("/{serviceCode}/{guCode}")
     @Operation(summary = "자치구 및 업종별 상권 정보 조회", description = "업종 ID를 기반으로 상권 정보를 조회합니다.")
     public ResponseEntity<List<CommDistDTO>> getCommDistByServiceCodeAndGuCode(
-            @PathVariable @Parameter(description = "업종 ID") String serviceCode, @PathVariable @Parameter(description = "자치구 코드") int guCode) {
+            @PathVariable @Parameter(description = "업종 ID") String serviceCode, @PathVariable @Parameter(description = "자치구 코드") Long guCode) {
         List <CommDistEntity> commDistEntity = commDistService.getCommDistByServiceCodeAndGuCode(serviceCode, guCode);
         List <CommDistDTO> commDistDTO = commDistService.convertToDTOs(commDistEntity);
         return ResponseEntity.ok(commDistDTO);

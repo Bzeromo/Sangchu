@@ -12,37 +12,40 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "commdist")
-@IdClass(CommDistId.class)
+@Table(name = "commercial_district_tb")
+//@IdClass(CommDistId.class)
 public class CommDistEntity {
 
     @Id
-    private Integer coId;
-    @Id
-    private String serviceCode;
+    @Column(name= "commercial_district_code")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long coId;
 
-    // 위치 좌표를 위한 필드
-    private Integer coX;
-    private Integer coY;
-
-    // 기타 필드
-    private String serviceName;
-    private Double coArea;
+    @Column(name= "commercial_district_name")
     private String coName;
-    private Integer majorCategoryCode;
-    private String majorCategoryName;
-    private String middleCategoryCode;
-    private String middleCategoryName;
-    private Integer guCode;
+
+    //위도 경도
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name= "longitude")
+    private Double longitude;
+
+    //자치구
+    @Column(name= "gu_code")
+    private Long guCode;
+
+    @Column(name= "gu_name")
     private String guName;
-    private Integer dongCode;
+
+    //행정동
+    @Column(name= "dong_code")
+    private Long dongCode;
+
+    @Column(name= "dong_name")
     private String dongName;
 
-    // 총점, 상주인구점수, 매출점수, 유동인구점수, 점포밀도점수, 업종다양성점수
-    private Double coScore;
-    private Double coRePoScore;
-    private Double coSalesScore;
-    private Double coFlPoScore;
-    private Double coCompScore;
-    private Double coDiversityScore;
+    //면적
+    @Column(name= "area_size")
+    private Long areaSize;
 }
