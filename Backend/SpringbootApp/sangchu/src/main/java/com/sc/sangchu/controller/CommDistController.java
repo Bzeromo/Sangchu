@@ -90,30 +90,4 @@ public class CommDistController {
         List<CommDistDTO> topCommDistDTOs = commDistService.getTopCommDistByGuCodeAndCoScore(guCode, 10);
         return ResponseEntity.ok(topCommDistDTOs);
     }
-
-
-//    // 상권 데이터 생성
-//    @PostMapping
-//    @Operation(summary = "새 상권 데이터 생성", description = "새로운 상권 데이터를 생성합니다.")
-//    public ResponseEntity<CommDistDTO> createCommDist(@RequestBody CommDistDTO commDistDTO) {
-//        CommDistEntity commDistEntity = commDistService.createCommDist(commDistDTO);
-//        // Entity to DTO conversion logic should be added
-//        CommDistDTO createdCommDistDTO = ... // convert entity to DTO
-//        return ResponseEntity.ok(createdCommDistDTO);
-//    }
-
-//    // 상권 데이터 업데이트
-//    @PutMapping("/{coId}")
-//    @Operation(summary = "상권 정보 업데이트", description = "주어진 ID의 상권 정보를 업데이트합니다.")
-//    public ResponseEntity<CommDistDTO> updateCommDist(
-//            @PathVariable int coId,
-//            @RequestBody CommDistDTO commDistDTO) {
-//        CommDistEntity updatedEntity = commDistService.updateCommDist(coId, commDistDTO);
-//        // Entity to DTO conversion logic should be added
-//        CommDistDTO updatedCommDistDTO = ... // convert entity to DTO
-//        return ResponseEntity.ok(updatedCommDistDTO);
-//    }
-
-    // 추가적인 API 엔드포인트 및 로직 구현이 필요함
-    // ...
 }

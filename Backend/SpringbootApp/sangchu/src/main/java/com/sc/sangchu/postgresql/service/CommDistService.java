@@ -147,28 +147,4 @@ public class CommDistService {
         Page<CommDistEntity> topEntities = commDistRepository.findTopByGuCode(guCode, topTen);
         return convertToDTOs(topEntities.getContent());
     }
-
-//    // 상권 데이터 업데이트
-//    public CommDistEntity updateCommDist(int coId, CommDistDTO commDistDTO) {
-//        // 엔티티 조회 및 업데이트 로직 필요
-//        // ...
-//
-//        // 엔티티 저장
-//        return commDistRepository.save(commDistEntity);
-//    }
-//
-//    // 상권 데이터 삭제
-//    public void deleteCommDist(int coId) {
-//        commDistRepository.deleteById(coId);
-//    }
-
-//    // 상권 데이터의 특정 필드 업데이트
-//    // 예: coSales 필드 업데이트
-//    public CommDistEntity updateCoSales(int coId, int coSales) {
-//        CommDistEntity commDist = commDistRepository.findByCoId(coId)
-//                .orElseThrow(() -> new RuntimeException("CommDist not found with coId: " + coId));
-//
-//        commDist.setCoSales(coSales);
-//        return commDistRepository.save(commDist);
-//    }
 }
