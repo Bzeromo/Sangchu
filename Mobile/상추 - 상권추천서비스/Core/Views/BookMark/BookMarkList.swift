@@ -15,18 +15,18 @@ struct BookMarkTopView : View {
     var body: some View {
         HStack {
             Image(uiImage: UIImage(named: "AppIcon.png")!).resizable().scaledToFit().frame(width: 30, height: 30).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 5))
-            Text("북마크").font(.SingleDay).foregroundColor(Color("sangchoo"))
+            Text("북마크").font(.SingleDay).foregroundColor(Color("sangchu"))
             Spacer()
             Button(action: {
                 hashCreate.toggle()
             }, label: {
-                Label("", systemImage: "minus").foregroundColor(Color("sangchoo"))
-            }).foregroundColor(Color("sangchoo"))
+                Label("", systemImage: "minus").foregroundColor(Color("sangchu"))
+            }).foregroundColor(Color("sangchu"))
                 Button(action: {
                     showCreate.toggle()
                 }, label: {
-                    Label("", systemImage: "plus").foregroundColor(Color("sangchoo"))
-                }).foregroundColor(Color("sangchoo"))
+                    Label("", systemImage: "plus").foregroundColor(Color("sangchu"))
+                }).foregroundColor(Color("sangchu"))
             
         }
     }
@@ -56,7 +56,7 @@ struct BookMarkList: View {
                                         NavigationLink(destination: UpdateBookMarkView(item: item)){
                         HStack{
                             VStack(alignment: .leading) {
-                                Text(item.cdTitle).font(.system(size: 22)).bold().foregroundStyle((Color("sangchoo")))
+                                Text(item.cdTitle).font(.system(size: 22)).bold().foregroundStyle((Color("sangchu")))
                                 HStack{
                                     /*
                                      Text(item.timestamp, style: .date) // 날짜만 표시
