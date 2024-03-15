@@ -252,10 +252,9 @@ struct HomeView: View {
     @Environment(\.colorScheme) var colorScheme // 다크모드 or 라이트모드
     @Query private var items: [Item]
     @State private var searchText : String = ""
-
+private var showNavigationBar = false
     var body: some View {
         
-        NavigationView {
             
             GeometryReader{ geometry in
                 VStack(alignment: .center){ // 세로축
@@ -280,6 +279,7 @@ struct HomeView: View {
                         }
                         .frame(width: geometry.size.width * 0.98) // Vstack 너비 조정
                         Spacer() // 오른쪽에 Spacer 추가
+                        Spacer() // 오른쪽에 Spacer 추가
                     } // HStack
                     .frame(height: geometry.size.height / 5 * 3 )
                     
@@ -291,10 +291,12 @@ struct HomeView: View {
                         }.frame(width: geometry.size.width * 0.99)
                     }.frame(width: geometry.size.width / 100 * 98, height: geometry.size.height / 20 * 5)
                     Spacer()
-                }.background(Color(hex: "F4F5F7")) // Vstack
+                    
+                }
+                .background(Color(hex: "F4F5F7")) // Vstack
+                    
                 
                 
             } // Geometry
-        }// Navigation
     }// body
 } // HomeView

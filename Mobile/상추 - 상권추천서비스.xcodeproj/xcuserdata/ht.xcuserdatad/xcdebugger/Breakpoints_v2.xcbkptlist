@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "8FF3955B-C65E-4E0E-B357-28049E127B3C"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8BAB8773-AE1B-4CD7-AC9D-3314F886BA43"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "&#x1109;&#x1161;&#x11bc;&#x110e;&#x116e; - &#x1109;&#x1161;&#x11bc;&#x1100;&#x116f;&#x11ab;&#x110e;&#x116e;&#x110e;&#x1165;&#x11ab;&#x1109;&#x1165;&#x1107;&#x1175;&#x1109;&#x1173;/Core/Views/BookMark/BookMarkList.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A031AA17-F0E9-4B50-B6C4-6A8F0C6408C4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "&#x1109;&#x1161;&#x11bc;&#x110e;&#x116e; - &#x1109;&#x1161;&#x11bc;&#x1100;&#x116f;&#x11ab;&#x110e;&#x116e;&#x110e;&#x1165;&#x11ab;&#x1109;&#x1165;&#x1107;&#x1175;&#x1109;&#x1173;/Core/Views/BookMark/BookMarkList.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9B60FD37-2330-4CF6-B3F9-56823F87C661"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "&#x1109;&#x1161;&#x11bc;&#x110e;&#x116e; - &#x1109;&#x1161;&#x11bc;&#x1100;&#x116f;&#x11ab;&#x110e;&#x116e;&#x110e;&#x1165;&#x11ab;&#x1109;&#x1165;&#x1107;&#x1175;&#x1109;&#x1173;/Core/Views/BookMark/BookMarkList.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
