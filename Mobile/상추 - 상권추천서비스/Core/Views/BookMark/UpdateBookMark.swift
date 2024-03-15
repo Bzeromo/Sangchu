@@ -26,21 +26,23 @@ struct UpdateBookMarkView: View {
     
     var body: some View {
         List {
-            TextField("상권명", text: $item.cdTitle)
-            TextField("상권정보", text: $item.cdInfo)
-            Toggle("중요한가요?", isOn: $item.isImportant)
-            Section{
+            Section(header: Text("상권정보 추가")){
+                TextField("상권명", text: $item.cdTitle)
+                TextField("상권정보", text: $item.cdInfo)
+            }
+//            Toggle("중요한가요?", isOn: $item.isImportant)
+            Section(header: Text("해시태그 추가")){
                 Picker("",selection: $selectedHashtag){
                     ForEach(hashtags) { hashtag in
                         Text(hashtag.title).tag(hashtag as Hashtag?)
-                        
                     }
                     Text("없음").tag(nil as Hashtag?)
                 }
             }.labelsHidden().pickerStyle(.inline)
-            TextField("메모", text: $item.userMemo)
             
-            
+            Section(header : Text("메모")){
+                TextField("메모", text: $item.userMemo)
+            }
             Button("수정") {
                 item.timestamp = .now
                 item.hashtag = selectedHashtag

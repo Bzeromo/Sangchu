@@ -17,22 +17,10 @@ struct CreateHashtagView : View {
     @State private var title : String = ""
     
     var body : some View {
-        HStack {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 30))
-                        .foregroundColor(.black)
-                    
-                }.padding(.top, 10)
-                .padding(.leading, 10)
-                Spacer() // 이 Spacer가 버튼을 왼쪽으로 밀어냅니다.
-            }
         List{
             Section("해시태그 추가하기"){
                 TextField("해시태그를 추가해보세요", text : $title)
-                Button("카테고리 등록"){
+                Button("등록"){
                     withAnimation{
                         // context에 삽입하기 전 역데이터도 올바르게 설정되었는지 확인하는 과정
                         let hashtag = Hashtag(title : title)
@@ -65,7 +53,7 @@ struct CreateHashtagView : View {
                
             }
         }
-        .navigationTitle("카테고리 추가하기")
+        .navigationTitle("해시태그 추가하기")
     }
     
 }

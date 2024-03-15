@@ -65,25 +65,35 @@ struct BookMarkList: View {
                                      Text(item.timestamp, style: .offset) // 현재 시간과의 차이
                                      Text(item.timestamp, style: .relative) // 상대적인 시간 표시 (예: 5 minutes ago)
                                      */
-                                    Text("\(item.timestamp, format: Date.FormatStyle(date:.numeric, time:.none))").font(.callout).font(.system(size: 11)).foregroundColor(Color(hex: "767676"))
-                                    Text(item.userMemo).lineLimit(1).font(.system(size: 13)).foregroundColor(Color(hex: "767676"))
+                                    Text("\(item.timestamp, format: Date.FormatStyle(date:.numeric, time:.none)) \(item.userMemo)")
+                                        .font(.system(size: 13)) // 전체 텍스트에 적용될 폰트 사이즈
+                                        .foregroundColor(Color(hex: "767676")) // 전체 텍스트에 적용될 폰트 색상
+                                        .lineLimit(1) // 텍스트가 한 줄로 제한됩니다.
+                                }
+                                if let hashtag = item.hashtag {
+                                    Text(hashtag.title)
+                                        .foregroundStyle(Color.blue)
+                                        .bold()
+                                        .padding(.horizontal)
+                                        .padding(.vertical, 8)
+                                        .background(Color.blue.opacity(0.1),
+                                                    in: RoundedRectangle(cornerRadius: 8,
+                                                                         style: .continuous))
                                 }
                                 
-                            } // 제목 시간 Vstack
-                            Spacer()
-                            
-                            Button {
-                                withAnimation {
-                                    item.isImportant.toggle()
-                                }
-                            } label: {
-                                
-                                Image(systemName: "checkmark")
-                                    .symbolVariant(.circle.fill)
-                                    .foregroundStyle(item.isImportant ? .green : .gray)
-                                    .font(.largeTitle)
                             }
-                            .buttonStyle(.plain)
+                            // 제목 시간 Vstack                 Button {
+//                                withAnimation {
+//                                    item.isImportant.toggle()
+//                                }
+//                            } label: {
+//                                
+//                                Image(systemName: "checkmark")
+//                                    .symbolVariant(.circle.fill)
+//                                    .foregroundStyle(item.isImportant ? .green : .gray)
+//                                    .font(.largeTitle)
+//                            }
+//                            .buttonStyle(.plain)
                         } // HStack
                         .padding(.horizontal, 5)
                         .swipeActions {
@@ -115,13 +125,17 @@ struct BookMarkList: View {
             }
             .sheet(isPresented: $showCreate,
                    content: {
+                NavigationStack{
                     CreateBookMarkView()
+                }
                 .presentationDetents([.medium])
                 
             })
             .sheet(isPresented: $hashCreate,
                    content: {
-                    CreateHashtagView()
+                NavigationStack{
+                        CreateHashtagView()
+                }
                 .presentationDetents([.medium])
                 
             })
