@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct SangChooApp: App {
+struct SangChuApp: App {
 //    var sharedModelContainer: ModelContainer = {
 //        let schema = Schema([Item.self])
 //        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
