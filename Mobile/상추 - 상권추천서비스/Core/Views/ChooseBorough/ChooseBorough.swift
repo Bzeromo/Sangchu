@@ -69,7 +69,7 @@ struct ChooseBorough: View {
             HStack {
                 Text("지역")
                     .font(.title)
-                    .foregroundColor(Color("sangchoo"))
+                    .foregroundColor(Color.sangchu)
                     .padding(15)
                 Text("업종")
                     .font(.title2)
@@ -123,7 +123,7 @@ struct ChooseBorough: View {
                     .disabled(!isPickerTouched) // Picker가 조작되지 않았다면 버튼 비활성화
                     .foregroundColor(.black)
                     .buttonStyle(RoundedRectangleButtonStyle(
-                        bgColor: !isPickerTouched ? Color(hex: "c6c6c6") : Color("sangchoo"),
+                        bgColor: !isPickerTouched ? Color(hex: "c6c6c6") : Color.sangchu,
                         textColor: .black,
                         width: UIScreen.main.bounds.width / 4,
                         hasStroke: false,

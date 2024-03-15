@@ -51,7 +51,7 @@ struct TopView : View {
     var body: some View {
         HStack {
             Image(uiImage: UIImage(named: "AppIcon.png")!).resizable().scaledToFit().frame(width: 30, height: 30).padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 5))
-            Text("상추").font(.SingleDay).foregroundColor(Color("sangchoo"))
+            Text("상추").font(.SingleDay).foregroundColor(Color.sangchu)
             Spacer()
         }
         // 간단 소개
@@ -115,7 +115,7 @@ struct SearchBar : View {
                     .padding(.horizontal, 10)
                     .overlay(
                         RoundedRectangle(cornerRadius: 15)
-                            .stroke(Color("sangchoo"), lineWidth: 1) // 테두리 색상과 두께 조정
+                            .stroke(Color.sangchu, lineWidth: 1) // 테두리 색상과 두께 조정
                             .shadow(color: .gray, radius: 3, x: 0, y: 2) // 그림자 효과 추가
                     )
             } // HStack
@@ -235,7 +235,7 @@ struct BottomView : View {
 //                                    .padding(EdgeInsets(top: 2, leading: 5, bottom: 2, trailing: 5))
 //                                    .background(.mint)
 //                                    .cornerRadius(5)
-                                RecommendBoroughCard().frame(width: geometry.size.width / 3, height: geometry.size.height / 6 * 9)
+                                RecommendBoroughCard().frame(width: geometry.size.width / 3, height: geometry.size.height / 2 * 3)
                             }
                         }
                     }

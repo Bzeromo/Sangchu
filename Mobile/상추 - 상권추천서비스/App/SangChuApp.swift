@@ -1,9 +1,7 @@
 import SwiftUI
 import SwiftData
 import NMapsMap
-
 import UIKit
-import NMapsMap // NMapsMap 프레임워크를 임포트합니다.
 
 class AppDelegate: UIResponder, UIApplicationDelegate, NMFAuthManagerDelegate { // NMFAuthManagerDelegate 프로토콜을 채택합니다.
 
@@ -70,6 +68,6 @@ struct ContentView: View {
                     Label("북마크", systemImage: "bookmark")
                 }
                 .tag("북마크")
-        }.tint(Color("sangchoo"))
+        }.tint(Color.sangchu)
     }
 }
