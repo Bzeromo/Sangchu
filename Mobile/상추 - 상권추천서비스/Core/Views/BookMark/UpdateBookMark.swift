@@ -43,61 +43,84 @@ struct UpdateBookMarkView: View {
                             .padding(.top, 8)
                             .padding(.leading, 4)
                     }
-                    TextEditor(text: $item.userMemo)
-                }
-            }
-            Section {
-                
-                if let iamgeData = item.image, let uiImage = UIImage(data: iamgeData){
-                    Image(uiImage: uiImage).resizable().scaledToFit().frame(maxWidth: .infinity,maxHeight: 300)
-                        .onTapGesture {
-                            isImageViewerPresented = true
-                        }
-                        .fullScreenCover(isPresented: $isImageViewerPresented){
-                            SwiftUIImageViewer(image:Image(uiImage: uiImage)).overlay(alignment: .topTrailing){
-                                Button{
-                                    isImageViewerPresented = false
-                                } label: {
-                                    Image(systemName: "xmark").font(.headline)
-                                }.buttonStyle(.bordered).clipShape(Circle()).tint(.purple).padding()
+                    ScrollView {
+                        TextEditor(text: $item.userMemo)
+                            .frame(minHeight: 200, maxHeight: .infinity) // 최소 높이를 설정하고 최대 높이를 무한대로 설정
+                            .padding(.bottom, 16) // 입력 내용이 많아져 스크롤 될 때 하단에 여유 공간을 추가
+                        
+                        ZStack(alignment: .topTrailing){
+                            if let iamgeData = item.image, let uiImage = UIImage(data: iamgeData){
+                                Image(uiImage: uiImage).resizable().scaledToFit().frame(maxWidth: .infinity,maxHeight: 300)
+                                    .onTapGesture {
+                                        isImageViewerPresented = true
+                                    }
+                                    .fullScreenCover(isPresented: $isImageViewerPresented){
+                                        SwiftUIImageViewer(image:Image(uiImage: uiImage)).overlay(alignment: .topTrailing){
+                                            Button{
+                                                isImageViewerPresented = false
+                                            } label: {
+                                                Image(systemName: "xmark").font(.headline)
+                                            }.buttonStyle(.bordered).clipShape(Circle()).tint(.purple).padding()
+                                        }
+                                    }
                             }
+                            if item.image != nil{
+                                Button(role: .destructive){
+                                    withAnimation{
+                                        selectedPhoto = nil
+                                        item.image = nil
+                                    } }label : {
+                                        Label("" , systemImage: "xmark").foregroundStyle(.red)
+                                    }
+                                
+                            }
+                            
                         }
+                        
+                        
+                        
+                    }
                 }
-                
-                PhotosPicker(selection : $selectedPhoto,
-                             matching: .images,
-                             photoLibrary : .shared()){
-                    Label("사진 추가" , systemImage: "photo")
-                }
-                if item.image != nil{
-                    Button(role: .destructive){
-                        withAnimation{
-                            selectedPhoto = nil
-                            item.image = nil
-                        } }label : {
-                            Label("삭제" , systemImage: "xmark").foregroundStyle(.red)
-                        }
-                    
-                }
-                
-            }
-            
-            Button("수정") {
-                item.timestamp = .now
-                item.hashtag = selectedHashtag
-                dismiss()
             }
         }
         .navigationTitle("메모")
-        .toolbar{
-            ToolbarItem(placement: .primaryAction){
-                Button("완료"){
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button("완료") {
                     dismiss()
                     item.timestamp = .now
                     item.hashtag = selectedHashtag
                 }
             }
+            ToolbarItemGroup(placement: .bottomBar) {
+                PhotosPicker(selection: $selectedPhoto,
+                             matching: .images,
+                             photoLibrary: .shared()) {
+                    Label("사진 추가", systemImage: "photo")
+                }
+                Spacer()
+                
+                Button(action: {
+                }) {
+                    Label("카메라", systemImage: "camera")
+                }
+                
+                Spacer()
+                Button(action: {
+                }) {
+                    Label("공유", systemImage: "square.and.arrow.up")
+                }
+                Spacer()
+                Button(action: {
+                    // 삭제 작업을 수행하는 코드를 여기에 추가하세요.
+                    // 예를 들어, 선택된 사진을 초기화하는 코드를 넣을 수 있습니다.
+                    selectedPhoto = nil
+                }) {
+                    Label("삭제", systemImage: "trash")
+                }
+            }
         }
+
         .task(id:selectedPhoto){
             if let data = try? await selectedPhoto?.loadTransferable(type: Data.self){
                 item.image = data
