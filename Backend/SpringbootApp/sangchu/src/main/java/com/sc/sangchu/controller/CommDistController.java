@@ -26,16 +26,6 @@ public class CommDistController {
         this.commDistService = commDistService;
     }
 
-    // 상권 데이터 조회
-    @GetMapping("/{coId}")
-    @Operation(summary = "상권 정보 조회", description = "상권 ID를 기반으로 상권 정보를 조회합니다.")
-    public ResponseEntity<CommDistDTO> getCommDist(
-            @PathVariable @Parameter(description = "상권 ID") int coId) {
-        CommDistEntity commDistEntity = commDistService.getCommDistById(coId);
-        CommDistDTO commDistDTO = commDistService.convertToDTO(commDistEntity);
-        return ResponseEntity.ok(commDistDTO);
-    }
-
     // 모든 상권 데이터 조회
     @GetMapping("/all")
     @Operation(summary = "모든 상권 정보 조회", description = "모든 상권 정보를 조회합니다.")
@@ -45,28 +35,39 @@ public class CommDistController {
         return ResponseEntity.ok(commDistDTOs);
     }
 
-//    // 상권 데이터 생성
-//    @PostMapping
-//    @Operation(summary = "새 상권 데이터 생성", description = "새로운 상권 데이터를 생성합니다.")
-//    public ResponseEntity<CommDistDTO> createCommDist(@RequestBody CommDistDTO commDistDTO) {
-//        CommDistEntity commDistEntity = commDistService.createCommDist(commDistDTO);
-//        // Entity to DTO conversion logic should be added
-//        CommDistDTO createdCommDistDTO = ... // convert entity to DTO
-//        return ResponseEntity.ok(createdCommDistDTO);
-//    }
+    // 모든 상권 데이터 중 coScore를 기준으로 상위 10개 데이터 조회
+    @GetMapping("/top")
+    @Operation(summary = "상위 상권 정보 조회", description = "coScore를 기준으로 상위 10개의 상권 정보를 조회합니다.")
+    public ResponseEntity<List<CommDistDTO>> getTopCommDistByCoScore() {
+        List<CommDistDTO> topCommDistDTOs = commDistService.getTopCommDistByCoScore(10);
+        return ResponseEntity.ok(topCommDistDTOs);
+    }
 
-//    // 상권 데이터 업데이트
-//    @PutMapping("/{coId}")
-//    @Operation(summary = "상권 정보 업데이트", description = "주어진 ID의 상권 정보를 업데이트합니다.")
-//    public ResponseEntity<CommDistDTO> updateCommDist(
-//            @PathVariable int coId,
-//            @RequestBody CommDistDTO commDistDTO) {
-//        CommDistEntity updatedEntity = commDistService.updateCommDist(coId, commDistDTO);
-//        // Entity to DTO conversion logic should be added
-//        CommDistDTO updatedCommDistDTO = ... // convert entity to DTO
-//        return ResponseEntity.ok(updatedCommDistDTO);
-//    }
+    // 상권 데이터 조회
+    @GetMapping("/commercial")
+    @Operation(summary = "상권 정보 조회", description = "상권 ID를 기반으로 상권 정보를 조회합니다.")
+    public ResponseEntity<CommDistDTO> getCommDistByCommercialDistrictCode(
+            @RequestParam(value = "commercialDistrictCode") Long commercialDistrictCode) {
+        CommDistEntity commDistEntity = commDistService.getCommDistById(commercialDistrictCode);
+        CommDistDTO commDistDTO = commDistService.convertToDTO(commDistEntity);
+        return ResponseEntity.ok(commDistDTO);
+    }
 
-    // 추가적인 API 엔드포인트 및 로직 구현이 필요함
-    // ...
+    // 자치구 기준 상권 데이터 조회
+    @GetMapping("/gu")
+    @Operation(summary = "자치구 별 상권 정보 조회", description = "자치구를 기반으로 상권 정보를 조회합니다.")
+    public ResponseEntity<List<CommDistDTO>> getCommDistByGuCode(
+            @RequestParam(value = "guCode") Long guCode) {
+        List <CommDistEntity> commDistEntity = commDistService.getCommDistByGuCode(guCode);
+        List <CommDistDTO> commDistDTO = commDistService.convertToDTOs(commDistEntity);
+        return ResponseEntity.ok(commDistDTO); 
+    }
+
+    @GetMapping("/{guCode}/top")
+    @Operation(summary = "자치구 별 상위 상권 정보 조회", description = "자치구를 기반으로 상권 정보 중 coScore가 높은 상위 10개를 조회합니다.")
+    public ResponseEntity<List<CommDistDTO>> getTopCommDistByGuCode(
+            @PathVariable @Parameter(description = "자치구 코드") Long guCode) {
+        List<CommDistDTO> topCommDistDTOs = commDistService.getTopCommDistByGuCodeAndCoScore(guCode, 10);
+        return ResponseEntity.ok(topCommDistDTOs);
+    }
 }

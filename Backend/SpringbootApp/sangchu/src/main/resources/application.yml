@@ -5,15 +5,15 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6380
-      # username : girediss10b104
-      # pw yw980227je980514
+      host: j10b206.p.ssafy.io
+      port: 6379
+      # username :
+      # pw
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/testdb
-    username: test
-    password: 1234
+    jdbc-url: jdbc:postgresql://j10b206.p.ssafy.io:5432/postgres
+    username: postgres
+    password: secret
     driver-class-name: org.postgresql.Driver
     jpa:
       hibernate:

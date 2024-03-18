@@ -1,11 +1,6 @@
 package com.sc.sangchu.postgresql.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,42 +12,62 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "commdist")
+@Table(name = "commercial_district_tb")
 public class CommDistEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer coId;
+    @Column(name= "commercial_district_code")
+    private Long commercialDistrictCode;
 
-    private Integer areaCode;
+    @Column(name= "commercial_district_name")
+    private String commercialDistrictName;
 
-    @Column(precision = 10, scale = 2) // 숫자 타입의 정밀도와 스케일 지정
-    private Double coArea;
+    //위도 경도
+    @Column(name = "latitude")
+    private Double latitude;
 
-    private Integer coApart;
-    private Integer coSales;
-    private Integer coSalesScore;
-    private Integer coFlPo;
-    private Integer coFlPoScore;
-    private Integer coRePo;
-    private Integer coRePoScore;
-    private Integer coWoPo;
+    @Column(name= "longitude")
+    private Double longitude;
 
-    // 위치 좌표를 위한 필드
-    private Integer coX;
-    private Integer coY;
+    //자치구
+    @Column(name= "gu_code")
+    private Long guCode;
 
-    // 기타 필드
-    private Integer coIncome;
-    private Integer coConsump;
-    private String coChangeIndex;
+    @Column(name= "gu_name")
+    private String guName;
 
-    @Column(precision = 10, scale = 2)
-    private Double coScore;
+    //행정동
+    @Column(name= "dong_code")
+    private Long dongCode;
 
-    @Column(precision = 10, scale = 2)
-    private Double coCompScore;
+    @Column(name= "dong_name")
+    private String dongName;
 
-    @Column(precision = 10, scale = 2)
-    private Double coDiversityScore;
+    //면적
+    @Column(name= "area_size")
+    private Long areaSize;
+
+    // 상권 점수
+    @Column(name= "commercial_district_score")
+    private Double commercialDistrictScore;
+
+    // 면적당 상권 전체 매출 점수
+    @Column(name= "sales_score")
+    private Double salesScore;
+
+    // 상주인구 점수
+    @Column(name= "resident_population_score")
+    private Double residentPopulationScore;
+
+    // 유동인구 점수
+    @Column(name= "floating_population_score")
+    private Double floatingPopulationScore;
+
+    // 점포밀도 점수
+    @Column(name= "store_density_score")
+    private Double storeDensityScore;
+
+    // 업종다양성 점수
+    @Column(name= "rdi_score")
+    private Double rdiScore;
 }
