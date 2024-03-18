@@ -85,8 +85,8 @@ print("R-squared:", r_squared)
 # lr = LinearRegression()
 # lr.fit(X, y)
          
-# # Statsmodels를 사용한 선형 회귀 분석
-# X = sm.add_constant(X)  # 상수항 추가
-# results = sm.OLS(y, X).fit()
-# print(results.summary())
+# Statsmodels를 사용한 선형 회귀 분석
+X = sm.add_constant(X)  # 상수항 추가
+results = sm.OLS(y, X).fit()
+print(results.summary())
 # print(merged_data)
