@@ -21,14 +21,3 @@ class Hashtag {
     }
     
 }
-
-extension Hashtag {
-    
-    static var defaults: [Hashtag] {
-        [
-            .init(title: "🙇🏾‍♂️ 터가 안좋음"),
-            .init(title: "🤝 터가 좋음"),
-            .init(title: "🏠 고려중")
-        ]
-    }
-}
