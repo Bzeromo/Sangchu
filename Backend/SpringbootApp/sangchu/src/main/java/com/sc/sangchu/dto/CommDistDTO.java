@@ -6,25 +6,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class CommDistDTO {
-    private Long coId;
-    private String serviceCode;
-    private String serviceName;
-    private String coName;
-    private String middleCategoryCode;
-    private String middleCategoryName;
-    private Integer majorCategoryCode;
-    private String majorCategoryName;
+    private Long commercialDistrictCode;
+    private String commercialDistrictName;
+    private Double latitude;
+    private Double longitude;
     private Long guCode;
     private String guName;
     private Long dongCode;
     private String dongName;
-    private Double coArea;
-    private Integer coX;
-    private Integer coY;
-    private Double coScore;
-    private Double coSalesScore;
-    private Double coFlPoScore;
-    private Double coRePoScore;
-    private Double coCompScore;
-    private Double coDiversityScore;
+    private Long areaSize;
+    private Double commercialDistrictScore;
+    private Double salesScore;
+    private Double residentPopulationScore;
+    private Double floatingPopulationScore;
+    private Double storeDensityScore;
+    private Double rdiScore;
 }

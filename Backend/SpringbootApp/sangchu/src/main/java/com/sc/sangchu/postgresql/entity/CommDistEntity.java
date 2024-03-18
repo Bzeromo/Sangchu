@@ -13,16 +13,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "commercial_district_tb")
-//@IdClass(CommDistId.class)
 public class CommDistEntity {
 
     @Id
     @Column(name= "commercial_district_code")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long coId;
+    private Long commercialDistrictCode;
 
     @Column(name= "commercial_district_name")
-    private String coName;
+    private String commercialDistrictName;
 
     //위도 경도
     @Column(name = "latitude")
@@ -48,4 +46,28 @@ public class CommDistEntity {
     //면적
     @Column(name= "area_size")
     private Long areaSize;
+
+    // 상권 점수
+    @Column(name= "commercial_district_score")
+    private Double commercialDistrictScore;
+
+    // 면적당 상권 전체 매출 점수
+    @Column(name= "sales_score")
+    private Double salesScore;
+
+    // 상주인구 점수
+    @Column(name= "resident_population_score")
+    private Double residentPopulationScore;
+
+    // 유동인구 점수
+    @Column(name= "floating_population_score")
+    private Double floatingPopulationScore;
+
+    // 점포밀도 점수
+    @Column(name= "store_density_score")
+    private Double storeDensityScore;
+
+    // 업종다양성 점수
+    @Column(name= "rdi_score")
+    private Double rdiScore;
 }

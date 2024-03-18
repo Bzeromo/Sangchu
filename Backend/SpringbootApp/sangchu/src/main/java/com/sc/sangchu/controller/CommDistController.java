@@ -46,20 +46,10 @@ public class CommDistController {
     // 상권 데이터 조회
     @GetMapping("/commercial")
     @Operation(summary = "상권 정보 조회", description = "상권 ID를 기반으로 상권 정보를 조회합니다.")
-    public ResponseEntity<CommDistDTO> getCommDistByCoId(
-            @RequestParam(value = "coId") Long coId) {
-        CommDistEntity commDistEntity = commDistService.getCommDistById(coId);
+    public ResponseEntity<CommDistDTO> getCommDistByCommercialDistrictCode(
+            @RequestParam(value = "commercialDistrictCode") Long commercialDistrictCode) {
+        CommDistEntity commDistEntity = commDistService.getCommDistById(commercialDistrictCode);
         CommDistDTO commDistDTO = commDistService.convertToDTO(commDistEntity);
-        return ResponseEntity.ok(commDistDTO);
-    }
-
-    // 업종 기준 상권 데이터 조회
-    @GetMapping("/service")
-    @Operation(summary = "업종별 상권 정보 조회", description = "업종 ID를 기반으로 상권 정보를 조회합니다.")
-    public ResponseEntity<List<CommDistDTO>> getCommDistByCategoryId(
-            @RequestParam(value = "serviceCode") String serviceCode) {
-        List <CommDistEntity> commDistEntity = commDistService.getCommDistByServiceCode(serviceCode);
-        List <CommDistDTO> commDistDTO = commDistService.convertToDTOs(commDistEntity);
         return ResponseEntity.ok(commDistDTO);
     }
 
@@ -73,20 +63,10 @@ public class CommDistController {
         return ResponseEntity.ok(commDistDTO); 
     }
 
-    // 자치구 및 업종 기준 상권 데이터 조회
-    @GetMapping("/{serviceCode}/{guCode}")
-    @Operation(summary = "자치구 및 업종별 상권 정보 조회", description = "업종 ID를 기반으로 상권 정보를 조회합니다.")
-    public ResponseEntity<List<CommDistDTO>> getCommDistByServiceCodeAndGuCode(
-            @PathVariable @Parameter(description = "업종 ID") String serviceCode, @PathVariable @Parameter(description = "자치구 코드") Long guCode) {
-        List <CommDistEntity> commDistEntity = commDistService.getCommDistByServiceCodeAndGuCode(serviceCode, guCode);
-        List <CommDistDTO> commDistDTO = commDistService.convertToDTOs(commDistEntity);
-        return ResponseEntity.ok(commDistDTO);
-    }
-
     @GetMapping("/{guCode}/top")
     @Operation(summary = "자치구 별 상위 상권 정보 조회", description = "자치구를 기반으로 상권 정보 중 coScore가 높은 상위 10개를 조회합니다.")
     public ResponseEntity<List<CommDistDTO>> getTopCommDistByGuCode(
-            @PathVariable @Parameter(description = "자치구 코드") int guCode) {
+            @PathVariable @Parameter(description = "자치구 코드") Long guCode) {
         List<CommDistDTO> topCommDistDTOs = commDistService.getTopCommDistByGuCodeAndCoScore(guCode, 10);
         return ResponseEntity.ok(topCommDistDTOs);
     }
