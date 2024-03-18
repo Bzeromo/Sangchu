@@ -404,7 +404,7 @@ apartment_with_commercial_district_df = apartment_with_commercial_district_df.re
     '기준_년분기_코드': 'year_quarter_code',
     '상권_코드': 'commercial_district_code',
     '상권_코드_명': 'commercial_district_name',
-    '아파트_단지_수': 'total_household',
+    '아파트_단지_수': 'apartment_complexes',
     '아파트_면적_66_제곱미터_미만_세대_수': 'household_under_20_pyeong',
     '아파트_면적_66_제곱미터_세대_수': 'household_20_to_30_pyeong',
     '아파트_면적_99_제곱미터_세대_수': 'household_30_to_40_pyeong',
