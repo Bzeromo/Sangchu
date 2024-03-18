@@ -15,6 +15,8 @@ struct MapView: UIViewRepresentable {
     @Binding var tappedLocation: NMGLatLng // 지도 상의 탭한 좌표
     @Binding var tappedSymbolCaption: String // 지도 상의 탭한 심볼의 이름
     
+    let locationService = LocationService()
+    
     // NMFMapView의 터치 관련 이벤트 처리를 위임(delegate)받는 class 구현
     class Coordinator: NSObject, NMFMapViewTouchDelegate {
             // 지도 뷰를 부모로 설정
@@ -73,10 +75,20 @@ struct MapView: UIViewRepresentable {
 //        mapView.lightness = 0 // 밝기 [-1 ~ 1]
 //        mapView.symbolScale = 1 // 심볼들의 크기
 
-//        mapView.logoInteractionEnabled = false // 로고 클릭 가능 여부
+//        mapView.logoInteractionEnabled = false // 로고 클릭 가능 여부 // true가 기본값인데 건들지 말 것!
         mapView.isNightModeEnabled = true // 다크 모드 활성화 가능 여부
 //        mapView.logoAlign = .leftTop // 네이버 로고 위치 // 기본값은 좌측 하단
         
+        // 위치 오버레이 관련 설정
+        let locationOverlay = mapView.locationOverlay
+        locationService.requestLocation { coordinate in
+            locationOverlay.location = NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude)
+        }
+//        locationOverlay.location = NMGLatLng(lat: 37.358581, lng: 127.103564)
+        locationOverlay.heading = 90
+        locationOverlay.icon = NMFOverlayImage.init(name: "")
+        locationOverlay.iconWidth = CGFloat(NMF_LOCATION_OVERLAY_SIZE_AUTO)
+        locationOverlay.iconHeight = CGFloat(NMF_LOCATION_OVERLAY_SIZE_AUTO)
         
         // naverMapView 관련 설정들 //
         naverMapView.showCompass = true // 나침반

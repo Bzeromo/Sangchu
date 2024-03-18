@@ -27,6 +27,7 @@
 		659A1FA72BA2C70000B6FDAB /* HashTagItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659A1FA62BA2C70000B6FDAB /* HashTagItem.swift */; };
 		659A1FA92BA2CA5F00B6FDAB /* HashTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659A1FA82BA2CA5F00B6FDAB /* HashTagView.swift */; };
 		77A1957567BC7F2705492F00 /* Pods__________________________Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFFA342F4E505D43D2E5C146 /* Pods__________________________Tests.framework */; };
+		DA599B3C2BA80C800056EA2A /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA599B3B2BA80C800056EA2A /* LocationService.swift */; };
 		DA7C64A02BA1FF3000BE74DD /* BDMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */; };
 		DA7C64A22BA2062800BE74DD /* NMapsGeometry.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7C64A12BA2062800BE74DD /* NMapsGeometry.xcframework */; };
 		DA7C64A42BA2062800BE74DD /* NMapsMap.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7C64A32BA2062800BE74DD /* NMapsMap.xcframework */; };
@@ -86,6 +87,7 @@
 		9FC304166EAE5D21F068D825 /* Pods-상추 - 상권추천서비스Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스Tests.debug.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스Tests/Pods-상추 - 상권추천서비스Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		BFFA342F4E505D43D2E5C146 /* Pods__________________________Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods__________________________Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCA7EFBAABEECBD5C75B1BD1 /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig"; sourceTree = "<group>"; };
+		DA599B3B2BA80C800056EA2A /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDMapView.swift; sourceTree = "<group>"; };
 		DA7C64A12BA2062800BE74DD /* NMapsGeometry.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NMapsGeometry.xcframework; path = Pods/NMapsGeometry/framework/NMapsGeometry.xcframework; sourceTree = "<group>"; };
 		DA7C64A32BA2062800BE74DD /* NMapsMap.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NMapsMap.xcframework; path = Pods/NMapsMap/framework/NMapsMap.xcframework; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 			isa = PBXGroup;
 			children = (
 				6577BB1F2B9EB7E40071A3EA /* Header.h */,
+				DA599B3B2BA80C800056EA2A /* LocationService.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -604,6 +607,7 @@
 				659A1FA52BA294DA00B6FDAB /* UpdateBookMark.swift in Sources */,
 				650D1ED32BA19B3A0055B3BA /* BookMarkList.swift in Sources */,
 				659A1FA72BA2C70000B6FDAB /* HashTagItem.swift in Sources */,
+				DA599B3C2BA80C800056EA2A /* LocationService.swift in Sources */,
 				DA9C59372B9FE9DA007C4C8D /* SangChuApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
