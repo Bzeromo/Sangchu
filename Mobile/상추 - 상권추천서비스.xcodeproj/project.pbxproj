@@ -31,6 +31,9 @@
 		65A66B342BA7B79D00E4E3D0 /* HashTagJSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B332BA7B79D00E4E3D0 /* HashTagJSONDecoder.swift */; };
 		65A66B372BA7D3B500E4E3D0 /* SwiftUIImageViewer in Frameworks */ = {isa = PBXBuildFile; productRef = 65A66B362BA7D3B500E4E3D0 /* SwiftUIImageViewer */; };
 		65A66B392BA7F09C00E4E3D0 /* BookMarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B382BA7F09C00E4E3D0 /* BookMarkView.swift */; };
+		65A66B792BA97AC000E4E3D0 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B782BA97AC000E4E3D0 /* CameraService.swift */; };
+		65A66B7B2BA97B1900E4E3D0 /* CustomCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B7A2BA97B1900E4E3D0 /* CustomCameraView.swift */; };
+		65A66B7D2BA97B7100E4E3D0 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B7C2BA97B7100E4E3D0 /* CameraView.swift */; };
 		6632D7539E1FF4408AF646A6 /* Pods____________________________________________________UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BD65E5ACA28267E89DBC1EE /* Pods____________________________________________________UITests.framework */; };
 		DA7C64A02BA1FF3000BE74DD /* BDMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */; };
 		DA7C64A22BA2062800BE74DD /* NMapsGeometry.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7C64A12BA2062800BE74DD /* NMapsGeometry.xcframework */; };
@@ -90,6 +93,9 @@
 		65A66B312BA7B70200E4E3D0 /* HashTagDefaults */ = {isa = PBXFileReference; lastKnownFileType = text; path = HashTagDefaults; sourceTree = "<group>"; };
 		65A66B332BA7B79D00E4E3D0 /* HashTagJSONDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashTagJSONDecoder.swift; sourceTree = "<group>"; };
 		65A66B382BA7F09C00E4E3D0 /* BookMarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMarkView.swift; sourceTree = "<group>"; };
+		65A66B782BA97AC000E4E3D0 /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
+		65A66B7A2BA97B1900E4E3D0 /* CustomCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCameraView.swift; sourceTree = "<group>"; };
+		65A66B7C2BA97B7100E4E3D0 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		6A1E07AB02CDC7A95DF2E3FB /* Pods-상추 - 상권추천서비스Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스Tests.release.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스Tests/Pods-상추 - 상권추천서비스Tests.release.xcconfig"; sourceTree = "<group>"; };
 		6FCB9EF9541A84B3F7EF01E2 /* Pods-상추 - 상권추천서비스Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스Tests.debug.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스Tests/Pods-상추 - 상권추천서비스Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		975FFB7E24D0FFE362CAAE1C /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -233,6 +239,7 @@
 			children = (
 				6577BB1F2B9EB7E40071A3EA /* Header.h */,
 				65A66B332BA7B79D00E4E3D0 /* HashTagJSONDecoder.swift */,
+				65A66B782BA97AC000E4E3D0 /* CameraService.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -293,6 +300,8 @@
 				659A1FA42BA294DA00B6FDAB /* UpdateBookMark.swift */,
 				65A66B382BA7F09C00E4E3D0 /* BookMarkView.swift */,
 				659A1FA82BA2CA5F00B6FDAB /* HashTagView.swift */,
+				65A66B7A2BA97B1900E4E3D0 /* CustomCameraView.swift */,
+				65A66B7C2BA97B7100E4E3D0 /* CameraView.swift */,
 			);
 			path = BookMark;
 			sourceTree = "<group>";
@@ -627,8 +636,11 @@
 				659A1FA52BA294DA00B6FDAB /* UpdateBookMark.swift in Sources */,
 				650D1ED32BA19B3A0055B3BA /* BookMarkList.swift in Sources */,
 				659A1FA72BA2C70000B6FDAB /* HashTagItem.swift in Sources */,
+				65A66B7D2BA97B7100E4E3D0 /* CameraView.swift in Sources */,
+				65A66B7B2BA97B1900E4E3D0 /* CustomCameraView.swift in Sources */,
 				65A66B392BA7F09C00E4E3D0 /* BookMarkView.swift in Sources */,
 				DA9C59372B9FE9DA007C4C8D /* SangChuApp.swift in Sources */,
+				65A66B792BA97AC000E4E3D0 /* CameraService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -797,6 +809,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Access to camera for memo picture";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -828,6 +841,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Access to camera for memo picture";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

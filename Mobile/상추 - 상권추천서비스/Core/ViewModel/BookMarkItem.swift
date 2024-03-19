@@ -22,6 +22,7 @@ final class BookMarkItem {
     
     @Attribute(.externalStorage) // 이진 코드로 저장해 외부에 데이터를 저장
     var image : Data? // 카테고리처럼 선택사항으로
+    
 //    var isImportant : Bool
     
     // inverse는 데이터 무결성을 보장함

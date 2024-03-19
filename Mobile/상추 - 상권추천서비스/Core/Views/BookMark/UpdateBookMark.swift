@@ -16,6 +16,8 @@ struct UpdateBookMarkView: View {
     @Query private var hashtags : [Hashtag]
     @State var selectedHashtag : Hashtag?
     
+    @State private var capturedImage : UIImage? = nil
+    @State private var isCustomCameraViewPresented = false
     @State private var isImageViewerPresented = false
     @State var selectedPhoto : PhotosPickerItem?
     @Bindable var item: BookMarkItem
@@ -100,10 +102,12 @@ struct UpdateBookMarkView: View {
                 }
                 Spacer()
                 
-                Button(action: {
+                Button(action: {isCustomCameraViewPresented.toggle()
                 }) {
-                    Label("카메라", systemImage: "camera")
+                    Label("카메라", systemImage: "camera").sheet(isPresented: $isCustomCameraViewPresented, content: {CustomCameraView(capturedImage: $capturedImage)})
                 }
+                
+              
                 
                 Spacer()
                 Button(action: {
