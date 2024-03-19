@@ -4,7 +4,9 @@ import com.sc.sangchu.postgresql.entity.CommStoreEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface CommStoreRepository extends JpaRepository<CommStoreEntity, Integer> {
-
+    List<CommStoreEntity> findByCommercialDistrictCode(Long commercialDistrictCode);
 }

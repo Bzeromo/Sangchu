@@ -10,7 +10,7 @@ public class WebClientConfig {
     @Bean
     public WebClient webClient(WebClient.Builder builder) {
         return builder
-                .baseUrl("https://j10b206.p.ssafy.io") // 기본 URL 설정
+                .baseUrl("http://localhost:8080") // 기본 URL 설정
                 .build(); // WebClient 인스턴스 생성
     }
 }
