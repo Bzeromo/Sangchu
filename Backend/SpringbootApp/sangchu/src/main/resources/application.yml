@@ -25,8 +25,8 @@ spring:
         hibernate:
           format_sql: true
 
-#  thymeleaf:
-#    cache: false
+  thymeleaf:
+    cache: false
 
 #  jpa:
 #    hibernate:
