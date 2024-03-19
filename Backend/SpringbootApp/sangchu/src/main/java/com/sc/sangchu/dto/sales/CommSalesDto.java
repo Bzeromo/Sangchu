@@ -1,4 +1,4 @@
-package com.sc.sangchu.dto;
+package com.sc.sangchu.dto.sales;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class CommSalesDto {
     //월평균, 주중, 주말 매출 금액
-    private Double MonthlySales;
-    private Double WeekDaySales;
-    private Double WeekendSales;
+    private Long MonthlySales;
+    private Long WeekDaySales;
+    private Long WeekendSales;
 }
