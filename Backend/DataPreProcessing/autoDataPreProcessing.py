@@ -4,7 +4,7 @@ from modules.calc_RDI import calc_RDI
 from modules.commercialDistrictCodePreProcessing import check_do_not_have_commercial_district_code
 import pandas as pd
 from pyproj import Transformer
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, types
 import json
 import time
 
@@ -521,19 +521,43 @@ df_dict = check_do_not_have_commercial_district_code([
     working_population_with_commercial_district_df
 ])
 
+for df in [
+        "store_with_commercial_district_df",
+        "sales_commercial_district_df",
+        "income_consumption_with_commercial_district_df",
+        "commercial_district_change_indicator_with_commercial_district_df",
+        "foot_traffic_with_commercial_district_df",
+        "resident_population_with_commercial_district_df",
+        "facilities_with_commercial_district_df",
+        "apartment_with_commercial_district_df",
+        "working_population_with_commercial_district_df"]:
+    df_dict[df].loc[:, 'year_quarter_code']  = df_dict[df][
+        'year_quarter_code'].astype(str)
+
+    target_idx = df_dict[df].columns.get_loc('year_quarter_code') + 1
+
+    df_dict[df].insert(target_idx,'year_code',df_dict[df]['year_quarter_code'].str[
+                               :4].astype(int))
+    df_dict[df].insert(target_idx+1,'quarter_code',df_dict[df]['year_quarter_code'].str[
+        -1].astype(int))
+
+    df_dict[df] = df_dict[df].drop(columns=['year_quarter_code'])
 # CSV 파일로 저장
 # df_dict['area_with_commercial_district_df'].to_csv('files/check/영역-상권.csv', encoding='CP949', index=False)
 # df_dict['store_with_commercial_district_df'].to_csv('files/check/점포-상권.csv', index=False, encoding="CP949")
 # store_with_seoul_df.to_csv('files/check/점포-서울시.csv', encoding='CP949', index=False)
 # df_dict['sales_commercial_district_df'].to_csv('files/check/추정매출-상권.csv', encoding='CP949', index=False)
 # df_dict['income_consumption_with_commercial_district_df'].to_csv('files/check/소득-상권.csv', encoding='CP949', index=False)
-# df_dict['commercial_district_change_indicator_with_commercial_district_df'].to_csv('files/check/상권변화지표-상권.csv', encoding='CP949',
-#                                                                         index=False)
+# df_dict['commercial_district_change_indicator_with_commercial_district_df'].to_csv('files/check/상권변화지표-상권.csv',
+#                                                                                    encoding='CP949',
+#                                                                                    index=False)
 # df_dict['foot_traffic_with_commercial_district_df'].to_csv('files/check/길단위인구-상권.csv', encoding='CP949', index=False)
-# df_dict['resident_population_with_commercial_district_df'].to_csv('files/check/상주인구-상권.csv', encoding='CP949', index=False)
+# df_dict['resident_population_with_commercial_district_df'].to_csv('files/check/상주인구-상권.csv', encoding='CP949',
+#                                                                   index=False)
 # df_dict['facilities_with_commercial_district_df'].to_csv('files/check/집객시설-상권.csv', encoding='CP949', index=False)
 # df_dict['apartment_with_commercial_district_df'].to_csv('files/check/아파트-상권.csv', encoding='CP949', index=False)
-# df_dict['working_population_with_commercial_district_df'].to_csv('files/check/직장인구-상권.csv', encoding='CP949', index=False)
+# df_dict['working_population_with_commercial_district_df'].to_csv('files/check/직장인구-상권.csv', encoding='CP949',
+#                                                                  index=False)
 
 # 설정 파일 불러오기
 with open('config.json', 'r') as f:
@@ -602,3 +626,5 @@ with engine.connect() as con:
 end = time.time()
 
 print(f"{end - start:.5f} sec")
+
+
