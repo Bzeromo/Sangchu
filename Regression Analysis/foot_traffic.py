@@ -22,8 +22,8 @@ df_foot_traffic_2023 = pd.merge(df_foot_traffic_2023, df_foot_traffic_2022, on=[
 df_foot_traffic_2022 = pd.merge(df_foot_traffic_2022, df_foot_traffic_2021, on=['commercial_district_code', '분기'], how='left', suffixes=('_now', '_previous'))
 
 df_foot_traffic = pd.concat([df_foot_traffic_2022, df_foot_traffic_2023])
-df_foot_traffic['유동인구변화'] = df_foot_traffic['total_foot_traffic_now'] - df_foot_traffic['total_foot_traffic_previous']
-df_foot_traffic['유동인구변화제곱'] = df_foot_traffic['유동인구변화']**2
+df_foot_traffic['foot_traffic_diff'] = df_foot_traffic['total_foot_traffic_now'] - df_foot_traffic['total_foot_traffic_previous']
+df_foot_traffic['foot_traffic_diff_square'] = df_foot_traffic['foot_traffic_diff']**2
 
 # 컬럼명 변경
 df_foot_traffic = df_foot_traffic.rename(columns={'year_quarter_code_now': 'year_quarter_code'})

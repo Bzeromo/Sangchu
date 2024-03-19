@@ -22,7 +22,7 @@ df_facilities_2023 = pd.merge(df_facilities_2023, df_facilities_2022, on=['comme
 df_facilities_2022 = pd.merge(df_facilities_2022, df_facilities_2021, on=['commercial_district_code', '분기'], how='left', suffixes=('_now', '_previous'))
 
 df_facilities = pd.concat([df_facilities_2022, df_facilities_2023])
-df_facilities['집객시설변화'] = df_facilities['facilities_now'] - df_facilities['facilities_previous']
+df_facilities['facilities_diff'] = df_facilities['facilities_now'] - df_facilities['facilities_previous']
 
 # 컬럼명 변경
 df_facilities = df_facilities.rename(columns={'year_quarter_code_now': 'year_quarter_code'})

@@ -22,7 +22,7 @@ df_resident_population_2023 = pd.merge(df_resident_population_2023, df_resident_
 df_resident_population_2022 = pd.merge(df_resident_population_2022, df_resident_population_2021, on=['commercial_district_code', '분기'], how='left', suffixes=('_now', '_previous'))
 
 df_resident_population = pd.concat([df_resident_population_2022, df_resident_population_2023])
-df_resident_population['상주인구변화'] = df_resident_population['total_resident_population_now'] - df_resident_population['total_resident_population_previous']
+df_resident_population['resident_population_diff'] = df_resident_population['total_resident_population_now'] - df_resident_population['total_resident_population_previous']
 
 # 컬럼명 변경
 df_resident_population = df_resident_population.rename(columns={'year_quarter_code_now': 'year_quarter_code'})

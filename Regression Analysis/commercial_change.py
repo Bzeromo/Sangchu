@@ -22,10 +22,10 @@ df_commercial_change_2023 = pd.merge(df_commercial_change_2023, df_commercial_ch
 df_commercial_change_2022 = pd.merge(df_commercial_change_2022, df_commercial_change_2021, on=['commercial_district_code', '분기'], how='left', suffixes=('_now', '_previous'))
 
 df_commercial_change = pd.concat([df_commercial_change_2022, df_commercial_change_2023])
-df_commercial_change['rdi변화'] = df_commercial_change['rdi_now'] - df_commercial_change['rdi_previous']
-df_commercial_change['rdi변화제곱'] = df_commercial_change['rdi변화']**2
-df_commercial_change['점포밀도변화'] = df_commercial_change['store_density_now'] - df_commercial_change['store_density_previous']
-df_commercial_change['점포밀도변화제곱'] = df_commercial_change['점포밀도변화']**2
+df_commercial_change['rdi_diff'] = df_commercial_change['rdi_now'] - df_commercial_change['rdi_previous']
+df_commercial_change['rdi_diff_square'] = df_commercial_change['rdi_diff']**2
+df_commercial_change['density_diff'] = df_commercial_change['store_density_now'] - df_commercial_change['store_density_previous']
+df_commercial_change['density_diff_square'] = df_commercial_change['density_diff']**2
 
 # # 컬럼명 변경
 df_commercial_change = df_commercial_change.rename(columns={'year_quarter_code_now': 'year_quarter_code'})

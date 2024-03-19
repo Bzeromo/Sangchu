@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from sklearn.linear_model import LinearRegression
@@ -13,18 +14,20 @@ import foot_traffic
 import area
 import facilities
 import working_population
+import income
+import apartment
 
 ##### 데이터 조회 ######
 # 추정매출-상권 데이터 로드
 df_sales = sales.df_sales
 
-# 상권변화지표-상권 데이터 로드
-df_commercial_change = commercial_change.df_commercial_change
-merged_data = pd.merge(df_sales, df_commercial_change, on=['year_quarter_code', 'commercial_district_code'], how='left')
-
 # 점포-상권 데이터 로드
 df_store = store.df_store
-merged_data = pd.merge(merged_data, df_store, on=['year_quarter_code', 'commercial_district_code'], how='left')
+merged_data = pd.merge(df_sales, df_store, on=['year_quarter_code', 'commercial_district_code'], how='left')
+
+# 상권변화지표-상권 데이터 로드
+df_commercial_change = commercial_change.df_commercial_change
+merged_data = pd.merge(merged_data, df_commercial_change, on=['year_quarter_code', 'commercial_district_code'], how='left')
 
 # 상주인구-상권 데이터 로드
 df_resident_population = resident_population.df_resident_population
@@ -46,18 +49,21 @@ merged_data = pd.merge(merged_data, df_facilities, on=['year_quarter_code', 'com
 df_working_population = working_population.df_working_population
 merged_data = pd.merge(merged_data, df_working_population, on=['year_quarter_code', 'commercial_district_code'], how='left')
 
-# 아파트-상권 데이터 로드
-df_apartment = pd.read_csv('아파트-상권.csv', encoding='cp949')
-
 # 소득-상권 데이터 로드
-df_income = pd.read_csv('소득-상권.csv', encoding='cp949')
+df_income = income.df_income
+merged_data = pd.merge(merged_data, df_income, on=['year_quarter_code', 'commercial_district_code'], how='left')
 
-# 독립 변수 선택
-# X = merged_data[['monthly_sales_previous', 'rdi_previous', '점포수_previous', 'total_resident_population_previous', 'total_foot_traffic_previous', 'store_density_previous', 'area_size', 'rdi변화', '유동인구변화', '점포밀도변화', '상주인구변화', '점포밀도변화제곱', '유동인구변화제곱', 'rdi변화제곱']]
-X = merged_data[['monthly_sales_previous', 'rdi_previous', '점포수_previous', 'total_resident_population_previous', 'total_foot_traffic_previous', 'store_density_previous', 'area_size', 'facilities_previous', 'total_working_population_previous', 'rdi변화', '유동인구변화', '점포밀도변화', '상주인구변화', '집객시설변화', '직장인구변화']].copy()
+# 아파트-상권 데이터 로드
+df_apartment = apartment.df_apartment
+merged_data = pd.merge(merged_data, df_apartment, on=['year_quarter_code', 'commercial_district_code'], how='left')
+
+# 독립 변수 선택 
+# X = merged_data[['monthly_sales_previous', 'total_store_previous', 'store_diff', 'rdi_previous', 'store_density_previous', 'rdi_diff', 'rdi_diff_square', 'density_diff', 'density_diff_square', 'total_resident_population_previous', 'resident_population_diff', 'total_foot_traffic_previous', 'foot_traffic_diff', 'foot_traffic_diff_square', 'area_size', 'facilities_previous', 'facilities_diff', 'total_working_population_previous', 'monthly_average_income_amount_previous', 'expenditure_total_amount_previous', 'apartment_avg_price_previous', 'total_household_previous', 'household_diff', 'apt_price_diff']].copy()
+X = merged_data[['monthly_sales_previous', 'total_store_previous', 'store_diff', 'rdi_previous', 'store_density_previous', 'rdi_diff', 'density_diff', 'total_resident_population_previous', 'resident_population_diff', 'total_foot_traffic_previous', 'foot_traffic_diff', 'area_size', 'facilities_previous', 'facilities_diff', 'total_working_population_previous', 'working_population_diff', 'monthly_average_income_amount_previous', 'income_diff', 'expenditure_total_amount_previous', 'expend_diff', 'apartment_avg_price_previous', 'total_household_previous', 'household_diff', 'apt_price_diff']].copy()
 
 # 종속 변수 선택
-y = merged_data['매출변화']
+y = merged_data['monthly_sales_now']
+# y = merged_data['sales_diff']
 
 # 결측값이 포함된 행 제거
 X.dropna(inplace=True)
@@ -78,15 +84,29 @@ mse = mean_squared_error(y_test, y_pred)
 mae = mean_absolute_error(y_test, y_pred)
 r_squared = r2_score(y_test, y_pred)
 
-# 결과 출력
-print("Mean Squared Error (MSE):", mse)
-print("Mean Absolute Error (MAE):", mae)
-print("R-squared:", r_squared)
-# lr = LinearRegression()
-# lr.fit(X, y)
-         
-# Statsmodels를 사용한 선형 회귀 분석
-X = sm.add_constant(X)  # 상수항 추가
-results = sm.OLS(y, X).fit()
-print(results.summary())
-# print(merged_data)
+# # 결과 출력
+# print("Mean Squared Error (MSE):", mse)
+# print("Mean Absolute Error (MAE):", mae)
+# print("R-squared:", r_squared)
+
+# # Statsmodels를 사용한 선형 회귀 분석
+# X = sm.add_constant(X)  # 상수항 추가
+# results = sm.OLS(y, X).fit()
+# print(results.summary())
+# # print(merged_data)
+
+# 독립 변수(X) 리스트
+independent_variables = X.columns
+
+# 그래프 그릴 피규어 생성
+plt.figure(figsize=(20, 15))
+
+# 독립 변수별로 그래프 그리기
+for i, column in enumerate(independent_variables, 1):
+    plt.subplot(5, 5, i)  # 그래프 위치 지정
+    sns.regplot(x=X[column], y=y)  # regplot 그리기
+    plt.xlabel(column)  # x축 레이블 설정
+    plt.ylabel('monthly_sales_now')  # y축 레이블 설정
+
+plt.tight_layout()  # 그래프 간격 조정
+plt.show()
