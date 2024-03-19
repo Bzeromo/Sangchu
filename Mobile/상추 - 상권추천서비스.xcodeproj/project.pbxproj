@@ -40,6 +40,9 @@
 		DA9C593F2BA0037A007C4C8D /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA9C593E2BA0037A007C4C8D /* Font.swift */; };
 		DA9C59422BA0153A007C4C8D /* DistrictRankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA9C59412BA0153A007C4C8D /* DistrictRankingView.swift */; };
 		DAD092202BA8A77B00A6DF92 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD0921F2BA8A77B00A6DF92 /* LocationService.swift */; };
+		DAD092222BA922C100A6DF92 /* GeoJSONModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD092212BA922C100A6DF92 /* GeoJSONModels.swift */; };
+		DAD092242BA92A1300A6DF92 /* GeoJSONLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD092232BA92A1300A6DF92 /* GeoJSONLoader.swift */; };
+		DAD0922B2BA94C4C00A6DF92 /* SeoulBoroughOutline.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DAD0922A2BA94C4C00A6DF92 /* SeoulBoroughOutline.geojson */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +64,7 @@
 
 /* Begin PBXFileReference section */
 		0CDA20580AA1CA56E022FA75 /* Pods__________________________Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods__________________________Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		16D3E56DB2E3798215EAD5EA /* Pods-상추 - 상권추천서비스.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스.debug.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스/Pods-상추 - 상권추천서비스.debug.xcconfig"; sourceTree = "<group>"; };
 		5BD65E5ACA28267E89DBC1EE /* Pods____________________________________________________UITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods____________________________________________________UITests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		60D68033FB358D9F8FCE8A7A /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig"; sourceTree = "<group>"; };
 		650D1ED22BA19B3A0055B3BA /* BookMarkList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookMarkList.swift; sourceTree = "<group>"; };
@@ -105,8 +109,9 @@
 		DA9C593E2BA0037A007C4C8D /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		DA9C59412BA0153A007C4C8D /* DistrictRankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistrictRankingView.swift; sourceTree = "<group>"; };
 		DAD0921F2BA8A77B00A6DF92 /* LocationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
-		E57E6869918AC13ABABC9F5F /* Pods__________________________Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods__________________________Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E77B470E1AF6356DF13CAD3B /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig"; sourceTree = "<group>"; };
+		DAD092212BA922C100A6DF92 /* GeoJSONModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoJSONModels.swift; sourceTree = "<group>"; };
+		DAD092232BA92A1300A6DF92 /* GeoJSONLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoJSONLoader.swift; sourceTree = "<group>"; };
+		DAD0922A2BA94C4C00A6DF92 /* SeoulBoroughOutline.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SeoulBoroughOutline.geojson; path = "../../../../../프로젝트 assets/SeoulBoroughOutline.geojson"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,6 +214,7 @@
 				DA9C593A2B9FFFD5007C4C8D /* Fonts */,
 				6577BB3A2B9ECBC30071A3EA /* RecommendBoroughCard.swift */,
 				6577BB3B2B9ECBC30071A3EA /* RoundedRectangleButtonStyle.swift */,
+				DAD0922A2BA94C4C00A6DF92 /* SeoulBoroughOutline.geojson */,
 				6577BB382B9ECBA40071A3EA /* Color.swift */,
 			);
 			path = Extenstion;
@@ -237,6 +243,7 @@
 				DAD0921F2BA8A77B00A6DF92 /* LocationService.swift */,
 				6577BB1F2B9EB7E40071A3EA /* Header.h */,
 				65A66B332BA7B79D00E4E3D0 /* HashTagJSONDecoder.swift */,
+				DAD092232BA92A1300A6DF92 /* GeoJSONLoader.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -246,6 +253,7 @@
 			children = (
 				6577BB202B9EB82D0071A3EA /* Header.h */,
 				65A66B2F2BA7433100E4E3D0 /* ItemsContainer.swift */,
+				DAD092212BA922C100A6DF92 /* GeoJSONModels.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -357,12 +365,12 @@
 		FBE0D346077363AC0761F679 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				FE9234B0677F3E5C669384E6 /* Pods-상추 - 상권추천서비스.debug.xcconfig */,
 				D4269BB65CF2822346E88894 /* Pods-상추 - 상권추천서비스.release.xcconfig */,
 				975FFB7E24D0FFE362CAAE1C /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig */,
 				60D68033FB358D9F8FCE8A7A /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig */,
 				6FCB9EF9541A84B3F7EF01E2 /* Pods-상추 - 상권추천서비스Tests.debug.xcconfig */,
 				6A1E07AB02CDC7A95DF2E3FB /* Pods-상추 - 상권추천서비스Tests.release.xcconfig */,
+				16D3E56DB2E3798215EAD5EA /* Pods-상추 - 상권추천서비스.debug.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -483,6 +491,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6577BAF62B9EB65C0071A3EA /* Preview Assets.xcassets in Resources */,
+				DAD0922B2BA94C4C00A6DF92 /* SeoulBoroughOutline.geojson in Resources */,
 				6577BAF32B9EB65C0071A3EA /* Assets.xcassets in Resources */,
 				DA9C593C2BA00037007C4C8D /* SingleDay-Regular.ttf in Resources */,
 				65A66B322BA7B70200E4E3D0 /* HashTagDefaults in Resources */,
@@ -618,6 +627,7 @@
 				DA7C64A02BA1FF3000BE74DD /* BDMapView.swift in Sources */,
 				65A66B342BA7B79D00E4E3D0 /* HashTagJSONDecoder.swift in Sources */,
 				6577BAF12B9EB65A0071A3EA /* Item.swift in Sources */,
+				DAD092222BA922C100A6DF92 /* GeoJSONModels.swift in Sources */,
 				DA9C593F2BA0037A007C4C8D /* Font.swift in Sources */,
 				650D1ED72BA19B580055B3BA /* CreateBookMark.swift in Sources */,
 				6577BB372B9ECB500071A3EA /* HomeView.swift in Sources */,
@@ -630,6 +640,7 @@
 				6577BB392B9ECBA40071A3EA /* Color.swift in Sources */,
 				659A1FA52BA294DA00B6FDAB /* UpdateBookMark.swift in Sources */,
 				650D1ED32BA19B3A0055B3BA /* BookMarkList.swift in Sources */,
+				DAD092242BA92A1300A6DF92 /* GeoJSONLoader.swift in Sources */,
 				659A1FA72BA2C70000B6FDAB /* HashTagItem.swift in Sources */,
 				65A66B392BA7F09C00E4E3D0 /* BookMarkView.swift in Sources */,
 				DAD092202BA8A77B00A6DF92 /* LocationService.swift in Sources */,
@@ -791,14 +802,14 @@
 		};
 		6577BB102B9EB65C0071A3EA /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FE9234B0677F3E5C669384E6 /* Pods-상추 - 상권추천서비스.debug.xcconfig */;
+			baseConfigurationReference = 16D3E56DB2E3798215EAD5EA /* Pods-상추 - 상권추천서비스.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = X83LNW6267;
+				DEVELOPMENT_TEAM = 438C43K8SQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
@@ -829,7 +840,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = X83LNW6267;
+				DEVELOPMENT_TEAM = 438C43K8SQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";

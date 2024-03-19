@@ -7,14 +7,45 @@
 import SwiftUI
 import NMapsMap
 
-// 서울자치구 관련 GeoJSON 데이터
-
-
 struct MapView: UIViewRepresentable {
     @Binding var showAlert: Bool
     @Binding var isSymbolTapped: Bool // 심볼이 탭 됐는지 여부
     @Binding var tappedLocation: NMGLatLng // 지도 상의 탭한 좌표
     @Binding var tappedSymbolCaption: String // 지도 상의 탭한 심볼의 이름
+    
+    // GeoJson 파일을 로드해서 Polygon 그리기
+    /*
+             polygons는 여러 개의 polygon들의 배열이고
+             polygon은 다시 여러 개의 NMGLatLng들의 배열이고
+             NMGLatLng는 (위도 : Double, 경도 : Double) 형태의 객체임
+     
+            polygonOverlay는 매개변수로 [NMGLatLng]를 받음
+     */
+    func loadAndDrawPolygons(mapView: NMFMapView) {
+        // geoJSON 데이터 가져오기 from 파일
+        guard let geoJSON = GeoJSONLoader.loadGeoJSONFile(named: "SeoulBoroughOutline") else { return }
+        
+        // GeoJSON 내의 각 Feature(지역)에 대해 폴리곤을 그리는 로직 구현
+        geoJSON.features.forEach { feature in
+            // 각 자치구 이름 뜨면 성공한 것
+            print(feature.properties.SIG_KOR_NM)
+            
+            // 모든 폴리곤 좌표를 NMGLatLng 객체로 변환
+            for feature in geoJSON.features {
+                for polygon in feature.geometry.coordinates {
+                    let coords = polygon.map { NMGLatLng(lat: $0[1], lng: $0[0]) }
+                    
+                    if let polygonOverlay = NMFPolygonOverlay(coords) {
+                        polygonOverlay.fillColor = UIColor.sangchu.withAlphaComponent(0.008)
+                        polygonOverlay.outlineColor = UIColor.sangchu // 폴리곤 외곽선 색상 설정
+                        polygonOverlay.outlineWidth = 5 // 폴리곤 외곽선 두께 설정
+                        polygonOverlay.mapView = mapView // 지도에 폴리곤 오버레이 추가
+                    }
+                }
+            }
+        }
+    }
+
     
     let locationService = LocationService()
     
@@ -95,8 +126,11 @@ struct MapView: UIViewRepresentable {
         naverMapView.showScaleBar = false // 축척 바
         naverMapView.showLocationButton = true // 현재 위치 버튼
         
+        loadAndDrawPolygons(mapView: mapView)
+        
         return naverMapView
     }
+    
     func updateUIView(_ uiView: NMFNaverMapView, context: Context) {
     }
 }
