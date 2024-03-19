@@ -33,7 +33,7 @@ struct CreateBookMarkView: View {
             TextField("상권코드", text: $item.cdCode)
             TextField("상권명", text: $item.cdTitle)
             TextField("상권정보", text: $item.cdInfo)
-            Toggle("중요한가요?", isOn: $item.isImportant)
+//            Toggle("중요한가요?", isOn: $item.isImportant)
             
             Section{
                 Picker("",selection: $selectedHashtag){

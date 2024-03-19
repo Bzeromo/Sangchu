@@ -13,16 +13,13 @@ final class BookMarkItem {
     
     // 상권코드 하나당 고유한 북마크
     @Attribute(.unique)
-    var cdCode : String // 상권코드
-    var cdTitle : String // 상권명
+    var cdCode : String
     
-    var userMemo : String // 사용자 메모
-    var timestamp : Date // 수정된 날짜
-    var cdInfo : String // 상권 정보 인구수같은 텍스트 정보
-    
-    @Attribute(.externalStorage) // 이진 코드로 저장해 외부에 데이터를 저장
-    var image : Data? // 카테고리처럼 선택사항으로
-//    var isImportant : Bool
+    var userMemo : String
+    var timestamp : Date
+    var cdTitle : String
+    var cdInfo : String
+    var isImportant : Bool
     
     // inverse는 데이터 무결성을 보장함
     // cascade를 하면 북마크를 삭제하면 카테고리도 삭제된다
@@ -35,7 +32,7 @@ final class BookMarkItem {
         self.timestamp = timestamp
         self.cdTitle = cdTitle
         self.cdInfo = cdInfo
-//        self.isImportant = isImportant
+        self.isImportant = isImportant
     }
     
     
