@@ -23,15 +23,15 @@ struct MapView: UIViewRepresentable {
      */
     func loadAndDrawPolygons(mapView: NMFMapView) {
         // geoJSON 데이터 가져오기 from 파일
-        guard let geoJSON = GeoJSONLoader.loadGeoJSONFile(named: "SeoulBoroughOutline") else { return }
+        guard let SeoulBoroughOutlinesgeoJSON = GeoJSONLoader.loadGeoJSONFile(named: "SeoulBoroughOutline") else { return }
         
         // GeoJSON 내의 각 Feature(지역)에 대해 폴리곤을 그리는 로직 구현
-        geoJSON.features.forEach { feature in
+        SeoulBoroughOutlinesgeoJSON.features.forEach { feature in
             // 각 자치구 이름 뜨면 성공한 것
-            print(feature.properties.SIG_KOR_NM)
+//            print(feature.properties.SIG_KOR_NM)
             
             // 모든 폴리곤 좌표를 NMGLatLng 객체로 변환
-            for feature in geoJSON.features {
+            for feature in SeoulBoroughOutlinesgeoJSON.features {
                 for polygon in feature.geometry.coordinates {
                     let coords = polygon.map { NMGLatLng(lat: $0[1], lng: $0[0]) }
                     
@@ -39,11 +39,20 @@ struct MapView: UIViewRepresentable {
                         polygonOverlay.fillColor = UIColor.sangchu.withAlphaComponent(0.008)
                         polygonOverlay.outlineColor = UIColor.sangchu // 폴리곤 외곽선 색상 설정
                         polygonOverlay.outlineWidth = 5 // 폴리곤 외곽선 두께 설정
+                        polygonOverlay.minZoom = 7
+                        polygonOverlay.maxZoom = 11 // 이 때 부터는 상권이 보이게 할 예정! // 상권의 minZoom을 같은 값으로 설정할 것!
                         polygonOverlay.mapView = mapView // 지도에 폴리곤 오버레이 추가
                     }
                 }
             }
         }
+        
+        
+        
+        
+        
+        
+        
     }
 
     
