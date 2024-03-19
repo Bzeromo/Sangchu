@@ -33,7 +33,17 @@ struct CustomCameraView : View
                 Spacer()
                 Button(action: {
                     cameraService.capturePhoto()
-                }, label: {Image(systemName: "circle").font(.system(size: 72)).foregroundColor(.white)})
+                }) {
+                    Image(uiImage: UIImage(named: "whitee.png")!)
+                        .resizable()
+                        .padding(.bottom) // 필요에 따라 조정
+                        .frame(width: 70, height: 90) // 이미지 크기에 따라 조정
+                }
+                .overlay(
+                    Circle() // 원형 테두리
+                        .stroke(Color.white, lineWidth: 4) // 하얀색, 테두리 너비 조정
+                )
+                .clipShape(Circle()) // 테두리를 원형으로 자르기
             }
         }
     }

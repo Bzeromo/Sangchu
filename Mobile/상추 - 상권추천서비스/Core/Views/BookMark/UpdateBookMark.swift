@@ -16,7 +16,7 @@ struct UpdateBookMarkView: View {
     @Query private var hashtags : [Hashtag]
     @State var selectedHashtag : Hashtag?
     
-    @State private var capturedImage : UIImage? = nil
+    @State var capturedImage : UIImage? = nil
     @State private var isCustomCameraViewPresented = false
     @State private var isImageViewerPresented = false
     @State var selectedPhoto : PhotosPickerItem?
@@ -128,6 +128,12 @@ struct UpdateBookMarkView: View {
         .task(id:selectedPhoto){
             if let data = try? await selectedPhoto?.loadTransferable(type: Data.self){
                 item.image = data
+            }
+        }
+        .task(id: capturedImage) {
+            if let capturedImage = capturedImage,
+               let imageData = capturedImage.jpegData(compressionQuality: 1.0) {
+                item.image = imageData
             }
         }
         .onAppear(perform: {
