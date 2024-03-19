@@ -14,5 +14,5 @@
 ***
 # 🥬 팀 소개
 ***
-
+.
 ![](https://capsule-render.vercel.app/api?type=slice&height=250&color=gradient&text=금쪽유치원%20사과반&fontAlign=19&textBg=false&fontSize=30&reversal=false&fontAlignY=50&animation=twinkling&fontColor=FFFFFF&section=footer&desc=박영규%20김희주%20안성재%20윤정인%20안상준%20양희태%20&descAlignY=85)
