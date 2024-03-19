@@ -18,9 +18,13 @@ public class CommEstimatedSalesEntity {
     @Column(name = "id")
     private Integer id;
 
-    //년분기 코드
-    @Column(name = "year_quarter_code")
-    private String yearQuarterCode;
+    //년도
+    @Column(name = "year_code")
+    private Integer yearCode;
+
+    //분기
+    @Column(name = "quarter_code")
+    private Integer quarterCode;
 
     //상권 코드
     @Column(name = "commercial_district_code")
@@ -156,94 +160,94 @@ public class CommEstimatedSalesEntity {
 
     //주중 매출 건수
     @Column(name = "week_days_sales_count")
-    private Double weekDaysSalesCount;
+    private Long weekDaysSalesCount;
 
     //주말 매출 건수
     @Column(name = "weekend_sales_count")
-    private Double weekendSalesCount;
+    private Long weekendSalesCount;
 
     //월요일 매출 건수
     @Column(name = "mon_sales_count")
-    private Double monSalesCount;
+    private Long monSalesCount;
 
     //화요일 매출 건수
     @Column(name = "tue_sales_count")
-    private Double tueSalesCount;
+    private Long tueSalesCount;
 
     //수요일 매출 건수
     @Column(name = "wed_sales_count")
-    private Double wedSalesCount;
+    private Long wedSalesCount;
 
     //목요일 매출 건수
     @Column(name = "thu_sales_count")
-    private Double thuSalesCount;
+    private Long thuSalesCount;
 
     //금요일 매출 건수
     @Column(name = "fri_sales_count")
-    private Double friSalesCount;
+    private Long friSalesCount;
 
     //토요일 매출 건수
     @Column(name = "sat_sales_count")
-    private Double satSalesCount;
+    private Long satSalesCount;
 
     //일요일 매출 건수
     @Column(name = "sun_sales_count")
-    private Double sunSalesCount;
+    private Long sunSalesCount;
 
     //00~06시 매출 건수
     @Column(name = "time_00_to_06_sales_count")
-    private Double time00To06SalesCount;
+    private Long time00To06SalesCount;
 
     //06~11시 매출 건수
     @Column(name = "time_06_to_11_sales_count")
-    private Double time06To11SalesCount;
+    private Long time06To11SalesCount;
 
     //11~14시 매출 건수
     @Column(name = "time_11_to_14_sales_count")
-    private Double time11To14SalesCount;
+    private Long time11To14SalesCount;
 
     //14~17시 매출 건수
     @Column(name = "time_14_to_17_sales_count")
-    private Double time14To17SalesCount;
+    private Long time14To17SalesCount;
 
     //17~21시 매출 건수
     @Column(name = "time_17_to_21_sales_count")
-    private Double time17To21SalesCount;
+    private Long time17To21SalesCount;
 
     //21~24시 매출 건수
     @Column(name = "time_21_to_24_sales_count")
-    private Double time21To24SalesCount;
+    private Long time21To24SalesCount;
 
     //남성별 매출 건수
     @Column(name = "man_sales_count")
-    private Double manSalesCount;
+    private Long manSalesCount;
 
     //여성별 매출 건수
     @Column(name = "woman_sales_count")
-    private Double womanSalesCount;
+    private Long womanSalesCount;
 
     //10대별 매출 건수
     @Column(name = "age_10_sales_count")
-    private Double age10SalesCount;
+    private Long age10SalesCount;
 
     //20대별 매출 건수
     @Column(name = "age_20_sales_count")
-    private Double age20SalesCount;
+    private Long age20SalesCount;
 
     //30대별 매출 건수
     @Column(name = "age_30_sales_count")
-    private Double age30SalesCount;
+    private Long age30SalesCount;
 
     //40대별 매출 건수
     @Column(name = "age_40_sales_count")
-    private Double age40SalesCount;
+    private Long age40SalesCount;
 
     //50대별 매출 건수
     @Column(name = "age_50_sales_count")
-    private Double age50SalesCount;
+    private Long age50SalesCount;
 
     //60대 이상 매출 건수
     @Column(name = "age_over_60_sales_count")
-    private Double ageOver60SalesCount;
+    private Long ageOver60SalesCount;
 
 }

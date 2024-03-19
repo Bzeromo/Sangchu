@@ -17,9 +17,13 @@ public class CommStoreEntity {
     @Column(name = "id")
     private Integer id;
 
-    //년분기 코드
-    @Column(name = "year_quarter_code")
-    private String yearQuarterCode;
+    //년도
+    @Column(name = "year_code")
+    private Integer yearCode;
+
+    //분기
+    @Column(name = "quarter_code")
+    private Integer quarterCode;
 
     //상권 코드
     @Column(name = "commercial_district_code")
