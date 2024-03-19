@@ -6,6 +6,10 @@
 //
 import SwiftUI
 import NMapsMap
+
+// 서울자치구 관련 GeoJSON 데이터
+
+
 struct MapView: UIViewRepresentable {
     @Binding var showAlert: Bool
     @Binding var isSymbolTapped: Bool // 심볼이 탭 됐는지 여부
