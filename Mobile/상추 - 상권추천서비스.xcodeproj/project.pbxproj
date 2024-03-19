@@ -32,6 +32,7 @@
 		65A66B372BA7D3B500E4E3D0 /* SwiftUIImageViewer in Frameworks */ = {isa = PBXBuildFile; productRef = 65A66B362BA7D3B500E4E3D0 /* SwiftUIImageViewer */; };
 		65A66B392BA7F09C00E4E3D0 /* BookMarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B382BA7F09C00E4E3D0 /* BookMarkView.swift */; };
 		6632D7539E1FF4408AF646A6 /* Pods____________________________________________________UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BD65E5ACA28267E89DBC1EE /* Pods____________________________________________________UITests.framework */; };
+		DA2162192BA9EC2E009750B6 /* CommercialDistrictOutline.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */; };
 		DA7C64A02BA1FF3000BE74DD /* BDMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */; };
 		DA7C64A22BA2062800BE74DD /* NMapsGeometry.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7C64A12BA2062800BE74DD /* NMapsGeometry.xcframework */; };
 		DA7C64A42BA2062800BE74DD /* NMapsMap.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7C64A32BA2062800BE74DD /* NMapsMap.xcframework */; };
@@ -100,6 +101,7 @@
 		975FFB7E24D0FFE362CAAE1C /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig"; sourceTree = "<group>"; };
 		D4269BB65CF2822346E88894 /* Pods-상추 - 상권추천서비스.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스.release.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스/Pods-상추 - 상권추천서비스.release.xcconfig"; sourceTree = "<group>"; };
 		D8D6442C38B371CF752F64F2 /* Pods__________________________.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods__________________________.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CommercialDistrictOutline.geojson; sourceTree = "<group>"; };
 		DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDMapView.swift; sourceTree = "<group>"; };
 		DA7C64A12BA2062800BE74DD /* NMapsGeometry.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NMapsGeometry.xcframework; path = Pods/NMapsGeometry/framework/NMapsGeometry.xcframework; sourceTree = "<group>"; };
 		DA7C64A32BA2062800BE74DD /* NMapsMap.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NMapsMap.xcframework; path = Pods/NMapsMap/framework/NMapsMap.xcframework; sourceTree = "<group>"; };
@@ -214,6 +216,7 @@
 				DA9C593A2B9FFFD5007C4C8D /* Fonts */,
 				6577BB3A2B9ECBC30071A3EA /* RecommendBoroughCard.swift */,
 				6577BB3B2B9ECBC30071A3EA /* RoundedRectangleButtonStyle.swift */,
+				DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */,
 				DAD0922A2BA94C4C00A6DF92 /* SeoulBoroughOutline.geojson */,
 				6577BB382B9ECBA40071A3EA /* Color.swift */,
 			);
@@ -494,6 +497,7 @@
 				DAD0922B2BA94C4C00A6DF92 /* SeoulBoroughOutline.geojson in Resources */,
 				6577BAF32B9EB65C0071A3EA /* Assets.xcassets in Resources */,
 				DA9C593C2BA00037007C4C8D /* SingleDay-Regular.ttf in Resources */,
+				DA2162192BA9EC2E009750B6 /* CommercialDistrictOutline.geojson in Resources */,
 				65A66B322BA7B70200E4E3D0 /* HashTagDefaults in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

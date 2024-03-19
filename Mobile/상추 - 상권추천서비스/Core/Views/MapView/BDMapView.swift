@@ -21,9 +21,9 @@ struct MapView: UIViewRepresentable {
      
             polygonOverlay는 매개변수로 [NMGLatLng]를 받음
      */
-    func loadAndDrawPolygons(mapView: NMFMapView) {
-        // geoJSON 데이터 가져오기 from 파일
-        guard let geoJSON = GeoJSONLoader.loadGeoJSONFile(named: "SeoulBoroughOutline") else { return }
+    func loadAndDrawSBPolygons(mapView: NMFMapView) {
+        // SeoulBoroughOutline라는 이름을 가진 geojson 형태의 데이터 가져오기 by Bundle
+        guard let geoJSON = SeoulBoroughOutlineGeoJSONLoader.loadGeoJSONFile(named: "SeoulBoroughOutline") else { return }
         
         // GeoJSON 내의 각 Feature(지역)에 대해 폴리곤을 그리는 로직 구현
         geoJSON.features.forEach { feature in
@@ -38,12 +38,68 @@ struct MapView: UIViewRepresentable {
                     if let polygonOverlay = NMFPolygonOverlay(coords) {
                         polygonOverlay.fillColor = UIColor.sangchu.withAlphaComponent(0.008)
                         polygonOverlay.outlineColor = UIColor.sangchu // 폴리곤 외곽선 색상 설정
-                        polygonOverlay.outlineWidth = 5 // 폴리곤 외곽선 두께 설정
+                        polygonOverlay.outlineWidth = 3 // 폴리곤 외곽선 두께 설정
+                        polygonOverlay.minZoom = 7
+                        polygonOverlay.maxZoom = 11 // 이 때 부터는 상권이 보이게 할 예정! // 상권의 minZoom을 같은 값으로 설정할 것!
                         polygonOverlay.mapView = mapView // 지도에 폴리곤 오버레이 추가
                     }
                 }
             }
         }
+    }
+    
+    // GeoJson 파일을 로드해서 Polygon 그리기
+    /*
+             polygons는 여러 개의 polygon들의 배열이고
+             polygon은 다시 여러 개의 NMGLatLng들의 배열이고
+             NMGLatLng는 (위도 : Double, 경도 : Double) 형태의 객체임
+     
+            polygonOverlay는 매개변수로 [NMGLatLng]를 받음
+     */
+    func loadAndDrawCDPolygons(mapView: NMFMapView) {
+        // SeoulBoroughOutline라는 이름을 가진 geojson 형태의 데이터 가져오기 by Bundle
+        guard let geoJSON = CommercialDistrictOutlineGeoJSONLoader.loadGeoJSONFile(named: "CommercialDistrictOutline") else { return }
+        
+        // GeoJSON 내의 각 Feature(지역)에 대해 폴리곤을 그리는 로직 구현
+        geoJSON.features.forEach { feature in
+            // 상권 이름 출력
+            print(feature.properties.TRDAR_CD_N)
+
+            // Geometry 타입에 따른 처리
+            let type = feature.geometry.type
+            switch type {
+            case "Polygon":
+                if case let .polygon(polygonCoordinates) = feature.geometry.coordinates {
+                    let coords = polygonCoordinates.first!.map { NMGLatLng(lat: $0[1], lng: $0[0]) }
+                    if let polygonOverlay = NMFPolygonOverlay(coords) {
+                        polygonOverlay.fillColor = UIColor.red.withAlphaComponent(0.05)
+                        polygonOverlay.outlineColor = UIColor.red
+                        polygonOverlay.outlineWidth = 3
+                        polygonOverlay.minZoom = 11
+                        polygonOverlay.mapView = mapView
+                    }
+                }
+            case "MultiPolygon":
+                if case let .multiPolygon(multiPolygonCoordinates) = feature.geometry.coordinates {
+                    for polygons in multiPolygonCoordinates {
+                        for polygon in polygons {
+                            let coords = polygon.map { NMGLatLng(lat: $0[1], lng: $0[0]) }
+                            if let polygonOverlay = NMFPolygonOverlay(coords) {
+                                polygonOverlay.fillColor = UIColor.red.withAlphaComponent(0.05)
+                                polygonOverlay.outlineColor = UIColor.red
+                                polygonOverlay.outlineWidth = 3
+                                polygonOverlay.minZoom = 11
+                                polygonOverlay.mapView = mapView
+                            }
+                        }
+                    }
+                }
+            default:
+                // 기타 타입 처리
+                print("Unsupported geometry type: \(type)")
+            }
+        }
+
     }
 
     
@@ -126,7 +182,8 @@ struct MapView: UIViewRepresentable {
         naverMapView.showScaleBar = false // 축척 바
         naverMapView.showLocationButton = true // 현재 위치 버튼
         
-        loadAndDrawPolygons(mapView: mapView)
+        loadAndDrawSBPolygons(mapView: mapView)
+        loadAndDrawCDPolygons(mapView: mapView)
         
         return naverMapView
     }
