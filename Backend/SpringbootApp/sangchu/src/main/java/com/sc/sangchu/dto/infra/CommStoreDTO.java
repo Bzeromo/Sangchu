@@ -1,4 +1,4 @@
-package com.sc.sangchu.dto;
+package com.sc.sangchu.dto.infra;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Builder;

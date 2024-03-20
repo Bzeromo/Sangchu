@@ -1,8 +1,8 @@
 package com.sc.sangchu.postgresql.service;
 
-import com.sc.sangchu.dto.CommAptDTO;
-import com.sc.sangchu.dto.CommFacilitiesDTO;
-import com.sc.sangchu.dto.CommIndicatorDTO;
+import com.sc.sangchu.dto.infra.CommAptDTO;
+import com.sc.sangchu.dto.infra.CommFacilitiesDTO;
+import com.sc.sangchu.dto.infra.CommIndicatorDTO;
 import com.sc.sangchu.postgresql.entity.CommAptEntity;
 import com.sc.sangchu.postgresql.entity.CommFacilitiesEntity;
 import com.sc.sangchu.postgresql.entity.CommIndicatorChangeEntity;

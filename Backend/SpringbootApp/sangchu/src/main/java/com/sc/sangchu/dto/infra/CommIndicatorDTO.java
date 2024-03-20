@@ -1,4 +1,4 @@
-package com.sc.sangchu.dto;
+package com.sc.sangchu.dto.infra;
 
 import lombok.Builder;
 import lombok.Data;

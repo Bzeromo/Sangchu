@@ -1,8 +1,8 @@
 package com.sc.sangchu.controller;
 
-import com.sc.sangchu.dto.CommAptDTO;
-import com.sc.sangchu.dto.CommFacilitiesDTO;
-import com.sc.sangchu.dto.CommIndicatorDTO;
+import com.sc.sangchu.dto.infra.CommAptDTO;
+import com.sc.sangchu.dto.infra.CommFacilitiesDTO;
+import com.sc.sangchu.dto.infra.CommIndicatorDTO;
 import com.sc.sangchu.postgresql.service.CommInfraService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
