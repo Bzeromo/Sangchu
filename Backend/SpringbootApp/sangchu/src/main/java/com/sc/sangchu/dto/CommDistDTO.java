@@ -1,12 +1,11 @@
 package com.sc.sangchu.dto;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class CommDistDTO {
-    private Long commercialDistrictCode;
     private String commercialDistrictName;
     private Double latitude;
     private Double longitude;

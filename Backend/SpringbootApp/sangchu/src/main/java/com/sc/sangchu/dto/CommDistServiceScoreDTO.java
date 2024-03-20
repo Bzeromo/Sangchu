@@ -1,20 +1,29 @@
 package com.sc.sangchu.dto;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class CommDistServiceScoreDTO {
-    private Long id;
-    private Long commercialDistrictCode;
     private String commercialDistrictName;
-    private Double serviceCode;
-    private Double serviceCodeName;
-    private Long serviceBigCategory;
+    private Double latitude;
+    private Double longitude;
+    private Long guCode;
+    private String guName;
+    private Long dongCode;
+    private String dongName;
+    private Long areaSize;
+    private Double commercialDistrictScore;
+    private Double salesScore;
+    private Double residentPopulationScore;
+    private Double floatingPopulationScore;
+    private Double storeDensityScore;
+    private Double rdiScore;
+    private String serviceCode;
+    private String serviceCodeName;
+    private String serviceBigCategory;
     private String serviceBigCategoryName;
-    private Long serviceMcategory;
-    private Long serviceMcategoryName;
-    private String salesScore;
-    private Long storeDensityScore;
+    private String serviceMcategory;
+    private String serviceMcategoryName;
 }

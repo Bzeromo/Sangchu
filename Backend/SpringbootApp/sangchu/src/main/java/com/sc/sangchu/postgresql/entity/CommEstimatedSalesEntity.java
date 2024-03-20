@@ -250,4 +250,7 @@ public class CommEstimatedSalesEntity {
     @Column(name = "age_over_60_sales_count")
     private Long ageOver60SalesCount;
 
+    //해당업종 매출점수
+    @Column(name = "sales_score")
+    private Double salesScore;
 }
