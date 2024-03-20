@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommAptRepository extends JpaRepository<CommAptEntity, Integer> {
-    CommAptEntity findByCommercialDistrictCode (Long commercialDistrictCode);
+    CommAptEntity findByCommercialDistrictCodeAndYearCodeAndQuarterCode (Long commercialDistrictCode, Integer year, Integer quarter);
 }

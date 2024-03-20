@@ -23,6 +23,8 @@ public class CommInfraService {
     private final CommIndicatorChangeRepository commIndicatorChangeRepository;
     private final CommAptRepository commAptRepository;
     private final CommFacilitiesRepository commFacilitiesRepository;
+    private final Integer year = 2023;
+    private final Integer quarter = 3;
 
     @Autowired
     public CommInfraService(CommIndicatorChangeRepository commIndicatorChangeRepository,
@@ -60,7 +62,7 @@ public class CommInfraService {
             String quartileGrades = null;
 
             double value = commIndicatorChangeRepository
-                    .findByCommercialDistrictCode(commCode)
+                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter)
                     .getRDI();
 
             if (value < lowerMedian) {
@@ -84,7 +86,7 @@ public class CommInfraService {
     public CommIndicatorDTO getChangeIndicatorName (Long commCode){
         try {
             String indicator = commIndicatorChangeRepository
-                    .findByCommercialDistrictCode(commCode)
+                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter)
                     .getCommChangeIndicatorName();
 
             return CommIndicatorDTO.builder().indicator(indicator).build();
@@ -98,7 +100,7 @@ public class CommInfraService {
     public CommAptDTO getApt (Long commCode) {
         try {
             CommAptEntity commAptEntity = commAptRepository
-                    .findByCommercialDistrictCode(commCode);
+                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
 
             Long apartmentComplexes = commAptEntity
                     .getApartmentComplexes();
@@ -122,7 +124,7 @@ public class CommInfraService {
     public CommFacilitiesDTO getFacilities (Long commCode) {
         try {
             CommFacilitiesEntity commFacilitiesEntity = commFacilitiesRepository
-                    .findByCommercialDistrictCode(commCode);
+                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
 
             Long facilities = commFacilitiesEntity
                     .getFacilities();

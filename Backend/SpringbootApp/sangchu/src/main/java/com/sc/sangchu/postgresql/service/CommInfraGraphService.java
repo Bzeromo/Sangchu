@@ -21,6 +21,8 @@ public class CommInfraGraphService {
     private final CommStoreRepository commStoreRepository;
     private final CommAptRepository commAptRepository;
     private final ObjectMapper objectMapper;
+    private final Integer year = 2023;
+    private final Integer quarter = 3;
 
     @Autowired
     public CommInfraGraphService(CommStoreRepository commStoreRepository, ObjectMapper objectMapper,
@@ -48,7 +50,7 @@ public class CommInfraGraphService {
     */
 
     public CommStoreDTO getStoreDataAsJson(Long commCode) {
-        List<CommStoreEntity> stores = commStoreRepository.findByCommercialDistrictCode(commCode);
+        List<CommStoreEntity> stores = commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
         ObjectNode chartData = objectMapper.createObjectNode();
         chartData.put("chartType", "bar");
 
@@ -91,7 +93,7 @@ public class CommInfraGraphService {
     */
 
     public CommAptDTO getAptAreaDataAsJson(Long commCode) {
-        CommAptEntity apts = commAptRepository.findByCommercialDistrictCode(commCode);
+        CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
         ObjectNode chartData = objectMapper.createObjectNode();
         chartData.put("chartType", "bar");
 
@@ -142,7 +144,7 @@ public class CommInfraGraphService {
     */
 
     public CommAptDTO getAptPriceDataAsJson(Long commCode) {
-        CommAptEntity apts = commAptRepository.findByCommercialDistrictCode(commCode);
+        CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
         ObjectNode chartData = objectMapper.createObjectNode();
         chartData.put("chartType", "bar");
 

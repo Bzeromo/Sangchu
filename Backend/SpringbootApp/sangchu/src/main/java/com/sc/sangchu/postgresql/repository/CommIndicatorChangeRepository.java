@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface CommIndicatorChangeRepository extends JpaRepository<CommIndicatorChangeEntity, Integer> {
     // 조회
-    CommIndicatorChangeEntity findByCommercialDistrictCode (Long commercialDistrictCode);
+    CommIndicatorChangeEntity findByCommercialDistrictCodeAndYearCodeAndQuarterCode (Long commercialDistrictCode, Integer year, Integer quarter);
 }

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface CommStoreRepository extends JpaRepository<CommStoreEntity, Integer> {
-    List<CommStoreEntity> findByCommercialDistrictCode(Long commercialDistrictCode);
+    List<CommStoreEntity> findByCommercialDistrictCodeAndYearCodeAndQuarterCode(Long commercialDistrictCode, Integer year, Integer quarter);
 }
