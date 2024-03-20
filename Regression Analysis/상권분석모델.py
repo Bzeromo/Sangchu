@@ -6,55 +6,55 @@ import statsmodels.api as sm
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-import sales
-import commercial_change
-import store
-import resident_population
-import foot_traffic
-import area
-import facilities
-import working_population
-import income
-import apartment
+import data_transform.sales as sales
+import data_transform.commercial_change
+import data_transform.store
+import data_transform.resident_population
+import data_transform.foot_traffic
+import data_transform.area
+import data_transform.facilities
+import data_transform.working_population
+import data_transform.income
+import data_transform.apartment as apartment
 
 ##### 데이터 조회 ######
 # 추정매출-상권 데이터 로드
 df_sales = sales.df_sales
 
 # 점포-상권 데이터 로드
-df_store = store.df_store
+df_store = data_transform.store.df_store
 merged_data = pd.merge(df_sales, df_store, on=['year_quarter_code', 'commercial_district_code'], how='left')
 
 # 상권변화지표-상권 데이터 로드
-df_commercial_change = commercial_change.df_commercial_change
+df_commercial_change = data_transform.commercial_change.df_commercial_change
 merged_data = pd.merge(merged_data, df_commercial_change, on=['year_quarter_code', 'commercial_district_code'], how='left')
 
 # 상주인구-상권 데이터 로드
-df_resident_population = resident_population.df_resident_population
+df_resident_population = data_transform.resident_population.df_resident_population
 merged_data = pd.merge(merged_data, df_resident_population, on=['year_quarter_code', 'commercial_district_code'], how='left')
 
 # 길단위인구-상권 데이터 로드
-df_foot_traffic = foot_traffic.df_foot_traffic
+df_foot_traffic = data_transform.foot_traffic.df_foot_traffic
 merged_data = pd.merge(merged_data, df_foot_traffic, on=['year_quarter_code', 'commercial_district_code'], how='left')
 
 # 영역-상권 데이터 로드
-df_area = area.df_area
+df_area = data_transform.area.df_area
 merged_data = pd.merge(merged_data, df_area, on='commercial_district_code', how='left')
 
 # 집객시설-상권 데이터 로드
-df_facilities = facilities.df_facilities
+df_facilities = data_transform.facilities.df_facilities
 merged_data = pd.merge(merged_data, df_facilities, on=['year_quarter_code', 'commercial_district_code'], how='left')
 
 # 직장인구-상권 데이터 로드
-df_working_population = working_population.df_working_population
+df_working_population = data_transform.working_population.df_working_population
 merged_data = pd.merge(merged_data, df_working_population, on=['year_quarter_code', 'commercial_district_code'], how='left')
 
 # 소득-상권 데이터 로드
-df_income = income.df_income
+df_income = data_transform.income.df_income
 merged_data = pd.merge(merged_data, df_income, on=['year_quarter_code', 'commercial_district_code'], how='left')
 
 # 아파트-상권 데이터 로드
-df_apartment = apartment.df_apartment
+df_apartment = data_transform.apartment.df_apartment
 merged_data = pd.merge(merged_data, df_apartment, on=['year_quarter_code', 'commercial_district_code'], how='left')
 
 # 독립 변수 선택 
