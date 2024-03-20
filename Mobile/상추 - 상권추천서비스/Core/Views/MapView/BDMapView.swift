@@ -72,7 +72,7 @@ struct MapView: UIViewRepresentable {
         // GeoJSON 내의 각 Feature(지역)에 대해 폴리곤을 그리는 로직 구현
         geoJSON.features.forEach { feature in
             // 상권 이름 출력
-            print(feature.properties.TRDAR_CD_N)
+//            print(feature.properties.TRDAR_CD_N)
 
             // Geometry 타입에 따른 처리
             let type = feature.geometry.type
