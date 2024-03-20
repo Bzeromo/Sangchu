@@ -14,13 +14,7 @@ public interface CommEstimatedSalesRepository extends JpaRepository<CommEstimate
     //특정 상권 코드의 데이터 조회
     List<CommEstimatedSalesEntity> findByCommercialDistrictCode(Long commercialDistrictCode);
 
-    @Query("SELECT c " +
-            "FROM CommEstimatedSalesEntity c " +
-            "WHERE c.yearCode = %:year% " +
-            "and c.commercialDistrictCode = :commCode " +
-            "and c.majorCategoryName = :majorCategory ")
-    List<CommEstimatedSalesEntity> findByStandardYear(@Param("commCode") Long commCode, @Param("year") int year,
-                                                      @Param("majorCategory") String majorCategory);
+    List<CommEstimatedSalesEntity> findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(int year, Long commCode, String majorCategory);
 
     @Query(
             "SELECT new com.sc.sangchu.dto.sales.CommQuarterlyGraphDTO(c.yearCode, c.quarterCode, sum(c.weekDaysSales), sum(c.weekendSales))\n" +
@@ -34,4 +28,5 @@ public interface CommEstimatedSalesRepository extends JpaRepository<CommEstimate
                                                     @Param("year")int[] year);
 
     CommEstimatedSalesEntity findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceName(int year, int quarter, Long commCode, String serviceName);
+
 }
