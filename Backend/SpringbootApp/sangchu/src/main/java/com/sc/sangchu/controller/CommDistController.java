@@ -18,7 +18,6 @@ import java.util.Optional;
 @CrossOrigin
 @Tag(name = "상권 컨트롤러", description = "상권 관련 데이터 처리 컨트롤러")
 public class CommDistController {
-
     private final CommDistService commDistService;
 
     @Autowired

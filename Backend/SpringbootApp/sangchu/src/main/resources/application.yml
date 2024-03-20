@@ -25,8 +25,8 @@ spring:
         hibernate:
           format_sql: true
 
-#  thymeleaf:
-#    cache: false
+  thymeleaf:
+    cache: false
 
 #  jpa:
 #    hibernate:
@@ -57,5 +57,5 @@ spring:
 #      max-file-size: 10MB
 #      max-request-size: 10MB
 
-server:
-  port: 8084 # 포트 충돌 방지
+#server:
+#  port: 8084 # 포트 충돌 방지
