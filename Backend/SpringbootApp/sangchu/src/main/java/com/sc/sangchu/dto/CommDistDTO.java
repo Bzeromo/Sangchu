@@ -18,6 +18,5 @@ public class CommDistDTO {
     private Double salesScore;
     private Double residentPopulationScore;
     private Double floatingPopulationScore;
-    private Double storeDensityScore;
     private Double rdiScore;
 }

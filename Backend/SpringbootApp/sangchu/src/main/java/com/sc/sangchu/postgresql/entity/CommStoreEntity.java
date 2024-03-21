@@ -64,8 +64,4 @@ public class CommStoreEntity {
     //프랜차이즈 수
     @Column(name = "franchise_store_count")
     private Long franchiseStoreCount;
-
-    //해당 업종 점포밀도 점수
-    @Column(name = "store_density_score")
-    private Double storeDensityScore;
 }
