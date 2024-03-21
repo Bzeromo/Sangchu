@@ -12,4 +12,4 @@ print(df_area)
 output_file_path = 'C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/영역-상권.csv'
 
 # 데이터프레임을 UTF-8 인코딩으로 CSV 파일로 저장
-df_area.to_csv(output_file_path, index=False, encoding='utf-8-sig')
+df_area.to_csv(output_file_path, index=False, encoding='cp949')
