@@ -57,5 +57,5 @@ spring:
 #      max-file-size: 10MB
 #      max-request-size: 10MB
 
-#server:
-#  port: 8084 # 포트 충돌 방지
+server:
+  port: 8084 # jenkins와 8080 포트 충돌 방지
