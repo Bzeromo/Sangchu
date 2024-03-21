@@ -2,6 +2,7 @@ from modules.majorAndMiddleCategoryPreProcessing import \
     categorization_into_major_and_medium_categories_by_service_industry_code_name
 from modules.calc_RDI import calc_RDI
 from modules.commercialDistrictCodePreProcessing import check_do_not_have_commercial_district_code
+from modules.calc_scores import calc_scores
 import pandas as pd
 from pyproj import Transformer
 from sqlalchemy import create_engine, types
@@ -521,110 +522,114 @@ df_dict = check_do_not_have_commercial_district_code([
     working_population_with_commercial_district_df
 ])
 
+df_dict['area_with_commercial_district_df'] = calc_scores(
+    [df_dict['resident_population_with_commercial_district_df'], df_dict['foot_traffic_with_commercial_district_df'],
+     df_dict['commercial_district_change_indicator_with_commercial_district_df']],
+    df_dict['area_with_commercial_district_df'],
+    ['total_resident_population', 'total_foot_traffic', 'rdi'])
+
 for df in [
-        "store_with_commercial_district_df",
-        "sales_commercial_district_df",
-        "income_consumption_with_commercial_district_df",
-        "commercial_district_change_indicator_with_commercial_district_df",
-        "foot_traffic_with_commercial_district_df",
-        "resident_population_with_commercial_district_df",
-        "facilities_with_commercial_district_df",
-        "apartment_with_commercial_district_df",
-        "working_population_with_commercial_district_df"]:
-    df_dict[df].loc[:, 'year_quarter_code']  = df_dict[df][
+    "store_with_commercial_district_df",
+    "sales_commercial_district_df",
+    "income_consumption_with_commercial_district_df",
+    "commercial_district_change_indicator_with_commercial_district_df",
+    "foot_traffic_with_commercial_district_df",
+    "resident_population_with_commercial_district_df",
+    "facilities_with_commercial_district_df",
+    "apartment_with_commercial_district_df",
+    "working_population_with_commercial_district_df"]:
+    df_dict[df].loc[:, 'year_quarter_code'] = df_dict[df][
         'year_quarter_code'].astype(str)
 
     target_idx = df_dict[df].columns.get_loc('year_quarter_code') + 1
 
-    df_dict[df].insert(target_idx,'year_code',df_dict[df]['year_quarter_code'].str[
-                               :4].astype(int))
-    df_dict[df].insert(target_idx+1,'quarter_code',df_dict[df]['year_quarter_code'].str[
+    df_dict[df].insert(target_idx, 'year_code', df_dict[df]['year_quarter_code'].str[
+                                                :4].astype(int))
+    df_dict[df].insert(target_idx + 1, 'quarter_code', df_dict[df]['year_quarter_code'].str[
         -1].astype(int))
 
     df_dict[df] = df_dict[df].drop(columns=['year_quarter_code'])
 # CSV 파일로 저장
-# df_dict['area_with_commercial_district_df'].to_csv('files/check/영역-상권.csv', encoding='CP949', index=False)
-# df_dict['store_with_commercial_district_df'].to_csv('files/check/점포-상권.csv', index=False, encoding="CP949")
-# store_with_seoul_df.to_csv('files/check/점포-서울시.csv', encoding='CP949', index=False)
-# df_dict['sales_commercial_district_df'].to_csv('files/check/추정매출-상권.csv', encoding='CP949', index=False)
-# df_dict['income_consumption_with_commercial_district_df'].to_csv('files/check/소득-상권.csv', encoding='CP949', index=False)
-# df_dict['commercial_district_change_indicator_with_commercial_district_df'].to_csv('files/check/상권변화지표-상권.csv',
-#                                                                                    encoding='CP949',
-#                                                                                    index=False)
-# df_dict['foot_traffic_with_commercial_district_df'].to_csv('files/check/길단위인구-상권.csv', encoding='CP949', index=False)
-# df_dict['resident_population_with_commercial_district_df'].to_csv('files/check/상주인구-상권.csv', encoding='CP949',
-#                                                                   index=False)
-# df_dict['facilities_with_commercial_district_df'].to_csv('files/check/집객시설-상권.csv', encoding='CP949', index=False)
-# df_dict['apartment_with_commercial_district_df'].to_csv('files/check/아파트-상권.csv', encoding='CP949', index=False)
-# df_dict['working_population_with_commercial_district_df'].to_csv('files/check/직장인구-상권.csv', encoding='CP949',
-#                                                                  index=False)
-
-# 설정 파일 불러오기
-with open('config.json', 'r') as f:
-    config = json.load(f)
-
-# PostgreSQL 연결 정보
-db_config = config['postgresql']
-
-engine = create_engine('postgresql://{user}:{password}@{host}:{port}/{database}'.format(**db_config))
-
-df_dict['area_with_commercial_district_df'].to_sql('commercial_district_tb', engine, if_exists='replace', index=False)
-# 기본 키 설정
-with engine.connect() as con:
-    con.execute('ALTER TABLE commercial_district_tb ADD PRIMARY KEY (commercial_district_code);')
-
-df_dict['store_with_commercial_district_df'].to_sql('comm_store_tb', engine, if_exists='replace', index=False)
-# 새로운 ID 컬럼 추가 및 auto-increment 설정
-with engine.connect() as con:
-    con.execute('ALTER TABLE comm_store_tb ADD COLUMN id SERIAL PRIMARY KEY;')
-
-df_dict['sales_commercial_district_df'].to_sql('comm_estimated_sales_tb', engine, if_exists='replace', index=False)
-# 새로운 ID 컬럼 추가 및 auto-increment 설정
-with engine.connect() as con:
-    con.execute('ALTER TABLE comm_estimated_sales_tb ADD COLUMN id SERIAL PRIMARY KEY;')
-
-df_dict['income_consumption_with_commercial_district_df'].to_sql('comm_income_tb', engine, if_exists='replace',
+df_dict['area_with_commercial_district_df'].to_csv('files/check/영역-상권.csv', encoding='CP949', index=False)
+df_dict['store_with_commercial_district_df'].to_csv('files/check/점포-상권.csv', index=False, encoding="CP949")
+store_with_seoul_df.to_csv('files/check/점포-서울시.csv', encoding='CP949', index=False)
+df_dict['sales_commercial_district_df'].to_csv('files/check/추정매출-상권.csv', encoding='CP949', index=False)
+df_dict['income_consumption_with_commercial_district_df'].to_csv('files/check/소득-상권.csv', encoding='CP949', index=False)
+df_dict['commercial_district_change_indicator_with_commercial_district_df'].to_csv('files/check/상권변화지표-상권.csv',
+                                                                                   encoding='CP949',
+                                                                                   index=False)
+df_dict['foot_traffic_with_commercial_district_df'].to_csv('files/check/길단위인구-상권.csv', encoding='CP949', index=False)
+df_dict['resident_population_with_commercial_district_df'].to_csv('files/check/상주인구-상권.csv', encoding='CP949',
+                                                                  index=False)
+df_dict['facilities_with_commercial_district_df'].to_csv('files/check/집객시설-상권.csv', encoding='CP949', index=False)
+df_dict['apartment_with_commercial_district_df'].to_csv('files/check/아파트-상권.csv', encoding='CP949', index=False)
+df_dict['working_population_with_commercial_district_df'].to_csv('files/check/직장인구-상권.csv', encoding='CP949',
                                                                  index=False)
-# 새로운 ID 컬럼 추가 및 auto-increment 설정
-with engine.connect() as con:
-    con.execute('ALTER TABLE comm_income_tb ADD COLUMN id SERIAL PRIMARY KEY;')
 
-df_dict['commercial_district_change_indicator_with_commercial_district_df'].to_sql('comm_indicator_change_tb', engine,
-                                                                                   if_exists='replace', index=False)
-# 새로운 ID 컬럼 추가 및 auto-increment 설정
-with engine.connect() as con:
-    con.execute('ALTER TABLE comm_indicator_change_tb ADD COLUMN id SERIAL PRIMARY KEY;')
-
-df_dict['foot_traffic_with_commercial_district_df'].to_sql('comm_floating_population_tb', engine, if_exists='replace',
-                                                           index=False)
-# 새로운 ID 컬럼 추가 및 auto-increment 설정
-with engine.connect() as con:
-    con.execute('ALTER TABLE comm_floating_population_tb ADD COLUMN id SERIAL PRIMARY KEY;')
-
-df_dict['resident_population_with_commercial_district_df'].to_sql('comm_resident_population_tb', engine,
-                                                                  if_exists='replace', index=False)
-# 새로운 ID 컬럼 추가 및 auto-increment 설정
-with engine.connect() as con:
-    con.execute('ALTER TABLE comm_resident_population_tb ADD COLUMN id SERIAL PRIMARY KEY;')
-
-df_dict['facilities_with_commercial_district_df'].to_sql('comm_facilities_tb', engine, if_exists='replace', index=False)
-# 새로운 ID 컬럼 추가 및 auto-increment 설정
-with engine.connect() as con:
-    con.execute('ALTER TABLE comm_facilities_tb ADD COLUMN id SERIAL PRIMARY KEY;')
-
-df_dict['apartment_with_commercial_district_df'].to_sql('comm_apartment_tb', engine, if_exists='replace', index=False)
-# 새로운 ID 컬럼 추가 및 auto-increment 설정
-with engine.connect() as con:
-    con.execute('ALTER TABLE comm_apartment_tb ADD COLUMN id SERIAL PRIMARY KEY;')
-
-df_dict['working_population_with_commercial_district_df'].to_sql('comm_working_population_tb', engine,
-                                                                 if_exists='replace', index=False)
-# 새로운 ID 컬럼 추가 및 auto-increment 설정
-with engine.connect() as con:
-    con.execute('ALTER TABLE comm_working_population_tb ADD COLUMN id SERIAL PRIMARY KEY;')
+# # 설정 파일 불러오기
+# with open('config.json', 'r') as f:
+#     config = json.load(f)
+#
+# # PostgreSQL 연결 정보
+# db_config = config['postgresql']
+#
+# engine = create_engine('postgresql://{user}:{password}@{host}:{port}/{database}'.format(**db_config))
+#
+# df_dict['area_with_commercial_district_df'].to_sql('commercial_district_tb', engine, if_exists='replace', index=False)
+# # 기본 키 설정
+# with engine.connect() as con:
+#     con.execute('ALTER TABLE commercial_district_tb ADD PRIMARY KEY (commercial_district_code);')
+#
+# df_dict['store_with_commercial_district_df'].to_sql('comm_store_tb', engine, if_exists='replace', index=False)
+# # 새로운 ID 컬럼 추가 및 auto-increment 설정
+# with engine.connect() as con:
+#     con.execute('ALTER TABLE comm_store_tb ADD COLUMN id SERIAL PRIMARY KEY;')
+#
+# df_dict['sales_commercial_district_df'].to_sql('comm_estimated_sales_tb', engine, if_exists='replace', index=False)
+# # 새로운 ID 컬럼 추가 및 auto-increment 설정
+# with engine.connect() as con:
+#     con.execute('ALTER TABLE comm_estimated_sales_tb ADD COLUMN id SERIAL PRIMARY KEY;')
+#
+# df_dict['income_consumption_with_commercial_district_df'].to_sql('comm_income_tb', engine, if_exists='replace',
+#                                                                  index=False)
+# # 새로운 ID 컬럼 추가 및 auto-increment 설정
+# with engine.connect() as con:
+#     con.execute('ALTER TABLE comm_income_tb ADD COLUMN id SERIAL PRIMARY KEY;')
+#
+# df_dict['commercial_district_change_indicator_with_commercial_district_df'].to_sql('comm_indicator_change_tb', engine,
+#                                                                                    if_exists='replace', index=False)
+# # 새로운 ID 컬럼 추가 및 auto-increment 설정
+# with engine.connect() as con:
+#     con.execute('ALTER TABLE comm_indicator_change_tb ADD COLUMN id SERIAL PRIMARY KEY;')
+#
+# df_dict['foot_traffic_with_commercial_district_df'].to_sql('comm_floating_population_tb', engine, if_exists='replace',
+#                                                            index=False)
+# # 새로운 ID 컬럼 추가 및 auto-increment 설정
+# with engine.connect() as con:
+#     con.execute('ALTER TABLE comm_floating_population_tb ADD COLUMN id SERIAL PRIMARY KEY;')
+#
+# df_dict['resident_population_with_commercial_district_df'].to_sql('comm_resident_population_tb', engine,
+#                                                                   if_exists='replace', index=False)
+# # 새로운 ID 컬럼 추가 및 auto-increment 설정
+# with engine.connect() as con:
+#     con.execute('ALTER TABLE comm_resident_population_tb ADD COLUMN id SERIAL PRIMARY KEY;')
+#
+# df_dict['facilities_with_commercial_district_df'].to_sql('comm_facilities_tb', engine, if_exists='replace', index=False)
+# # 새로운 ID 컬럼 추가 및 auto-increment 설정
+# with engine.connect() as con:
+#     con.execute('ALTER TABLE comm_facilities_tb ADD COLUMN id SERIAL PRIMARY KEY;')
+#
+# df_dict['apartment_with_commercial_district_df'].to_sql('comm_apartment_tb', engine, if_exists='replace', index=False)
+# # 새로운 ID 컬럼 추가 및 auto-increment 설정
+# with engine.connect() as con:
+#     con.execute('ALTER TABLE comm_apartment_tb ADD COLUMN id SERIAL PRIMARY KEY;')
+#
+# df_dict['working_population_with_commercial_district_df'].to_sql('comm_working_population_tb', engine,
+#                                                                  if_exists='replace', index=False)
+# # 새로운 ID 컬럼 추가 및 auto-increment 설정
+# with engine.connect() as con:
+#     con.execute('ALTER TABLE comm_working_population_tb ADD COLUMN id SERIAL PRIMARY KEY;')
 
 end = time.time()
 
 print(f"{end - start:.5f} sec")
-
-
