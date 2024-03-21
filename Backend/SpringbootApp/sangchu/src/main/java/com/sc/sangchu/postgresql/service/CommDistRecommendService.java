@@ -4,7 +4,6 @@ import com.sc.sangchu.dto.CommDistDTO;
 import com.sc.sangchu.dto.CommDistServiceScoreDTO;
 import com.sc.sangchu.postgresql.entity.CommDistEntity;
 import com.sc.sangchu.postgresql.entity.CommEstimatedSalesEntity;
-import com.sc.sangchu.postgresql.entity.CommStoreEntity;
 import com.sc.sangchu.postgresql.repository.CommDistRepository;
 
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.sc.sangchu.postgresql.repository.CommEstimatedSalesRepository;
-import com.sc.sangchu.postgresql.repository.CommStoreRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CommDistRecommendService {
     private final CommDistRepository commDistRepository;
-    private final CommStoreRepository commStoreRepository;
     private final CommEstimatedSalesRepository commEstimatedSalesRepository;
     private final Integer year = 2023;
     private final Integer quarter = 3;
@@ -29,10 +26,8 @@ public class CommDistRecommendService {
 
     @Autowired
     public CommDistRecommendService(CommDistRepository commDistRepository,
-                                    CommStoreRepository commStoreRepository,
                                     CommEstimatedSalesRepository commEstimatedSalesRepository) {
         this.commDistRepository = commDistRepository;
-        this.commStoreRepository = commStoreRepository;
         this.commEstimatedSalesRepository = commEstimatedSalesRepository;
     }
 
@@ -54,7 +49,6 @@ public class CommDistRecommendService {
                     .salesScore(commDistEntity.getSalesScore())
                     .residentPopulationScore(commDistEntity.getResidentPopulationScore())
                     .floatingPopulationScore(commDistEntity.getFloatingPopulationScore())
-                    .storeDensityScore(commDistEntity.getStoreDensityScore())
                     .rdiScore(commDistEntity.getRdiScore())
                     .build();
         } catch (Exception e) {
@@ -85,7 +79,6 @@ public class CommDistRecommendService {
                         .salesScore(entity.getSalesScore())
                         .residentPopulationScore(entity.getResidentPopulationScore())
                         .floatingPopulationScore(entity.getFloatingPopulationScore())
-                        .storeDensityScore(entity.getStoreDensityScore())
                         .rdiScore(entity.getRdiScore())
                         .build();
 
@@ -122,7 +115,6 @@ public class CommDistRecommendService {
                         .salesScore(entity.getSalesScore())
                         .residentPopulationScore(entity.getResidentPopulationScore())
                         .floatingPopulationScore(entity.getFloatingPopulationScore())
-                        .storeDensityScore(entity.getStoreDensityScore())
                         .rdiScore(entity.getRdiScore())
                         .build();
 
@@ -163,7 +155,6 @@ public class CommDistRecommendService {
                         .salesScore(entity.getSalesScore())
                         .residentPopulationScore(entity.getResidentPopulationScore())
                         .floatingPopulationScore(entity.getFloatingPopulationScore())
-                        .storeDensityScore(entity.getStoreDensityScore())
                         .rdiScore(entity.getRdiScore())
                         .build();
 
@@ -204,7 +195,6 @@ public class CommDistRecommendService {
                         .salesScore(entity.getSalesScore())
                         .residentPopulationScore(entity.getResidentPopulationScore())
                         .floatingPopulationScore(entity.getFloatingPopulationScore())
-                        .storeDensityScore(entity.getStoreDensityScore())
                         .rdiScore(entity.getRdiScore())
                         .build();
 
@@ -223,8 +213,6 @@ public class CommDistRecommendService {
     public CommDistServiceScoreDTO getServiceCommDist(Long commCode, String serviceCode) {
         try {
             CommDistEntity commDistEntity = commDistRepository.findByCommercialDistrictCode(commCode);
-            CommStoreEntity commStoreEntity =
-                    commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCodeAndServiceCode(commCode, year, quarter, serviceCode);
             CommEstimatedSalesEntity commEstimatedSalesEntity =
                     commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceName(year, quarter, commCode, serviceCode);
 
@@ -241,7 +229,6 @@ public class CommDistRecommendService {
                     .salesScore(commEstimatedSalesEntity.getSalesScore())
                     .residentPopulationScore(commDistEntity.getResidentPopulationScore())
                     .floatingPopulationScore(commDistEntity.getFloatingPopulationScore())
-                    .storeDensityScore(commStoreEntity.getStoreDensityScore())
                     .rdiScore(commDistEntity.getRdiScore())
                     .serviceBigCategory(commEstimatedSalesEntity.getMajorCategoryCode())
                     .serviceCode(commEstimatedSalesEntity.getServiceCode())
@@ -264,10 +251,6 @@ public class CommDistRecommendService {
 
             for(CommDistEntity entity : commDistEntities) {
                 Long commCode = entity.getCommercialDistrictCode();
-
-                CommStoreEntity commStoreEntity =
-                        commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCodeAndServiceCode(
-                                commCode, year, quarter, serviceCode);
                 CommEstimatedSalesEntity commEstimatedSalesEntity =
                         commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceName(
                                 year, quarter, commCode, serviceCode);
@@ -285,7 +268,6 @@ public class CommDistRecommendService {
                         .salesScore(commEstimatedSalesEntity.getSalesScore())
                         .residentPopulationScore(entity.getResidentPopulationScore())
                         .floatingPopulationScore(entity.getFloatingPopulationScore())
-                        .storeDensityScore(commStoreEntity.getStoreDensityScore())
                         .rdiScore(entity.getRdiScore())
                         .serviceBigCategory(commEstimatedSalesEntity.getMajorCategoryCode())
                         .serviceCode(commEstimatedSalesEntity.getServiceCode())

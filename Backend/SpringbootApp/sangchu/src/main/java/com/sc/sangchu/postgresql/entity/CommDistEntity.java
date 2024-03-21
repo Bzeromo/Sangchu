@@ -63,10 +63,6 @@ public class CommDistEntity {
     @Column(name= "floating_population_score")
     private Double floatingPopulationScore;
 
-    // 점포밀도 점수
-    @Column(name= "store_density_score")
-    private Double storeDensityScore;
-
     // 업종다양성 점수
     @Column(name= "rdi_score")
     private Double rdiScore;

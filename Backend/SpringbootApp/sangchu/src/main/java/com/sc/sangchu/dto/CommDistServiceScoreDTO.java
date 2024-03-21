@@ -18,7 +18,6 @@ public class CommDistServiceScoreDTO {
     private Double salesScore;
     private Double residentPopulationScore;
     private Double floatingPopulationScore;
-    private Double storeDensityScore;
     private Double rdiScore;
     private String serviceCode;
     private String serviceCodeName;
