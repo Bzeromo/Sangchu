@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/sales")
 @CrossOrigin
-@Tag(name = "상권 그래프 컨트롤러", description = "상권 그레프 관련 데이터 처리 컨트롤러")
+@Tag(name = "상권 그래프 컨트롤러", description = "상권 그래프 관련 데이터 처리 컨트롤러")
 public class CommSalesGraphController {
 
     private final CommSalesGraphService commSalesGraphService;

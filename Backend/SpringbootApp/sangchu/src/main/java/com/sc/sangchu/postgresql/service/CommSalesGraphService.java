@@ -42,18 +42,19 @@ public class CommSalesGraphService {
 
     public CommQuarterlyGraphJsonDTO getQuarterlyGraphData(Long commCode) {
         //특정 상권 코드의 22~23년도 주중/주말 매출 조회
-        List<CommQuarterlyGraphDTO> list = commEstimatedSalesRepository.findByQuarterlyData(commCode,
+        List<CommQuarterlyGraphDTO> salesList = commEstimatedSalesRepository.findByQuarterlyData(commCode,
                 "외식업", new int[]{localDate.getYear() - 2, localDate.getYear() - 1});
 
         ObjectNode chartData = objectMapper.createObjectNode();
         chartData.put("chartType", "stackbar");
+        chartData.put("year", (localDate.getYear()-1) + "~" + (localDate.getYear()-2));
 
         ObjectNode data = objectMapper.createObjectNode();
         ArrayNode categories = objectMapper.createArrayNode();
         ArrayNode series = objectMapper.createArrayNode();
 
-        for(CommQuarterlyGraphDTO dto : list){
-            String yearQuarter = dto.getYear().toString() + "." + dto.getQuarter().toString();
+        for(CommQuarterlyGraphDTO dto : salesList){
+            String yearQuarter = dto.getYear().toString() + "-" + dto.getQuarter().toString();
             categories.add(yearQuarter);
             ObjectNode seriesData = objectMapper.createObjectNode();
             seriesData.put("YearQuarter", yearQuarter);
@@ -72,49 +73,60 @@ public class CommSalesGraphService {
     }
 
     public CommSalesGraphJsonDTO getDayGraphData(Long commCode){
+
         List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
                 localDate.getYear() - 1, commCode, "외식업");
-
         String[] category = {"월", "화", "수", "목", "금", "토", "일"};
         String type = "day";
-        return setSalesGraphJsonDto(calcDailySalesSum(salesList), category, type);
+        if(!salesList.isEmpty()){
+            return setSalesGraphJsonDto(calcDailySalesSum(salesList), category, type);
+        }
+        return null;
     }
 
     public CommSalesGraphJsonDTO getTimeGraphData(Long commCode){
         List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
                 localDate.getYear() - 1, commCode, "외식업");
-
         String[] category = {"00~06시", "06~11시", "11~14시", "14~17시", "17~21시", "21~24시"};
         String type = "time";
-        return setSalesGraphJsonDto(calcTimeSalesSum(salesList), category, type);
+        if(!salesList.isEmpty()) {
+            return setSalesGraphJsonDto(calcTimeSalesSum(salesList), category, type);
+        }
+        return null;
 
     }
 
     public CommSalesGraphJsonDTO getAgeGraphData(Long commCode){
         List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
                 localDate.getYear() - 1, commCode, "외식업");
+
         String[] category = {"10대", "20대", "30대", "40대", "50대", "60대이상"};
         String type = "age";
-        return setSalesGraphJsonDto(calcAgeSalesSum(salesList), category, type);
+        if(!salesList.isEmpty()) {
+            return setSalesGraphJsonDto(calcAgeSalesSum(salesList), category, type);
+        }
+        return null;
     }
 
     public CommSalesRatioByServiceJsonDTO getSalesRatioByService(Long commCode){
         List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
                 localDate.getYear() - 1, commCode, "외식업");
-        Map<String, Double> dto = setSalesRatioByService(salesList);
 
         ObjectNode chartData = objectMapper.createObjectNode();
         chartData.put("chartType", "donut");
         chartData.put("year", localDate.getYear()-1);
-        chartData.put("commDistrictName", salesList.get(0).getCommercialDistrictName());
+        chartData.put("commDistrictName", salesList.isEmpty()?"":salesList.get(0).getCommercialDistrictName());
 
         ObjectNode data = objectMapper.createObjectNode();
         ArrayNode categories = objectMapper.createArrayNode();
         ArrayNode series = objectMapper.createArrayNode();
 
-        for(Map.Entry<String, Double> entry : dto.entrySet()){
-            categories.add(entry.getKey());
-            series.add(Math.round(entry.getValue()));
+        if(!salesList.isEmpty()){
+            Map<String, Double> dto = setSalesRatioByService(salesList);
+            for(Map.Entry<String, Double> entry : dto.entrySet()){
+                categories.add(entry.getKey());
+                series.add(Math.round(entry.getValue() * 10.0) / 10.0);
+            }
         }
 
         data.set("categories", categories);
@@ -141,14 +153,10 @@ public class CommSalesGraphService {
             weekendSales += entity.getWeekendSales();
         }
 
-        double monthlySalesAvg = monthlySales / (salesList.size());
-        double weekDaySalesAvg = weekdaySales / (salesList.size() * 12);
-        double weekendSalesAvg = weekendSales / (salesList.size() * 12);
-
         return CommSalesDto.builder()
-                .MonthlySales(Math.round(monthlySalesAvg))
-                .WeekDaySales(Math.round(weekDaySalesAvg))
-                .WeekendSales(Math.round(weekendSalesAvg))
+                .MonthlySales(Math.round(monthlySales / (salesList.size() * 3)))
+                .WeekDaySales(Math.round(weekdaySales / (salesList.size() * 12)))
+                .WeekendSales(Math.round(weekendSales / (salesList.size() * 12)))
                 .build();
     }
 
@@ -291,17 +299,19 @@ public class CommSalesGraphService {
         Map<String, Double> salesRatio = new HashMap<>();
 
         Double total = 0D;
-        for(CommEstimatedSalesEntity entity : salesList){
-            salesTotal.put(entity.getServiceName(), 0D);
-            total += entity.getMonthlySales();
-        }
 
         for(CommEstimatedSalesEntity entity : salesList){
-            if(salesTotal.containsKey(entity.getServiceName())){
+            total += entity.getMonthlySales();
+            if(!salesTotal.containsKey(entity.getServiceName())){
+                salesTotal.put(entity.getServiceName(), 0D);
+                Double sum = salesTotal.get(entity.getServiceName()) + entity.getMonthlySales();
+                salesTotal.put(entity.getServiceName(), sum);
+            }else{
                 Double sum = salesTotal.get(entity.getServiceName()) + entity.getMonthlySales();
                 salesTotal.put(entity.getServiceName(), sum);
             }
         }
+
         //비율 구하기
         for(Map.Entry<String, Double> entry : salesTotal.entrySet()){
             double ratio = entry.getValue() / total;
