@@ -7,6 +7,8 @@
 
 import SwiftUI
 import SwiftData
+import Alamofire
+import Charts
 
 struct HomeView: View {
     
@@ -54,12 +56,15 @@ struct HomeView: View {
         }
     
     
+    
+    
     var body: some View {
             ScrollView(.vertical) {
                 scrollObservableView
 //                HeaderView(direct: $viewModel.direct, offset: $viewModel.offset) // offset 값 확인 코드
                 VStack { // 전체 감싸진 VStack
                     VStack{
+                      
                         ZStack{
                             VStack{
                                 let offset = $viewModel.offset //  기본값은 47 원하는 액션은 양수
@@ -120,8 +125,9 @@ struct HomeView: View {
                                 
                             }
                             
+                            
                         }.frame(height: 500)
-                        
+                        testView()
                     }
                     
                     // 상단 사진과 글귀
@@ -579,3 +585,130 @@ final class ViewModel: ObservableObject {
 //            } // Geometry
 //    }// body
 //} // HomeView
+
+
+//struct ResponseData: Codable {
+//    let apartmentComplexes: [ApartmentComplex]?
+//    let aptAvgArea: Double?
+//    let aptAvgPrice: Double?
+//    let areaGraph: [AreaGraph]?
+//    let priceGraph: PriceGraph?
+//}
+//
+//// apartmentComplexes 배열에 해당하는 모델
+//struct ApartmentComplex: Codable {
+//    // 여기에 ApartmentComplex에 해당하는 프로퍼티를 정의합니다.
+//    // 예시: let name: String
+//}
+//
+//// areaGraph 배열에 해당하는 모델
+//struct AreaGraph: Codable {
+//    // 여기에 AreaGraph에 해당하는 프로퍼티를 정의합니다.
+//    // 예시: let area: String
+//}
+//
+//// priceGraph에 해당하는 모델
+//struct PriceGraph: Codable {
+//    let chartType: String
+//    let data: GraphData
+//}
+//
+//// priceGraph 내의 data에 해당하는 모델
+//struct GraphData: Codable {
+//    let categories: [String]
+//    let series: [Series]
+//}
+//
+//// series 배열에 해당하는 모델
+//struct Series: Codable {
+//    let name: String
+//    let data: [Int]
+//}
+struct ResponseData: Codable {
+    var priceGraph: PriceGraph?
+}
+
+struct PriceGraph: Codable {
+    var chartType: String?
+    var data: GraphData?
+}
+
+struct GraphData: Codable {
+    var categories: [String]?
+    var series: [Series]?
+}
+
+struct Series: Codable {
+    var name: String?
+    var data: [Int]?
+}
+
+
+struct testView : View{
+    @State private var responseData: ResponseData? = nil
+
+        var body: some View {
+            
+  if let responseData = responseData,
+                          let categories = responseData.priceGraph?.data?.categories,
+                          let seriesData = responseData.priceGraph?.data?.series?.first?.data {
+      HStack{
+          Text("아파트 가격별 세대수").font(.title).fontWeight(.bold).padding(.leading,15)
+          Spacer()
+      }
+                           Chart {
+                               ForEach(categories.indices, id: \.self) { index in
+                                   if index < seriesData.count { // 카테고리와 시리즈 데이터의 인덱스를 맞춥니다.
+                                       BarMark(
+                                           x: .value("Category", categories[index]),
+                                           y: .value("Count", seriesData[index])
+                                       )
+                                   }
+                               }
+                           } // 차트 제목을 추가합니다.
+                           .frame(height: 300)
+                           .padding()
+                       } else {
+                           Text("데이터를 불러오는 중...")
+                       }
+            
+            
+            Button(action: {
+            }) {
+                Text("보툰")
+            }.onAppear{
+                guard let url = URL(string: "http://192.168.31.199:8084/api/infra/graph/apt/price?commercialDistrictCode=3110981") else { return }
+                URLSession.shared.dataTask(with: url) { (data, response, error) in
+                    if let error = error {
+                        // 요청 실패 시 수행할 작업
+                        print("Error: \(error)")
+                        return
+                    }
+                    
+                    guard let data = data else {
+                        print("No data received")
+                        return
+                    }
+                    
+                    // 요청 성공 시 수행할 작업
+                    print("Response Data: \(data)")
+                    
+                    let decoder = JSONDecoder()
+                    do {
+                        let responseData = try decoder.decode(ResponseData.self, from: data)
+                        // 성공적으로 디코딩된 경우, responseData를 사용하여 필요한 작업을 수행합니다.
+                        print(responseData)
+                        print("넥슬라이스")
+                        print(responseData.priceGraph?.data?.categories)
+                        DispatchQueue.main.async {
+                            // UI 업데이트나 메인 스레드에서 실행해야 하는 작업
+                            self.responseData = responseData
+                        }
+                    } catch {
+                        print(error)
+                    }
+                    
+                }.resume()
+            }
+        }
+}
