@@ -32,111 +32,139 @@ public class CommSalesGraphService {
 
     //특정 상권 코드에 해당하는 월 매출, 주중/주말 매출 조회
     public CommSalesDto getSalesData(Long commCode) {
-        //매출 계산 로직 좀 더 고민해 봐야함.
-        //월 매출, 주중/주말 매출 계산
-        List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
-                localDate.getYear() - 1, commCode, "외식업");
+        try{
+            //매출 계산 로직 좀 더 고민해 봐야함.
+            //월 매출, 주중/주말 매출 계산
+            List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
+                    localDate.getYear() - 1, commCode, "외식업");
 
-        return calcSalesAvg(salesList);
+            return calcSalesAvg(salesList);
+        }catch(Exception e){
+            log.error("getSalesData error", e);
+        }
+        return null;
     }
 
     public CommQuarterlyGraphJsonDTO getQuarterlyGraphData(Long commCode) {
-        //특정 상권 코드의 22~23년도 주중/주말 매출 조회
-        List<CommQuarterlyGraphDTO> salesList = commEstimatedSalesRepository.findByQuarterlyData(commCode,
-                "외식업", new int[]{localDate.getYear() - 2, localDate.getYear() - 1});
+        try{
+            //특정 상권 코드의 22~23년도 주중/주말 매출 조회
+            List<CommQuarterlyGraphDTO> salesList = commEstimatedSalesRepository.findByQuarterlyData(commCode,
+                    "외식업", new int[]{localDate.getYear() - 2, localDate.getYear() - 1});
 
-        ObjectNode chartData = objectMapper.createObjectNode();
-        chartData.put("chartType", "stackbar");
-        chartData.put("year", (localDate.getYear()-1) + "~" + (localDate.getYear()-2));
+            ObjectNode chartData = objectMapper.createObjectNode();
+            chartData.put("chartType", "stackbar");
+            chartData.put("year", (localDate.getYear()-1) + "~" + (localDate.getYear()-2));
 
-        ObjectNode data = objectMapper.createObjectNode();
-        ArrayNode categories = objectMapper.createArrayNode();
-        ArrayNode series = objectMapper.createArrayNode();
+            ObjectNode data = objectMapper.createObjectNode();
+            ArrayNode categories = objectMapper.createArrayNode();
+            ArrayNode series = objectMapper.createArrayNode();
 
-        for(CommQuarterlyGraphDTO dto : salesList){
-            String yearQuarter = dto.getYear().toString() + "-" + dto.getQuarter().toString();
-            categories.add(yearQuarter);
-            ObjectNode seriesData = objectMapper.createObjectNode();
-            seriesData.put("YearQuarter", yearQuarter);
-            seriesData.put("WeekDaySales", String.format("%.0f", dto.getWeekDaySales()));
-            seriesData.put("WeekendSales", String.format("%.0f", dto.getWeekendSales()));
-            series.add(seriesData);
+            for(CommQuarterlyGraphDTO dto : salesList){
+                String yearQuarter = dto.getYear().toString() + "-" + dto.getQuarter().toString();
+                categories.add(yearQuarter);
+                ObjectNode seriesData = objectMapper.createObjectNode();
+                seriesData.put("YearQuarter", yearQuarter);
+                seriesData.put("WeekDaySales", String.format("%.0f", dto.getWeekDaySales()));
+                seriesData.put("WeekendSales", String.format("%.0f", dto.getWeekendSales()));
+                series.add(seriesData);
+            }
+
+            data.set("categories", categories);
+            data.set("series", series);
+            chartData.set("data", data);
+
+            return CommQuarterlyGraphJsonDTO.builder()
+                    .quarterlyGraph(chartData)
+                    .build();
+        }catch (Exception e){
+            log.error("getSalesData error", e);
         }
-
-        data.set("categories", categories);
-        data.set("series", series);
-        chartData.set("data", data);
-
-        return CommQuarterlyGraphJsonDTO.builder()
-                .quarterlyGraph(chartData)
-                .build();
+        return null;
     }
 
     public CommSalesGraphJsonDTO getDayGraphData(Long commCode){
-
-        List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
-                localDate.getYear() - 1, commCode, "외식업");
-        String[] category = {"월", "화", "수", "목", "금", "토", "일"};
-        String type = "day";
-        if(!salesList.isEmpty()){
+        try{
+            List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
+                    localDate.getYear() - 1, commCode, "외식업");
+            String[] category = {"월", "화", "수", "목", "금", "토", "일"};
+            String type = "day";
+            if(salesList.isEmpty()){
+                return null;
+            }
             return setSalesGraphJsonDto(calcDailySalesSum(salesList), category, type);
+        }catch(Exception e){
+            log.error("getDayGraphData error", e);
         }
         return null;
     }
 
     public CommSalesGraphJsonDTO getTimeGraphData(Long commCode){
-        List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
-                localDate.getYear() - 1, commCode, "외식업");
-        String[] category = {"00~06시", "06~11시", "11~14시", "14~17시", "17~21시", "21~24시"};
-        String type = "time";
-        if(!salesList.isEmpty()) {
+        try{
+            List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
+                    localDate.getYear() - 1, commCode, "외식업");
+            String[] category = {"00~06시", "06~11시", "11~14시", "14~17시", "17~21시", "21~24시"};
+            String type = "time";
+            if(salesList.isEmpty()) {
+                return null;
+            }
             return setSalesGraphJsonDto(calcTimeSalesSum(salesList), category, type);
+        }catch (Exception e){
+            log.error("getDayGraphData error", e);
         }
         return null;
-
     }
 
     public CommSalesGraphJsonDTO getAgeGraphData(Long commCode){
-        List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
-                localDate.getYear() - 1, commCode, "외식업");
+        try{
+            List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
+                    localDate.getYear() - 1, commCode, "외식업");
 
-        String[] category = {"10대", "20대", "30대", "40대", "50대", "60대이상"};
-        String type = "age";
-        if(!salesList.isEmpty()) {
+            String[] category = {"10대", "20대", "30대", "40대", "50대", "60대이상"};
+            String type = "age";
+
+            if(salesList.isEmpty()) {
+                return null;
+            }
             return setSalesGraphJsonDto(calcAgeSalesSum(salesList), category, type);
+        }catch (Exception e){
+            log.error("getAgeGraphData error", e);
         }
         return null;
     }
 
     public CommSalesRatioByServiceJsonDTO getSalesRatioByService(Long commCode){
-        List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
-                localDate.getYear() - 1, commCode, "외식업");
+        try{
+            List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
+                    localDate.getYear() - 1, commCode, "외식업");
 
-        ObjectNode chartData = objectMapper.createObjectNode();
-        chartData.put("chartType", "donut");
-        chartData.put("year", localDate.getYear()-1);
-        chartData.put("commDistrictName", salesList.isEmpty()?"":salesList.get(0).getCommercialDistrictName());
+            ObjectNode chartData = objectMapper.createObjectNode();
+            chartData.put("chartType", "donut");
+            chartData.put("year", localDate.getYear()-1);
+            chartData.put("commDistrictName", salesList.isEmpty()?"":salesList.get(0).getCommercialDistrictName());
 
-        ObjectNode data = objectMapper.createObjectNode();
-        ArrayNode categories = objectMapper.createArrayNode();
-        ArrayNode series = objectMapper.createArrayNode();
+            ObjectNode data = objectMapper.createObjectNode();
+            ArrayNode categories = objectMapper.createArrayNode();
+            ArrayNode series = objectMapper.createArrayNode();
 
-        if(!salesList.isEmpty()){
-            Map<String, Double> dto = setSalesRatioByService(salesList);
-            for(Map.Entry<String, Double> entry : dto.entrySet()){
-                categories.add(entry.getKey());
-                series.add(Math.round(entry.getValue() * 10.0) / 10.0);
+            if(!salesList.isEmpty()){
+                Map<String, Double> dto = setSalesRatioByService(salesList);
+                for(Map.Entry<String, Double> entry : dto.entrySet()){
+                    categories.add(entry.getKey());
+                    series.add(Math.round(entry.getValue() * 10.0) / 10.0);
+                }
             }
+
+            data.set("categories", categories);
+            data.set("series", series);
+            chartData.set("data", data);
+
+            return CommSalesRatioByServiceJsonDTO.builder()
+                    .graphJson(chartData)
+                    .build();
+        }catch (Exception e){
+            log.error("getSalesRatioByService error", e);
         }
-
-        data.set("categories", categories);
-        data.set("series", series);
-        chartData.set("data", data);
-
-        return CommSalesRatioByServiceJsonDTO.builder()
-                .graphJson(chartData)
-                .build();
-
+        return null;
     }
 
     public CommSalesDto calcSalesAvg(List<CommEstimatedSalesEntity> salesList){

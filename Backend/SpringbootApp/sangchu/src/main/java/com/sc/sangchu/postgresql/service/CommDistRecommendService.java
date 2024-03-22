@@ -4,7 +4,6 @@ import com.sc.sangchu.dto.CommDistDTO;
 import com.sc.sangchu.dto.CommDistServiceScoreDTO;
 import com.sc.sangchu.postgresql.entity.CommDistEntity;
 import com.sc.sangchu.postgresql.entity.CommEstimatedSalesEntity;
-import com.sc.sangchu.postgresql.entity.CommStoreEntity;
 import com.sc.sangchu.postgresql.repository.CommDistRepository;
 
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.sc.sangchu.postgresql.repository.CommEstimatedSalesRepository;
-import com.sc.sangchu.postgresql.repository.CommStoreRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +26,6 @@ public class CommDistRecommendService {
 
     @Autowired
     public CommDistRecommendService(CommDistRepository commDistRepository,
-                                    CommStoreRepository commStoreRepository,
                                     CommEstimatedSalesRepository commEstimatedSalesRepository) {
         this.commDistRepository = commDistRepository;
         this.commEstimatedSalesRepository = commEstimatedSalesRepository;
@@ -134,11 +131,8 @@ public class CommDistRecommendService {
     // 서울시 전체 상권을 조회 후 총점 기준으로 10개만 정렬
     public List<CommDistDTO> getTopCommDistByCoScore() {
         try {
-            //filter 부분 현재 DB에 null이 있는 경우가 있어서 처리해둠
             List<CommDistEntity> sortedEntities = commDistRepository.findAll()
                     .stream()
-                    .filter(entity -> entity.getCommercialDistrictScore() != null
-                            && entity.getSalesScore() != null)
                     .sorted(Comparator.comparing(CommDistEntity::getCommercialDistrictScore).reversed())
                     .limit(rankLimit)
                     .toList();
@@ -179,8 +173,6 @@ public class CommDistRecommendService {
         try {
             List<CommDistEntity> sortedEntities = commDistRepository.findByGuCode(guCode)
                     .stream()
-                    .filter(entity -> entity.getCommercialDistrictScore() != null
-                            && entity.getSalesScore() != null)
                     .sorted(Comparator.comparing(CommDistEntity::getCommercialDistrictScore).reversed())
                     .limit(rankLimit)
                     .toList();
