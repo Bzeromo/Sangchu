@@ -2,7 +2,7 @@ from modules.majorAndMiddleCategoryPreProcessing import \
     categorization_into_major_and_medium_categories_by_service_industry_code_name
 from modules.calc_RDI import calc_RDI
 from modules.commercialDistrictCodePreProcessing import check_do_not_have_commercial_district_code
-from modules.calc_scores import calc_scores
+from modules.calc_scores import calc_scores, calc_sales_score
 import pandas as pd
 from pyproj import Transformer
 from sqlalchemy import create_engine, types
@@ -522,11 +522,15 @@ df_dict = check_do_not_have_commercial_district_code([
     working_population_with_commercial_district_df
 ])
 
+# 점수지표 추출
 df_dict['area_with_commercial_district_df'] = calc_scores(
     [df_dict['resident_population_with_commercial_district_df'], df_dict['foot_traffic_with_commercial_district_df'],
      df_dict['commercial_district_change_indicator_with_commercial_district_df']],
     df_dict['area_with_commercial_district_df'],
     ['total_resident_population', 'total_foot_traffic', 'rdi'])
+
+# 업종별 매출 점수지표 추출
+df_dict['sales_commercial_district_df'] = calc_sales_score(df_dict['sales_commercial_district_df'],df_dict['store_with_commercial_district_df'])
 
 for df in [
     "store_with_commercial_district_df",
@@ -549,6 +553,7 @@ for df in [
         -1].astype(int))
 
     df_dict[df] = df_dict[df].drop(columns=['year_quarter_code'])
+
 # CSV 파일로 저장
 df_dict['area_with_commercial_district_df'].to_csv('files/check/영역-상권.csv', encoding='CP949', index=False)
 df_dict['store_with_commercial_district_df'].to_csv('files/check/점포-상권.csv', index=False, encoding="CP949")
