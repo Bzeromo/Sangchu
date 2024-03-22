@@ -5,7 +5,7 @@
 FROM openjdk:latest
 
 # 포트 지정
-EXPOSE 8080
+EXPOSE 8084
 
 # JAR 파일을 이미지 내부로 복사
 COPY build/libs/sangchu-springboot-app-0.1.0.jar /sangchu-springboot-app.jar
