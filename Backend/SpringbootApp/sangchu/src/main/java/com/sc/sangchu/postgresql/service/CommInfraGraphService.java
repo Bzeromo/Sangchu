@@ -50,31 +50,36 @@ public class CommInfraGraphService {
     */
 
     public CommStoreDTO getStoreDataAsJson(Long commCode) {
-        List<CommStoreEntity> stores = commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
-        ObjectNode chartData = objectMapper.createObjectNode();
-        chartData.put("chartType", "bar");
+        try{
+            List<CommStoreEntity> stores = commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+            ObjectNode chartData = objectMapper.createObjectNode();
+            chartData.put("chartType", "bar");
 
-        ObjectNode data = objectMapper.createObjectNode();
-        ArrayNode categories = objectMapper.createArrayNode();
-        ArrayNode series = objectMapper.createArrayNode();
+            ObjectNode data = objectMapper.createObjectNode();
+            ArrayNode categories = objectMapper.createArrayNode();
+            ArrayNode series = objectMapper.createArrayNode();
 
-        for (CommStoreEntity store : stores) {
-            categories.add(store.getServiceName());
-            ObjectNode seriesData = objectMapper.createObjectNode();
-            seriesData.put("ServiceCode", store.getServiceCode());
-            seriesData.put("serviceName", store.getServiceName());
-            seriesData.put("storeCount", store.getStoreCount());
-            seriesData.put("franchiseStoreCount", store.getFranchiseStoreCount());
-            series.add(seriesData);
+            for (CommStoreEntity store : stores) {
+                categories.add(store.getServiceName());
+                ObjectNode seriesData = objectMapper.createObjectNode();
+                seriesData.put("ServiceCode", store.getServiceCode());
+                seriesData.put("serviceName", store.getServiceName());
+                seriesData.put("storeCount", store.getStoreCount());
+                seriesData.put("franchiseStoreCount", store.getFranchiseStoreCount());
+                series.add(seriesData);
+            }
+
+            data.set("categories", categories);
+            data.set("series", series);
+            chartData.set("data", data);
+
+            return CommStoreDTO.builder()
+                    .storeGraph(chartData)
+                    .build();
+        }catch (Exception e){
+            log.error("getStoreDataAsJson error", e);
         }
-
-        data.set("categories", categories);
-        data.set("series", series);
-        chartData.set("data", data);
-
-        return CommStoreDTO.builder()
-                .storeGraph(chartData)
-                .build();
+        return null;
     }
 
     /* json 예시
@@ -93,39 +98,44 @@ public class CommInfraGraphService {
     */
 
     public CommAptDTO getAptAreaDataAsJson(Long commCode) {
-        CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
-        ObjectNode chartData = objectMapper.createObjectNode();
-        chartData.put("chartType", "bar");
+        try {
+            CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+            ObjectNode chartData = objectMapper.createObjectNode();
+            chartData.put("chartType", "bar");
 
-        ObjectNode data = objectMapper.createObjectNode();
-        ArrayNode categories = objectMapper.createArrayNode();
-        ArrayNode series = objectMapper.createArrayNode();
+            ObjectNode data = objectMapper.createObjectNode();
+            ArrayNode categories = objectMapper.createArrayNode();
+            ArrayNode series = objectMapper.createArrayNode();
 
 
-        categories.add("20평 미만");
-        categories.add("20평~30평");
-        categories.add("30평~40평");
-        categories.add("40평~50평");
-        categories.add("50평 이상");
+            categories.add("20평 미만");
+            categories.add("20평~30평");
+            categories.add("30평~40평");
+            categories.add("40평~50평");
+            categories.add("50평 이상");
 
-        ObjectNode seriesData = objectMapper.createObjectNode();
-        seriesData.put("name", "세대 수");
+            ObjectNode seriesData = objectMapper.createObjectNode();
+            seriesData.put("name", "세대 수");
 
-        ArrayNode seriesDataNode = seriesData.putArray("data");
-        seriesDataNode.add(apts.getHouseholdUnder20Pyeong());
-        seriesDataNode.add(apts.getHousehold20To30Pyeong());
-        seriesDataNode.add(apts.getHousehold30To40Pyeong());
-        seriesDataNode.add(apts.getHousehold40To50Pyeong());
-        seriesDataNode.add(apts.getHouseholdOver50Pyeong());
-        series.add(seriesData);
+            ArrayNode seriesDataNode = seriesData.putArray("data");
+            seriesDataNode.add(apts.getHouseholdUnder20Pyeong());
+            seriesDataNode.add(apts.getHousehold20To30Pyeong());
+            seriesDataNode.add(apts.getHousehold30To40Pyeong());
+            seriesDataNode.add(apts.getHousehold40To50Pyeong());
+            seriesDataNode.add(apts.getHouseholdOver50Pyeong());
+            series.add(seriesData);
 
-        data.set("categories", categories);
-        data.set("series", series);
-        chartData.set("data", data);
+            data.set("categories", categories);
+            data.set("series", series);
+            chartData.set("data", data);
 
-        return CommAptDTO.builder()
-                .areaGraph(chartData)
-                .build();
+            return CommAptDTO.builder()
+                    .areaGraph(chartData)
+                    .build();
+        }catch(Exception e){
+            log.error("getAptAreaDataAsJson error", e);
+        }
+        return null;
     }
 
     /* json 예시
@@ -144,42 +154,47 @@ public class CommInfraGraphService {
     */
 
     public CommAptDTO getAptPriceDataAsJson(Long commCode) {
-        CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
-        ObjectNode chartData = objectMapper.createObjectNode();
-        chartData.put("chartType", "bar");
+        try{
+            CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+            ObjectNode chartData = objectMapper.createObjectNode();
+            chartData.put("chartType", "bar");
 
-        ObjectNode data = objectMapper.createObjectNode();
-        ArrayNode categories = objectMapper.createArrayNode();
-        ArrayNode series = objectMapper.createArrayNode();
+            ObjectNode data = objectMapper.createObjectNode();
+            ArrayNode categories = objectMapper.createArrayNode();
+            ArrayNode series = objectMapper.createArrayNode();
 
 
-        categories.add("1억 미만");
-        categories.add("1억~2억");
-        categories.add("2억~3억");
-        categories.add("3억~4억");
-        categories.add("4억~5억");
-        categories.add("5억~6억");
-        categories.add("6억 이상");
+            categories.add("1억 미만");
+            categories.add("1억~2억");
+            categories.add("2억~3억");
+            categories.add("3억~4억");
+            categories.add("4억~5억");
+            categories.add("5억~6억");
+            categories.add("6억 이상");
 
-        ObjectNode seriesData = objectMapper.createObjectNode();
-        seriesData.put("name", "세대 수");
+            ObjectNode seriesData = objectMapper.createObjectNode();
+            seriesData.put("name", "세대 수");
 
-        ArrayNode seriesDataNode = seriesData.putArray("data");
-        seriesDataNode.add(apts.getHouseholdLessThan100MillionPrice());
-        seriesDataNode.add(apts.getHousehold100To200MillionPrice());
-        seriesDataNode.add(apts.getHousehold200To300MillionPrice());
-        seriesDataNode.add(apts.getHousehold300To400MillionPrice());
-        seriesDataNode.add(apts.getHousehold400To500MillionPrice());
-        seriesDataNode.add(apts.getHousehold500To600MillionPrice());
-        seriesDataNode.add(apts.getHouseholdOverThan600MillionPrice());
-        series.add(seriesData);
+            ArrayNode seriesDataNode = seriesData.putArray("data");
+            seriesDataNode.add(apts.getHouseholdLessThan100MillionPrice());
+            seriesDataNode.add(apts.getHousehold100To200MillionPrice());
+            seriesDataNode.add(apts.getHousehold200To300MillionPrice());
+            seriesDataNode.add(apts.getHousehold300To400MillionPrice());
+            seriesDataNode.add(apts.getHousehold400To500MillionPrice());
+            seriesDataNode.add(apts.getHousehold500To600MillionPrice());
+            seriesDataNode.add(apts.getHouseholdOverThan600MillionPrice());
+            series.add(seriesData);
 
-        data.set("categories", categories);
-        data.set("series", series);
-        chartData.set("data", data);
+            data.set("categories", categories);
+            data.set("series", series);
+            chartData.set("data", data);
 
-        return CommAptDTO.builder()
-                .priceGraph(chartData)
-                .build();
+            return CommAptDTO.builder()
+                    .priceGraph(chartData)
+                    .build();
+        }catch(Exception e){
+            log.error("getAptPriceDataAsJson error", e);
+        }
+        return null;
     }
 }
