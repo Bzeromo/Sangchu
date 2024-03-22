@@ -2,7 +2,7 @@ from modules.majorAndMiddleCategoryPreProcessing import \
     categorization_into_major_and_medium_categories_by_service_industry_code_name
 from modules.calc_RDI import calc_RDI
 from modules.commercialDistrictCodePreProcessing import check_do_not_have_commercial_district_code
-from modules.calc_scores import calc_scores, calc_sales_score
+from modules.calc_scores import calc_scores, calc_sales_score, calc_total_score
 import pandas as pd
 from pyproj import Transformer
 from sqlalchemy import create_engine, types
@@ -214,6 +214,10 @@ sales_commercial_district_df = sales_commercial_district_df.rename(columns={
     '연령대_50_매출_건수': 'age_50_sales_count',
     '연령대_60_이상_매출_건수': 'age_over_60_sales_count'
 })
+
+# 음식 10종만 제한
+sales_commercial_district_df = sales_commercial_district_df[
+    sales_commercial_district_df['middle_category_code'] == 'C0101']
 
 # ------------
 
@@ -530,7 +534,12 @@ df_dict['area_with_commercial_district_df'] = calc_scores(
     ['total_resident_population', 'total_foot_traffic', 'rdi'])
 
 # 업종별 매출 점수지표 추출
-df_dict['sales_commercial_district_df'] = calc_sales_score(df_dict['sales_commercial_district_df'],df_dict['store_with_commercial_district_df'])
+df_dict['sales_commercial_district_df'], df_dict['area_with_commercial_district_df'] = calc_sales_score(
+    df_dict['sales_commercial_district_df'], df_dict['store_with_commercial_district_df'],
+    df_dict['area_with_commercial_district_df'])
+
+# 총점수 추출
+df_dict['area_with_commercial_district_df'] = calc_total_score(df_dict['area_with_commercial_district_df'])
 
 for df in [
     "store_with_commercial_district_df",
