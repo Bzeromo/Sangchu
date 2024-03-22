@@ -10,6 +10,8 @@ import com.sc.sangchu.postgresql.repository.CommDistRepository;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.sc.sangchu.postgresql.repository.CommEstimatedSalesRepository;
 import com.sc.sangchu.postgresql.repository.CommStoreRepository;
@@ -54,7 +56,6 @@ public class CommDistRecommendService {
                     .salesScore(commDistEntity.getSalesScore())
                     .residentPopulationScore(commDistEntity.getResidentPopulationScore())
                     .floatingPopulationScore(commDistEntity.getFloatingPopulationScore())
-                    .storeDensityScore(commDistEntity.getStoreDensityScore())
                     .rdiScore(commDistEntity.getRdiScore())
                     .build();
         } catch (Exception e) {
@@ -85,7 +86,6 @@ public class CommDistRecommendService {
                         .salesScore(entity.getSalesScore())
                         .residentPopulationScore(entity.getResidentPopulationScore())
                         .floatingPopulationScore(entity.getFloatingPopulationScore())
-                        .storeDensityScore(entity.getStoreDensityScore())
                         .rdiScore(entity.getRdiScore())
                         .build();
 
@@ -122,7 +122,6 @@ public class CommDistRecommendService {
                         .salesScore(entity.getSalesScore())
                         .residentPopulationScore(entity.getResidentPopulationScore())
                         .floatingPopulationScore(entity.getFloatingPopulationScore())
-                        .storeDensityScore(entity.getStoreDensityScore())
                         .rdiScore(entity.getRdiScore())
                         .build();
 
@@ -139,12 +138,16 @@ public class CommDistRecommendService {
     // 서울시 전체 상권을 조회 후 총점 기준으로 10개만 정렬
     public List<CommDistDTO> getTopCommDistByCoScore() {
         try {
+            //filter 부분 현재 DB에 null이 있는 경우가 있어서 처리해둠
             List<CommDistEntity> sortedEntities = commDistRepository.findAll()
                     .stream()
+                    .filter(entity -> entity.getCommercialDistrictScore() != null
+                            && entity.getSalesScore() != null)
                     .sorted(Comparator.comparing(CommDistEntity::getCommercialDistrictScore).reversed())
                     .limit(rankLimit)
                     .toList();
 
+            sortedEntities.forEach(System.out::println);
             List<CommDistDTO> commDistDTOS = new ArrayList<>();
 
             for(CommDistEntity entity : sortedEntities) {
@@ -163,7 +166,6 @@ public class CommDistRecommendService {
                         .salesScore(entity.getSalesScore())
                         .residentPopulationScore(entity.getResidentPopulationScore())
                         .floatingPopulationScore(entity.getFloatingPopulationScore())
-                        .storeDensityScore(entity.getStoreDensityScore())
                         .rdiScore(entity.getRdiScore())
                         .build();
 
@@ -182,6 +184,8 @@ public class CommDistRecommendService {
         try {
             List<CommDistEntity> sortedEntities = commDistRepository.findByGuCode(guCode)
                     .stream()
+                    .filter(entity -> entity.getCommercialDistrictScore() != null
+                            && entity.getSalesScore() != null)
                     .sorted(Comparator.comparing(CommDistEntity::getCommercialDistrictScore).reversed())
                     .limit(rankLimit)
                     .toList();
@@ -204,7 +208,6 @@ public class CommDistRecommendService {
                         .salesScore(entity.getSalesScore())
                         .residentPopulationScore(entity.getResidentPopulationScore())
                         .floatingPopulationScore(entity.getFloatingPopulationScore())
-                        .storeDensityScore(entity.getStoreDensityScore())
                         .rdiScore(entity.getRdiScore())
                         .build();
 
@@ -223,10 +226,11 @@ public class CommDistRecommendService {
     public CommDistServiceScoreDTO getServiceCommDist(Long commCode, String serviceCode) {
         try {
             CommDistEntity commDistEntity = commDistRepository.findByCommercialDistrictCode(commCode);
+
             CommStoreEntity commStoreEntity =
                     commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCodeAndServiceCode(commCode, year, quarter, serviceCode);
             CommEstimatedSalesEntity commEstimatedSalesEntity =
-                    commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceName(year, quarter, commCode, serviceCode);
+                    commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(year, quarter, commCode, serviceCode);
 
             return CommDistServiceScoreDTO.builder()
                     .commercialDistrictName(commDistEntity.getCommercialDistrictName())
@@ -269,7 +273,7 @@ public class CommDistRecommendService {
                         commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCodeAndServiceCode(
                                 commCode, year, quarter, serviceCode);
                 CommEstimatedSalesEntity commEstimatedSalesEntity =
-                        commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceName(
+                        commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(
                                 year, quarter, commCode, serviceCode);
 
                 CommDistServiceScoreDTO dto = CommDistServiceScoreDTO.builder()

@@ -27,6 +27,6 @@ public interface CommEstimatedSalesRepository extends JpaRepository<CommEstimate
     List<CommQuarterlyGraphDTO> findByQuarterlyData(@Param("commCode")Long commCode, @Param("majorCategory") String majorCategory,
                                                     @Param("year")int[] year);
 
-    CommEstimatedSalesEntity findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceName(int year, int quarter, Long commCode, String serviceName);
+    CommEstimatedSalesEntity findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(int year, int quarter, Long commCode, String serviceCode);
 
 }

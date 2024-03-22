@@ -48,24 +48,20 @@ public class CommDistEntity {
     private Long areaSize;
 
     // 상권 점수
-    @Column(name= "commercial_district_score")
+    @Column(name= "commercial_district_total_score")
     private Double commercialDistrictScore;
 
     // 면적당 상권 전체 매출 점수
-    @Column(name= "sales_score")
+    @Column(name= "monthly_sales_mean_score")
     private Double salesScore;
 
     // 상주인구 점수
-    @Column(name= "resident_population_score")
+    @Column(name= "total_resident_population_score")
     private Double residentPopulationScore;
 
     // 유동인구 점수
-    @Column(name= "floating_population_score")
+    @Column(name= "total_foot_traffic_score")
     private Double floatingPopulationScore;
-
-    // 점포밀도 점수
-    @Column(name= "store_density_score")
-    private Double storeDensityScore;
 
     // 업종다양성 점수
     @Column(name= "rdi_score")
