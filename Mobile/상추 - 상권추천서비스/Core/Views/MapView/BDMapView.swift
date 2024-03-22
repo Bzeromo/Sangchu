@@ -6,12 +6,21 @@
 //
 import SwiftUI
 import NMapsMap
+import Foundation
+import Combine
+
+class MapViewModel: ObservableObject {
+    @Published var selectedCDCode : String = ""
+    @Published var selectedCDName : String = ""
+    @Published var showBottomSheet : Bool = false
+}
 
 struct MapView: UIViewRepresentable {
     @Binding var showAlert: Bool
     @Binding var isSymbolTapped: Bool // 심볼이 탭 됐는지 여부
     @Binding var tappedLocation: NMGLatLng // 지도 상의 탭한 좌표
     @Binding var tappedSymbolCaption: String // 지도 상의 탭한 심볼의 이름
+    var viewModel: MapViewModel
     
     // GeoJson 파일을 로드해서 Polygon 그리기
     /*
@@ -28,9 +37,6 @@ struct MapView: UIViewRepresentable {
         
         // GeoJSON 내의 각 Feature(지역)에 대해 폴리곤을 그리는 로직 구현
         SeoulBoroughOutlinesgeoJSON.features.forEach { feature in
-            // 각 자치구 이름 뜨면 성공한 것
-//            print(feature.properties.SIG_KOR_NM)
-            
             // 모든 폴리곤 좌표를 NMGLatLng 객체로 변환
             for feature in SeoulBoroughOutlinesgeoJSON.features {
                 for polygon in feature.geometry.coordinates {
@@ -48,32 +54,14 @@ struct MapView: UIViewRepresentable {
                 }
             }
         }
-        
-        
-        
-        
-        
-        
-        
     }
     
-    // GeoJson 파일을 로드해서 Polygon 그리기
-    /*
-             polygons는 여러 개의 polygon들의 배열이고
-             polygon은 다시 여러 개의 NMGLatLng들의 배열이고
-             NMGLatLng는 (위도 : Double, 경도 : Double) 형태의 객체임
-     
-            polygonOverlay는 매개변수로 [NMGLatLng]를 받음
-     */
     func loadAndDrawCDPolygons(mapView: NMFMapView) {
         // SeoulBoroughOutline라는 이름을 가진 geojson 형태의 데이터 가져오기 by Bundle
         guard let geoJSON = CommercialDistrictOutlineGeoJSONLoader.loadGeoJSONFile(named: "CommercialDistrictOutline") else { return }
         
         // GeoJSON 내의 각 Feature(지역)에 대해 폴리곤을 그리는 로직 구현
         geoJSON.features.forEach { feature in
-            // 상권 이름 출력
-//            print(feature.properties.TRDAR_CD_N)
-
             // Geometry 타입에 따른 처리
             let type = feature.geometry.type
             switch type {
@@ -84,7 +72,20 @@ struct MapView: UIViewRepresentable {
                         polygonOverlay.fillColor = UIColor.red.withAlphaComponent(0.05)
                         polygonOverlay.outlineColor = UIColor.red
                         polygonOverlay.outlineWidth = 3
-                        polygonOverlay.minZoom = 11
+                        polygonOverlay.minZoom = 9
+                        
+                        // 폴리곤 터치 시 해당 상권 정보 시트로 띄우기
+                        polygonOverlay.touchHandler = {
+                            (polygonOverlay : NMFOverlay) -> Bool in
+                            let CDcode = feature.properties.TRDAR_CD
+                            let CDname = feature.properties.TRDAR_CD_N
+                            DispatchQueue.main.async {
+                                self.viewModel.selectedCDCode = CDcode
+                                self.viewModel.selectedCDName = CDname
+                                self.viewModel.showBottomSheet = true
+                            }
+                            return true
+                        }
                         polygonOverlay.mapView = mapView
                     }
                 }
@@ -98,6 +99,19 @@ struct MapView: UIViewRepresentable {
                                 polygonOverlay.outlineColor = UIColor.red
                                 polygonOverlay.outlineWidth = 3
                                 polygonOverlay.minZoom = 11
+                                
+                                // 폴리곤 터치 시 해당 상권 정보 시트로 띄우기
+                                polygonOverlay.touchHandler = {
+                                    (polygonOverlay : NMFOverlay) -> Bool in
+                                    let CDcode = feature.properties.TRDAR_CD
+                                    let CDname = feature.properties.TRDAR_CD_N
+                                    DispatchQueue.main.async {
+                                        self.viewModel.selectedCDCode = CDcode
+                                        self.viewModel.selectedCDName = CDname
+                                        self.viewModel.showBottomSheet = true
+                                    }
+                                    return true
+                                }
                                 polygonOverlay.mapView = mapView
                             }
                         }
@@ -109,7 +123,7 @@ struct MapView: UIViewRepresentable {
             }
         }
 
-    }
+    } // end of loadAndDrawCDPolygons
 
     
     let locationService = LocationService()
@@ -147,7 +161,6 @@ struct MapView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-    
     
     func makeUIView(context: Context) -> NMFNaverMapView {
         
@@ -200,34 +213,62 @@ struct MapView: UIViewRepresentable {
     func updateUIView(_ uiView: NMFNaverMapView, context: Context) {
     }
 }
+
 struct BDMapView: View {
     @State private var showAlert = false
     @State private var isSymbolTapped = false
     @State private var tappedLocation = NMGLatLng(lat: 0.0, lng: 0.0)
     @State private var tappedSymbolCaption = ""
+    @StateObject private var viewModel = MapViewModel()
     
     var body: some View {
         NavigationView {
-            VStack {
-                MapView(showAlert: $showAlert, isSymbolTapped: $isSymbolTapped, tappedLocation: $tappedLocation, tappedSymbolCaption: $tappedSymbolCaption).edgesIgnoringSafeArea(.all)
-                    .alert(isPresented: $showAlert) {
-                        if isSymbolTapped {
-                            // 심볼 클릭 시
-                            return Alert(
-                                title: Text("심볼 정보"),
-                                message: Text("\(tappedSymbolCaption)"),
-                                dismissButton: .default(Text("확인"))
-                            )
-                        } else {
-                            // 지도의 특정 지점 클릭 시
-                            return Alert(
-                                title: Text("위치 정보"),
-                                message: Text("위도: \(tappedLocation.lat), 경도: \(tappedLocation.lng)"),
-                                dismissButton: .default(Text("확인"))
-                            )
+            ZStack {
+                VStack {
+                    MapView(showAlert: $showAlert, isSymbolTapped: $isSymbolTapped, tappedLocation: $tappedLocation, tappedSymbolCaption: $tappedSymbolCaption, viewModel: viewModel).edgesIgnoringSafeArea(.all)
+                        .alert(isPresented: $showAlert) {
+                            if isSymbolTapped {
+                                // 심볼 클릭 시
+                                return Alert(
+                                    title: Text("심볼 정보"),
+                                    message: Text("\(tappedSymbolCaption)"),
+                                    dismissButton: .default(Text("확인"))
+                                )
+                            } else {
+                                // 지도의 특정 지점 클릭 시
+                                return Alert(
+                                    title: Text("위치 정보"),
+                                    message: Text("위도: \(tappedLocation.lat), 경도: \(tappedLocation.lng)"),
+                                    dismissButton: .default(Text("확인"))
+                                )
+                            }
                         }
+                        .sheet(isPresented: $viewModel.showBottomSheet) {
+                                VStack(alignment: .center) {
+                                    if (viewModel.selectedCDCode == "") {
+                                        Text("선택하신 상권이 없습니다. 원하는 상권을 탭해보세요!")
+                                            .font(.headline)
+                                            .padding()
+                                    }
+                                    else {
+                                        CDInfoView(CDcode: viewModel.selectedCDCode, CDname: viewModel.selectedCDName)
+                                    }
+//                                    Button("닫기") {
+//                                        viewModel.showBottomSheet = false
+//                                    }
+//                                    .padding()
+                                }
+                                .presentationDetents([.fraction(0.6), .fraction(0.9)])
+                                .edgesIgnoringSafeArea(.all)
+                        }
+                }
+                VStack {
+                    Spacer()
+                    Button("상권 정보 보기") {
+                        viewModel.showBottomSheet = true
                     }
-            }
-        }
-    }
-}
+                }
+            } // end of ZStack
+        } // end of NavigationView
+    } // end of bodyView
+} // end of BDMapView

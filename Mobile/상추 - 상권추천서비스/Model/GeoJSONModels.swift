@@ -90,17 +90,17 @@ struct CDFeature : Codable {
 
 // Feature(상권)의 속성들을 나타내는 구조체
 struct CDProperties : Codable {
-    let TRDAR_SE_C : String //
-    let TRDAR_SE_1 : String //
-    let TRDAR_CD : String //
-    let TRDAR_CD_N : String //
-    let XCNTS_VALU : Double //
-    let YDNTS_VALU : Double //
+    let TRDAR_SE_C : String // 골목상권의 코드 'A'로 고정
+    let TRDAR_SE_1 : String // 골목상권
+    let TRDAR_CD : String // 상권 코드
+    let TRDAR_CD_N : String // 상권 코드명
+    let XCNTS_VALU : Double // 엑스좌표 값
+    let YDNTS_VALU : Double // 와이좌표 값
     let SIGNGU_CD : String // 자치구 코드
     let SIGNGU_CD_ : String // 자치구 이름
     let ADSTRD_CD : String // 행정동 코드
     let ADSTRD_CD_ : String // 행정동 이름
-    let RELM_AR : Double //
+    let RELM_AR : Double // 영역 면적
 }
 
 // 상권 경계선 관련 좌표들
