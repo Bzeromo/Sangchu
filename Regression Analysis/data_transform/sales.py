@@ -13,7 +13,6 @@ df_sales_2023 = pd.merge(df_sales_2023, df_sales_2022, on=['quarter_code', 'comm
 df_sales_2022 = pd.merge(df_sales_2022, df_sales_2021, on=['quarter_code', 'commercial_district_code', 'commercial_district_name'], how='left', suffixes=('_now', '_previous'))
 
 df_sales = pd.concat([df_sales_2022, df_sales_2023])
-df_sales['sales_diff'] = df_sales['monthly_sales_now'] - df_sales['monthly_sales_previous']
 # # 매출변화가 0 이상인 경우는 1로, 그렇지 않은 경우는 0으로 설정
 # df_sales['매출변화'] = np.where(df_sales['매출변화'] >= 0, 1, 0)
 
