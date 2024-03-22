@@ -29,7 +29,6 @@
 		65A66B322BA7B70200E4E3D0 /* HashTagDefaults in Resources */ = {isa = PBXBuildFile; fileRef = 65A66B312BA7B70200E4E3D0 /* HashTagDefaults */; };
 		65A66B342BA7B79D00E4E3D0 /* HashTagJSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B332BA7B79D00E4E3D0 /* HashTagJSONDecoder.swift */; };
 		65A66B372BA7D3B500E4E3D0 /* SwiftUIImageViewer in Frameworks */ = {isa = PBXBuildFile; productRef = 65A66B362BA7D3B500E4E3D0 /* SwiftUIImageViewer */; };
-		65A66B392BA7F09C00E4E3D0 /* BookMarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B382BA7F09C00E4E3D0 /* BookMarkView.swift */; };
 		65A66B792BA97AC000E4E3D0 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B782BA97AC000E4E3D0 /* CameraService.swift */; };
 		65A66B7B2BA97B1900E4E3D0 /* CustomCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B7A2BA97B1900E4E3D0 /* CustomCameraView.swift */; };
 		65A66B7D2BA97B7100E4E3D0 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B7C2BA97B7100E4E3D0 /* CameraView.swift */; };
@@ -98,7 +97,6 @@
 		65A66B2F2BA7433100E4E3D0 /* ItemsContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsContainer.swift; sourceTree = "<group>"; };
 		65A66B312BA7B70200E4E3D0 /* HashTagDefaults */ = {isa = PBXFileReference; lastKnownFileType = text; path = HashTagDefaults; sourceTree = "<group>"; };
 		65A66B332BA7B79D00E4E3D0 /* HashTagJSONDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashTagJSONDecoder.swift; sourceTree = "<group>"; };
-		65A66B382BA7F09C00E4E3D0 /* BookMarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMarkView.swift; sourceTree = "<group>"; };
 		65A66B782BA97AC000E4E3D0 /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
 		65A66B7A2BA97B1900E4E3D0 /* CustomCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCameraView.swift; sourceTree = "<group>"; };
 		65A66B7C2BA97B7100E4E3D0 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
@@ -317,7 +315,6 @@
 				650D1ED62BA19B580055B3BA /* CreateBookMark.swift */,
 				650D1ED22BA19B3A0055B3BA /* BookMarkList.swift */,
 				659A1FA42BA294DA00B6FDAB /* UpdateBookMark.swift */,
-				65A66B382BA7F09C00E4E3D0 /* BookMarkView.swift */,
 				659A1FA82BA2CA5F00B6FDAB /* HashTagView.swift */,
 				65A66B7A2BA97B1900E4E3D0 /* CustomCameraView.swift */,
 				65A66B7C2BA97B7100E4E3D0 /* CameraView.swift */,
@@ -671,7 +668,6 @@
 				659A1FA72BA2C70000B6FDAB /* HashTagItem.swift in Sources */,
 				65A66B7D2BA97B7100E4E3D0 /* CameraView.swift in Sources */,
 				65A66B7B2BA97B1900E4E3D0 /* CustomCameraView.swift in Sources */,
-				65A66B392BA7F09C00E4E3D0 /* BookMarkView.swift in Sources */,
 				DAD092202BA8A77B00A6DF92 /* LocationService.swift in Sources */,
 				DA9C59372B9FE9DA007C4C8D /* SangChuApp.swift in Sources */,
 				65A66B792BA97AC000E4E3D0 /* CameraService.swift in Sources */,
@@ -839,7 +835,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 438C43K8SQ;
+				DEVELOPMENT_TEAM = X83LNW6267;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
@@ -871,7 +867,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 438C43K8SQ;
+				DEVELOPMENT_TEAM = X83LNW6267;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
