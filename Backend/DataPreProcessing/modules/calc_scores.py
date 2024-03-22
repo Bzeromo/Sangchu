@@ -75,7 +75,6 @@ def calc_scores(df_list, result_df, target_column_list):
 
     return result_df
 
-
 # 이상치 찾기 및 대체
 def replace_outliers(group):
     Q1 = group['monthly_sales'].quantile(0.25)
@@ -98,8 +97,7 @@ def replace_outliers(group):
 
     return group
 
-
-def calc_sales_score(sales_commercial_district_df, store_with_commercial_district_df):
+def calc_sales_score(sales_commercial_district_df, store_with_commercial_district_df, area_with_commercial_district_df):
     # 가장 최근 년분기 코드 찾기
     max_year_quarter_code = sales_commercial_district_df['year_quarter_code'].max()
 
@@ -141,4 +139,28 @@ def calc_sales_score(sales_commercial_district_df, store_with_commercial_distric
     # 'monthly_sales_score' 열의 null 값을 0으로 대체
     sales_commercial_district_df['monthly_sales_score'].fillna(0, inplace=True)
 
-    return sales_commercial_district_df
+    # 상권코드에 따라 groupby 후, monthly_sales 합 구하기
+    merged_df['monthly_sales_mean_score'] = merged_df.groupby('commercial_district_code')[
+        'monthly_sales_score'].transform('mean')
+
+    # 결과를 새로운 데이터프레임으로 저장합니다
+    monthly_sales_mean_by_district_df = merged_df.reset_index()
+
+    area_with_commercial_district_df = pd.merge(area_with_commercial_district_df, monthly_sales_mean_by_district_df[[
+        'commercial_district_code', 'monthly_sales_mean_score']],
+                                                on=['commercial_district_code'], how='left')
+    # commercial_district_code 중복값 제거
+    area_with_commercial_district_df = area_with_commercial_district_df.drop_duplicates(subset=['commercial_district_code'])
+
+    return sales_commercial_district_df, area_with_commercial_district_df
+
+# 각 상권의 총 점수 계산하는 함수
+def calc_total_score(area_with_commercial_district_df):
+    area_with_commercial_district_df['commercial_district_total_score'] = area_with_commercial_district_df[
+                                                                              'monthly_sales_mean_score'] + \
+                                                                          area_with_commercial_district_df[
+                                                                              'total_resident_population_score'] + \
+                                                                          area_with_commercial_district_df[
+                                                                              'total_foot_traffic_score'] + \
+                                                                          area_with_commercial_district_df['rdi_score']
+    return area_with_commercial_district_df
