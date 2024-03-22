@@ -6,6 +6,7 @@ services:
       - "8084:8084"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+
 #  postgres:
 #    image: 'postgres:latest'
 #    environment:

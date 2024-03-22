@@ -10,8 +10,6 @@ import com.sc.sangchu.postgresql.repository.CommDistRepository;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import com.sc.sangchu.postgresql.repository.CommEstimatedSalesRepository;
 import com.sc.sangchu.postgresql.repository.CommStoreRepository;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CommDistRecommendService {
     private final CommDistRepository commDistRepository;
-    private final CommStoreRepository commStoreRepository;
     private final CommEstimatedSalesRepository commEstimatedSalesRepository;
     private final Integer year = 2023;
     private final Integer quarter = 3;
@@ -34,7 +31,6 @@ public class CommDistRecommendService {
                                     CommStoreRepository commStoreRepository,
                                     CommEstimatedSalesRepository commEstimatedSalesRepository) {
         this.commDistRepository = commDistRepository;
-        this.commStoreRepository = commStoreRepository;
         this.commEstimatedSalesRepository = commEstimatedSalesRepository;
     }
 
@@ -147,7 +143,6 @@ public class CommDistRecommendService {
                     .limit(rankLimit)
                     .toList();
 
-            sortedEntities.forEach(System.out::println);
             List<CommDistDTO> commDistDTOS = new ArrayList<>();
 
             for(CommDistEntity entity : sortedEntities) {
@@ -226,9 +221,6 @@ public class CommDistRecommendService {
     public CommDistServiceScoreDTO getServiceCommDist(Long commCode, String serviceCode) {
         try {
             CommDistEntity commDistEntity = commDistRepository.findByCommercialDistrictCode(commCode);
-
-            CommStoreEntity commStoreEntity =
-                    commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCodeAndServiceCode(commCode, year, quarter, serviceCode);
             CommEstimatedSalesEntity commEstimatedSalesEntity =
                     commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(year, quarter, commCode, serviceCode);
 
@@ -245,7 +237,6 @@ public class CommDistRecommendService {
                     .salesScore(commEstimatedSalesEntity.getSalesScore())
                     .residentPopulationScore(commDistEntity.getResidentPopulationScore())
                     .floatingPopulationScore(commDistEntity.getFloatingPopulationScore())
-                    .storeDensityScore(commStoreEntity.getStoreDensityScore())
                     .rdiScore(commDistEntity.getRdiScore())
                     .serviceBigCategory(commEstimatedSalesEntity.getMajorCategoryCode())
                     .serviceCode(commEstimatedSalesEntity.getServiceCode())
@@ -269,9 +260,6 @@ public class CommDistRecommendService {
             for(CommDistEntity entity : commDistEntities) {
                 Long commCode = entity.getCommercialDistrictCode();
 
-                CommStoreEntity commStoreEntity =
-                        commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCodeAndServiceCode(
-                                commCode, year, quarter, serviceCode);
                 CommEstimatedSalesEntity commEstimatedSalesEntity =
                         commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(
                                 year, quarter, commCode, serviceCode);
@@ -289,7 +277,6 @@ public class CommDistRecommendService {
                         .salesScore(commEstimatedSalesEntity.getSalesScore())
                         .residentPopulationScore(entity.getResidentPopulationScore())
                         .floatingPopulationScore(entity.getFloatingPopulationScore())
-                        .storeDensityScore(commStoreEntity.getStoreDensityScore())
                         .rdiScore(entity.getRdiScore())
                         .serviceBigCategory(commEstimatedSalesEntity.getMajorCategoryCode())
                         .serviceCode(commEstimatedSalesEntity.getServiceCode())
