@@ -27,7 +27,7 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack{
-            HomeView().tint(Color("sangchu"))
+            HomeView()
         }
        
     }

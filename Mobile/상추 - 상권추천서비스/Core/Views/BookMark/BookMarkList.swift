@@ -113,7 +113,8 @@ struct BookMarkList: View {
                     }
                 } // ForEach
             }
-            .navigationBarTitle("북마크", displayMode: .inline)
+//            .navigationBarTitle("북마크", displayMode: .inline)
+            .navigationTitle("북마크")
 //            .navigationBarBackButtonHidden(true)
 //                    .navigationBarItems(leading: Button(action: {
 //                        self.presentationMode.wrappedValue.dismiss()
@@ -123,21 +124,26 @@ struct BookMarkList: View {
 //                        }
 //                    })
             .toolbar {
-                ToolbarItemGroup(placement: .primaryAction) {
+//                ToolbarItemGroup(placement: .primaryAction) {
+//                    Button {
+//                        hashCreate.toggle()
+//                    } label: {
+//                        Image(systemName: "plus")
+//                    }
+//                    
+////                    Button(action: {
+////                        showCreate.toggle()
+////                    }, label: {
+////                        Image(systemName: "minus")
+////                    })
+//                }
+                
+                ToolbarItemGroup(placement: .topBarTrailing) {
                     Button {
                         hashCreate.toggle()
                     } label: {
                         Image(systemName: "plus")
                     }
-                    
-                    Button(action: {
-                        showCreate.toggle()
-                    }, label: {
-                        Image(systemName: "minus")
-                    })
-                }
-                
-                ToolbarItemGroup(placement: .topBarTrailing) {
                     
                     Menu {
                         Picker("", selection: $selectedSortOption) {
@@ -165,15 +171,14 @@ struct BookMarkList: View {
                     ContentUnavailableView.search
                 }
             } // 항목이 없을때 없다고 표시해줌
-            .sheet(isPresented: $showCreate,
-                   content: {
-                NavigationStack{
-                    CreateBookMarkView()
-                }
-                .presentationDetents([.medium])
-                
-                
-            })
+//            .sheet(isPresented: $showCreate,
+//                   content: {
+//                NavigationStack{
+//                    CreateBookMarkView()
+//                }
+//                .presentationDetents([.medium])
+//
+//            })
             .sheet(isPresented: $hashCreate,
                    content: {
                 NavigationStack{
@@ -187,8 +192,8 @@ struct BookMarkList: View {
             
          // VStack
         .background(Color(hex: "F4F5F7"))
- 
-}
+        .accentColor(Color("sangchu")) // 툴바 자식들 색상
+    }
 }
 
 enum SortOption : String, CaseIterable{

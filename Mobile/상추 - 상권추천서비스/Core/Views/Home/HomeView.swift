@@ -242,7 +242,8 @@ struct HomeView: View {
                 
                 
             } // 전체를 담은 ScrollView
-            .navigationBarTitle("홈", displayMode: .inline)
+//            .accentColor(Color("sangchu")) // 툴바 자식들 색상
+//            .navigationBarTitle("홈", displayMode: .inline)
             .ignoresSafeArea(.all)
             .onPreferenceChange(ScrollOffsetKey.self) {
                 viewModel.setOffset($0)

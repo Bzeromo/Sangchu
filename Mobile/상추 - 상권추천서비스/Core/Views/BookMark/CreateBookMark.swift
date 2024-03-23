@@ -5,6 +5,8 @@
 //  Created by Tunde Adegoroye on 10/06/2023.
 //
 
+
+// 지도에서 구현했기떄문애 추후 삭제, 블로그 정리하고 삭제하자
 import SwiftUI
 import SwiftData
 struct CreateBookMarkView: View {
