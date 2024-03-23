@@ -6,6 +6,12 @@ struct SangChuApp: App {
 
     @AppStorage("isFirstTimeLaunch") private var isFirtTimeLaunch: Bool = true // 처음 로그인했는지 판별
     
+    init() {
+        // indicatort 색 조정
+        UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.sangchu
+        UIPageControl.appearance().pageIndicatorTintColor = UIColor.gray.withAlphaComponent(0.5)
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

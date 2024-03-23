@@ -8,21 +8,6 @@
 import SwiftUI
 import Charts
 
-struct QuarterlyTrends : Codable {
-    var chartType: String?
-    var data: GraphData?
-}
-
-struct GraphData: Codable {
-    var categories: [String]?
-    var series: [Series]?
-}
-
-struct Series: Codable {
-    var name: String?
-    var data: [Int]?
-}
-
 
 // 필터링 옵션
 enum FilterOption: String, CaseIterable, Identifiable {
