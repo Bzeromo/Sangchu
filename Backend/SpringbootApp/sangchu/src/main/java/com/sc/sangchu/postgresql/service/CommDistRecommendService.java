@@ -256,6 +256,10 @@ public class CommDistRecommendService {
                         commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(
                                 year, quarter, commCode, serviceCode);
 
+                if(commEstimatedSalesEntity == null) {
+                    continue;
+                }
+
                 CommDistServiceScoreDTO dto = CommDistServiceScoreDTO.builder()
                         .commercialDistrictName(entity.getCommercialDistrictName())
                         .latitude(entity.getLatitude())
