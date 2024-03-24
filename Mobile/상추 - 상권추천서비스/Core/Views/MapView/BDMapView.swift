@@ -258,7 +258,7 @@ struct BDMapView: View {
 //                                    }
 //                                    .padding()
                                 }
-                                .presentationDetents([.fraction(0.6), .fraction(0.9)])
+                                .presentationDetents([.fraction(0.75), .fraction(0.9)])
                                 .edgesIgnoringSafeArea(.all)
                         }
                 }

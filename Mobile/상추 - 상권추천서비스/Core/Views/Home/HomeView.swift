@@ -698,9 +698,9 @@ struct testView : View{
                     do {
                         let responseData = try decoder.decode(ResponseData.self, from: data)
                         // 성공적으로 디코딩된 경우, responseData를 사용하여 필요한 작업을 수행합니다.
-                        print(responseData)
-                        print("넥슬라이스")
-                        print(responseData.priceGraph?.data?.categories)
+//                        print(responseData)
+//                        print("넥슬라이스")
+//                        print(responseData.priceGraph?.data?.categories)
                         DispatchQueue.main.async {
                             // UI 업데이트나 메인 스레드에서 실행해야 하는 작업
                             self.responseData = responseData

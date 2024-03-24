@@ -64,10 +64,16 @@ struct CDInfoView: View {
                     .pickerStyle(.segmented)
                     .cornerRadius(5)
                     .padding()
-                    Spacer()
-                    Text("")
+
                 }
-                Spacer()
+                switch selectedFilterOption {
+                    case .consumer:
+                        ConsumerChartView(cdCode: CDcode)
+                    case .sales:
+                        SalesChartView(cdCode: CDcode)
+                    case .infra:
+                        InfraChartView(cdCode: CDcode)
+                }
             }
             .onAppear{
                 // 같은게 있으면 false를 반환
@@ -84,31 +90,31 @@ struct CDInfoView: View {
                 }
                 
                 ToolbarItemGroup(placement: .primaryAction) {
-                    Button {
-                        alertType = .bookmark
-                        showingAlert = true
-                        
-                        
-                        if(hasMatchingItem){
-                            var item = BookMarkItem()
-                            item.cdCode = self.CDcode
-                            item.cdTitle = self.CDname
-                            item.cdInfo = "이 상권은 망했습니다."
-                            withAnimation {
+                    HStack {
+                        Button {
+                            alertType = .bookmark
+                            showingAlert = true
+                            if(hasMatchingItem){
+                                var item = BookMarkItem()
+                                item.cdCode = self.CDcode
+                                item.cdTitle = self.CDname
+                                item.cdInfo = "이 상권은 망했습니다."
+                                withAnimation {
                                     context.insert(item)
-                                hasMatchingItem.toggle()
-                            }
-                        }else{
-                            if let itemToDelete = items.first(where: { $0.cdCode == CDcode }) {
-                                        withAnimation {
-                                            context.delete(itemToDelete)
-                                            hasMatchingItem.toggle()
-                                            try? context.save() // 변경 사항 저장
-                                        }
+                                    hasMatchingItem.toggle()
+                                }
+                            }else{
+                                if let itemToDelete = items.first(where: { $0.cdCode == CDcode }) {
+                                    withAnimation {
+                                        context.delete(itemToDelete)
+                                        hasMatchingItem.toggle()
+                                        try? context.save() // 변경 사항 저장
                                     }
+                                }
+                            }
+                            
                         }
-                       
-                    } label: {
+                    label: {
                         if(hasMatchingItem){
                             Image(systemName: "bookmark")
                         }else{
@@ -116,14 +122,16 @@ struct CDInfoView: View {
                         }
                         
                     }
-                    
-                    Button {
-                        alertType = .location
-                        showingAlert = true
-                    } label: {
-                        Image(systemName: "location.circle")
+                        
+                        Button {
+                            alertType = .location
+                            showingAlert = true
+                        } label: {
+                            Image(systemName: "location.circle")
+                        }
                     }
-                }
+                    .frame(width: 80)
+                } // end of buttonGroup
             } // 여기까지 툴바 추가
             .alert(isPresented: $showingAlert) {
                 switch alertType {
@@ -131,7 +139,7 @@ struct CDInfoView: View {
                     if(hasMatchingItem){
                         return Alert(title: Text("북마크"), message: Text("\(CDname)가 제거되었습니다."), dismissButton: .default(Text("확인")))
                       
-                    }else{
+                    } else{
                         return   Alert(title: Text("북마크"), message: Text("\(CDname)가 추가되었습니다.."), dismissButton: .default(Text("확인")))
                     }
                   
