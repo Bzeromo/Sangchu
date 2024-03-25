@@ -1,9 +1,6 @@
 package com.sc.sangchu.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
@@ -13,18 +10,23 @@ public class CommDistRankDTO {
 
     private Long cdCode;
     private String name;
-    private valueScoreInteger totalScore;
+    private valueScoreLong totalScore;
     private valueScoreDouble sales;
-    private valueScoreInteger footTraffic;
-    private valueScoreInteger residentialPopulation;
-    private valueScoreDouble businessDiversity;
+    private valueScoreLong footTraffic;
+    private valueScoreLong residentialPopulation;
+    private valueScoreLong businessDiversity;
 
-    private static class valueScoreInteger{
-        Integer value;
-        Integer score;
+    @Data
+    @Builder
+    public static class valueScoreLong{
+        Long value;
+        Double score;
     }
-    private static class valueScoreDouble{
+    @Data
+    @Builder
+    public static class valueScoreDouble{
         Double value;
-        Integer score;
+        Double score;
+
     }
 }
