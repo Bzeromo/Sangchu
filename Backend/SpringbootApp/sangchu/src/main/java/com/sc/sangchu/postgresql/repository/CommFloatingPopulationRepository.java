@@ -11,5 +11,5 @@ public interface CommFloatingPopulationRepository extends JpaRepository<CommFloa
     CommFloatingPopulationEntity findByCommercialDistrictCodeAndYearCodeAndQuarterCode(Long commCode, Integer year, Integer quarter);
     List<CommFloatingPopulationEntity> findAllByCommercialDistrictCode(Long commCode);
 
-    List<CommFloatingPopulationEntity> findByYearAndQuarterCodeAndCommercialDistrictCode(int year, int quarter, List<Long> commList);
+    List<CommFloatingPopulationEntity> findByYearCodeAndQuarterCodeAndCommercialDistrictCode(int year, int quarter, Long[] commList);
 }

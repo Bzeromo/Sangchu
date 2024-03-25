@@ -217,7 +217,7 @@ public class CommDistRecommendService {
         if(commDistEntities.isEmpty()) return null;
 
         List<CommDistDTO> commList = setCommDistDtoList(commDistEntities);
-        List<Long> commCodeList = setCommCodeList(commDistEntities);
+        Long[] commCodeList = setCommCodeList(commDistEntities);
         // 위의 상권 리스트를 바탕으로 매출액, 유동인구수, 상주인구수, 업종다양성 수
         List<CommDistRankDTO> commDistRankDTOList = setCommDistRankDTOs(commList, commCodeList, serviceCode);
 
@@ -251,24 +251,27 @@ public class CommDistRecommendService {
         }
         return commDistDTOS;
     }
-    public List<Long> setCommCodeList(List<CommDistEntity> list){
-        List<Long> commCodeList = new ArrayList<>();
+    public Long[] setCommCodeList(List<CommDistEntity> list){
+        Long[] commCodeList = new Long[list.size()];
 
+        int i = 0;
         for(CommDistEntity entity : list){
-            commCodeList.add(entity.getCommercialDistrictCode());
+            commCodeList[i] = entity.getCommercialDistrictCode();
+            i++;
         }
 
         return commCodeList;
     }
-    public List<CommDistRankDTO> setCommDistRankDTOs(List<CommDistDTO> commDistList, List<Long> commCodeList, String serviceCode){
+    public List<CommDistRankDTO> setCommDistRankDTOs(List<CommDistDTO> commDistList, Long[] commCodeList, String serviceCode){
 
         List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(year, quarter, commCodeList, serviceCode);
-        List<CommFloatingPopulationEntity> floatingList = commFloatingPopulationRepository.findByYearAndQuarterCodeAndCommercialDistrictCode(year, quarter, commCodeList);
-        List<CommResidentPopulationEntity> residentList = commResidentPopulationRepository.findByYearAndQuarterCodeAndCommercialDistrictCode(year, quarter, commCodeList);
+        List<CommFloatingPopulationEntity> floatingList = commFloatingPopulationRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCode(year, quarter, commCodeList);
+        List<CommResidentPopulationEntity> residentList = commResidentPopulationRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCode(year, quarter, commCodeList);
 
         List<CommDistRankDTO> list = new ArrayList<>();
         for(CommDistDTO dto : commDistList){
-//            salesList.contains();
+//            CommEstimatedSalesEntity = salesList.stream()
+//                    .filter(sales -> sales.getCommercialDistrictName().equals(dto.getCommercialDistrictName()));
         }
 
 

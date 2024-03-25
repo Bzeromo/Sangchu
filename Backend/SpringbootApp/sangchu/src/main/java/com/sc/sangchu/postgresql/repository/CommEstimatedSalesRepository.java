@@ -28,5 +28,5 @@ public interface CommEstimatedSalesRepository extends JpaRepository<CommEstimate
                                                     @Param("year")int[] year);
 
     CommEstimatedSalesEntity findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(int year, int quarter, Long commCode, String serviceCode);
-    List<CommEstimatedSalesEntity> findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(int year, int quarter, List<Long> commCode, String serviceCode);
+    List<CommEstimatedSalesEntity> findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(int year, int quarter, Long[] commCode, String serviceCode);
 }
