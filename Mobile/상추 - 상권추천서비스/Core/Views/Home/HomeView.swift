@@ -625,28 +625,28 @@ final class ViewModel: ObservableObject {
 //    let name: String
 //    let data: [Int]
 //}
-struct ResponseData: Codable {
-    var priceGraph: PriceGraph?
+struct tmpResponseData: Codable {
+    var priceGraph: tmpPriceGraph?
 }
 
-struct PriceGraph: Codable {
+struct tmpPriceGraph: Codable {
     var chartType: String?
-    var data: GraphData?
+    var data: tmpGraphData?
 }
 
-struct GraphData: Codable {
+struct tmpGraphData: Codable {
     var categories: [String]?
-    var series: [Series]?
+    var series: [tmpSeries]?
 }
 
-struct Series: Codable {
+struct tmpSeries: Codable {
     var name: String?
     var data: [Int]?
 }
 
 
 struct testView : View{
-    @State private var responseData: ResponseData? = nil
+    @State private var responseData: tmpResponseData? = nil
 
         var body: some View {
             
