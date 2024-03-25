@@ -9,15 +9,17 @@ import Foundation
 
 class InfraModel {
     
+    // 그래프 아님
     // 특정 상권 아파트 지표 조회
     struct InfraApt : Codable {
-        let apartmentComplexes : Int
-        let aptAvgArea : Int
-        let aptAvgPrice : Int
-        let areaGraph : String?
-        let priceGraph : String? // 다 아직 널값임
+        var apartmentComplexes : Int
+        var aptAvgArea : Int
+        var aptAvgPrice : Int
+        var areaGraph : String?
+        var priceGraph : String? // 다 아직 널값임
     }
 
+    // 그래프 아님
     // 특정 상권 집객시설 지표 조회
     struct InfraFacility : Codable {
         let facilities: Int
@@ -28,19 +30,21 @@ class InfraModel {
     }
 
 
+    // 그래프 아님
     // 특정 상권 업종 다양성 지수 조회
     struct InfraIndicatorRdi : Codable {
         let indicator : String?
         let rdi : String
     }
 
+    // 그래프 아님
     // 특정 상권 변화 지표 조회
     struct InfraIndicator : Codable {
         let indicator : String
         let rdi : String?
     }
 
-    // 정취선
+    // 절취선
     // 특정 상권 점포 그래프 조회
     struct InfraGraphStoreCount : Codable {
         let chartType: String
@@ -63,7 +67,6 @@ class InfraModel {
     }
     
     // 절취선
-    
     // 특정 상권 아파트 가격 별 세대 수 그래프 조회
     struct InfraGraphAptPrice : Codable {
         let apartmentComplexes: [String]? // null 가능성이 있으므로 옵셔널 타입으로 정의
@@ -92,24 +95,26 @@ class InfraModel {
         let aptAvgArea: Double?
         let aptAvgPrice: Double?
         let areaGraph: AptAreaGraph?
-//        let priceGraph: PriceGraph?
     }
     struct AptAreaGraph: Codable {
         let chartType: String
         let data: InfraGraphAptAreaData
     }
     struct InfraGraphAptAreaData: Codable {
-        let chartType: String
-        let data: InfraGraphAptAreaaData
-    }
-    struct InfraGraphAptAreaaData: Codable {
         let categories: [String]
-        let series: [InfraGraphAptAreaaSeries]
+        let series: [InfraGraphAptAreaSeries]
     }
-    struct InfraGraphAptAreaaSeries: Codable {
+    struct InfraGraphAptAreaSeries: Codable {
         let name: String
         let data: [Int]
     }
-
+    
+    
+    
+    struct ChartData: Identifiable {
+        let id = UUID()
+        var label: String
+        var value: Double
+    }
     
 }

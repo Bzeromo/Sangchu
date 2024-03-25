@@ -23,8 +23,10 @@ class InfraNetworkManager {
                 .responseData { response in
                 switch response.result {
                     case .success(let data):
+                    print("성공")
                         completion(.success(data))
                     case .failure(let error):
+                    print("실패")
                         completion(.failure(error))
                 }
             }
