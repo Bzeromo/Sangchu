@@ -15,7 +15,8 @@ struct FilteredValue : Codable {
 
 // 상권 정보
 struct DistrictData: Identifiable, Codable {
-    var id = UUID()
+    var id: String {cdCode}
+    var cdCode: String // 상권 코드
     var name: String // 상권 이름
     var totalScore: FilteredValue // 총점
     var sales: FilteredValue // 매출액 및 점수
@@ -205,13 +206,13 @@ struct API {
 
         // 샘플용
         let sampleData: [DistrictData] = [
-            DistrictData(name: "상권A", totalScore: FilteredValue(value: 1000, score: 80), sales: FilteredValue(value: 100, score: 70), footTraffic: FilteredValue(value: 500, score: 90), residentialPopulation: FilteredValue(value: 200, score: 60), businessDiversity: FilteredValue(value: 10, score: 50)),
-            DistrictData(name: "상권B", totalScore: FilteredValue(value: 900, score: 85), sales: FilteredValue(value: 150, score: 75), footTraffic: FilteredValue(value: 400, score: 95), residentialPopulation: FilteredValue(value: 300, score: 55), businessDiversity: FilteredValue(value: 15, score: 45)),
-            DistrictData(name: "상권C", totalScore: FilteredValue(value: 800, score: 78), sales: FilteredValue(value: 120, score: 82), footTraffic: FilteredValue(value: 450, score: 88), residentialPopulation: FilteredValue(value: 250, score: 65), businessDiversity: FilteredValue(value: 12, score: 48)),
-            DistrictData(name: "상권D", totalScore: FilteredValue(value: 700, score: 75), sales: FilteredValue(value: 130, score: 80), footTraffic: FilteredValue(value: 420, score: 85), residentialPopulation: FilteredValue(value: 220, score: 70), businessDiversity: FilteredValue(value: 13, score: 55)),
-            DistrictData(name: "상권E", totalScore: FilteredValue(value: 650, score: 72), sales: FilteredValue(value: 110, score: 78), footTraffic: FilteredValue(value: 480, score: 91), residentialPopulation: FilteredValue(value: 210, score: 75), businessDiversity: FilteredValue(value: 11, score: 50)),
-            DistrictData(name: "상권F", totalScore: FilteredValue(value: 600, score: 70), sales: FilteredValue(value: 140, score: 77), footTraffic: FilteredValue(value: 430, score: 86), residentialPopulation: FilteredValue(value: 240, score: 68), businessDiversity: FilteredValue(value: 14, score: 53)),
-            DistrictData(name: "상권G", totalScore: FilteredValue(value: 550, score: 65), sales: FilteredValue(value: 90, score: 65), footTraffic: FilteredValue(value: 410, score: 80), residentialPopulation: FilteredValue(value: 230, score: 62), businessDiversity: FilteredValue(value: 9, score: 47))
+            DistrictData(cdCode: "3110291", name: "상권A", totalScore: FilteredValue(value: 1000, score: 80), sales: FilteredValue(value: 100, score: 70), footTraffic: FilteredValue(value: 500, score: 90), residentialPopulation: FilteredValue(value: 200, score: 60), businessDiversity: FilteredValue(value: 10, score: 50)),
+            DistrictData(cdCode: "3110293", name: "상권B", totalScore: FilteredValue(value: 900, score: 85), sales: FilteredValue(value: 150, score: 75), footTraffic: FilteredValue(value: 400, score: 95), residentialPopulation: FilteredValue(value: 300, score: 55), businessDiversity: FilteredValue(value: 15, score: 45)),
+            DistrictData(cdCode: "3110295", name: "상권C", totalScore: FilteredValue(value: 800, score: 78), sales: FilteredValue(value: 120, score: 82), footTraffic: FilteredValue(value: 450, score: 88), residentialPopulation: FilteredValue(value: 250, score: 65), businessDiversity: FilteredValue(value: 12, score: 48)),
+            DistrictData(cdCode: "3110281", name: "상권D", totalScore: FilteredValue(value: 700, score: 75), sales: FilteredValue(value: 130, score: 80), footTraffic: FilteredValue(value: 420, score: 85), residentialPopulation: FilteredValue(value: 220, score: 70), businessDiversity: FilteredValue(value: 13, score: 55)),
+            DistrictData(cdCode: "3110290", name: "상권E", totalScore: FilteredValue(value: 650, score: 72), sales: FilteredValue(value: 110, score: 78), footTraffic: FilteredValue(value: 480, score: 91), residentialPopulation: FilteredValue(value: 210, score: 75), businessDiversity: FilteredValue(value: 11, score: 50)),
+            DistrictData(cdCode: "3110286", name: "상권F", totalScore: FilteredValue(value: 600, score: 70), sales: FilteredValue(value: 140, score: 77), footTraffic: FilteredValue(value: 430, score: 86), residentialPopulation: FilteredValue(value: 240, score: 68), businessDiversity: FilteredValue(value: 14, score: 53)),
+            DistrictData(cdCode: "3110297", name: "상권G", totalScore: FilteredValue(value: 550, score: 65), sales: FilteredValue(value: 90, score: 65), footTraffic: FilteredValue(value: 410, score: 80), residentialPopulation: FilteredValue(value: 230, score: 62), businessDiversity: FilteredValue(value: 9, score: 47))
         ]
 
         return FilteredDistrictsData(

@@ -7,12 +7,28 @@
 import SwiftUI
 import NMapsMap
 import Foundation
-import Combine
+import Alamofire
 
 class MapViewModel: ObservableObject {
     @Published var selectedCDCode : String = ""
     @Published var selectedCDName : String = ""
     @Published var showBottomSheet : Bool = false
+}
+
+struct CommercialDistrict: Codable {
+    let commercialDistrictName: String
+    let latitude: Double
+    let longitude: Double
+    let guCode: Int
+    let guName: String
+    let dongCode: Int
+    let dongName: String
+    let areaSize: Int
+    let commercialDistrictScore: Double
+    let salesScore: Double
+    let residentPopulationScore: Double
+    let floatingPopulationScore: Double
+    let rdiScore: Double
 }
 
 struct MapView: UIViewRepresentable {
@@ -43,12 +59,12 @@ struct MapView: UIViewRepresentable {
                     let coords = polygon.map { NMGLatLng(lat: $0[1], lng: $0[0]) }
                     
                     if let polygonOverlay = NMFPolygonOverlay(coords) {
-                        polygonOverlay.fillColor = UIColor.sangchu.withAlphaComponent(0.008)
-                        polygonOverlay.outlineColor = UIColor.sangchu // 폴리곤 외곽선 색상 설정
-                        polygonOverlay.outlineWidth = 3 // 폴리곤 외곽선 두께 설정
+                        polygonOverlay.fillColor = UIColor.sangchu.withAlphaComponent(0.005)
+                        polygonOverlay.outlineColor = UIColor.sangchu.withAlphaComponent(1) // 폴리곤 외곽선 색상 설정
+                        polygonOverlay.outlineWidth = 2 // 폴리곤 외곽선 두께 설정
 
-                        polygonOverlay.minZoom = 7
-                        polygonOverlay.maxZoom = 11 // 이 때 부터는 상권이 보이게 할 예정! // 상권의 minZoom을 같은 값으로 설정할 것!
+                        polygonOverlay.minZoom = 5
+                        polygonOverlay.maxZoom = 13 // 이 때 부터는 상권이 보이게 할 예정! // 상권의 minZoom을 같은 값으로 설정할 것!
                         polygonOverlay.mapView = mapView // 지도에 폴리곤 오버레이 추가
                     }
                 }
@@ -69,8 +85,9 @@ struct MapView: UIViewRepresentable {
                 if case let .polygon(polygonCoordinates) = feature.geometry.coordinates {
                     let coords = polygonCoordinates.first!.map { NMGLatLng(lat: $0[1], lng: $0[0]) }
                     if let polygonOverlay = NMFPolygonOverlay(coords) {
-                        polygonOverlay.fillColor = UIColor.red.withAlphaComponent(0.05)
-                        polygonOverlay.outlineColor = UIColor.red
+                        polygonOverlay.fillColor = UIColor.blue.withAlphaComponent(0.2)
+//                        polygonOverlay.fillColor = UIColor.clear
+                        polygonOverlay.outlineColor = UIColor.blue.withAlphaComponent(0.7)
                         polygonOverlay.outlineWidth = 3
                         polygonOverlay.minZoom = 9
                         
@@ -95,10 +112,11 @@ struct MapView: UIViewRepresentable {
                         for polygon in polygons {
                             let coords = polygon.map { NMGLatLng(lat: $0[1], lng: $0[0]) }
                             if let polygonOverlay = NMFPolygonOverlay(coords) {
-                                polygonOverlay.fillColor = UIColor.red.withAlphaComponent(0.05)
-                                polygonOverlay.outlineColor = UIColor.red
+                                polygonOverlay.fillColor = UIColor.red.withAlphaComponent(0.2)
+//                                polygonOverlay.fillColor = UIColor.clear
+                                polygonOverlay.outlineColor = UIColor.red.withAlphaComponent(0.7)
                                 polygonOverlay.outlineWidth = 3
-                                polygonOverlay.minZoom = 11
+                                polygonOverlay.minZoom = 9
                                 
                                 // 폴리곤 터치 시 해당 상권 정보 시트로 띄우기
                                 polygonOverlay.touchHandler = {
@@ -125,6 +143,53 @@ struct MapView: UIViewRepresentable {
 
     } // end of loadAndDrawCDPolygons
 
+    
+    func fetchCD(mapView: NMFMapView) {
+        let url = "http://3.36.91.181:8084/api/commdist/all"
+        AF.request(url).responseJSON { response in
+            switch response.result {
+            case .success(let value):
+                do {
+                    // JSON 데이터를 CommercialDistrict 구조체로 디코딩
+                    let districts = try JSONDecoder().decode([CommercialDistrict].self, from: response.data!)
+                    print(districts.count)
+                    // 결과 처리
+                    districts.forEach { district in
+                        let lng = district.latitude
+                        let lat = district.longitude
+                        let dName = district.commercialDistrictName
+                        let dScore = String(format: "%.0f점", district.commercialDistrictScore)
+                        // 마커 관련설정들
+                        let cdMarker = NMFMarker()
+                        // 위치
+                        cdMarker.position = NMGLatLng(lat: lat, lng: lng)
+                        // 마커 이미지
+                        cdMarker.iconImage = NMFOverlayImage(name:"markerIcon.png")
+                        // 사이즈
+                        cdMarker.width = 0.1
+                        cdMarker.height = 0.1
+                        // 캡션(점수) 보조캡션(상권이름)
+                        cdMarker.captionText = dScore
+                        cdMarker.captionTextSize = 30
+                        cdMarker.captionColor = .systemPink
+                        cdMarker.captionHaloColor = .white
+                        cdMarker.subCaptionText = dName
+                        cdMarker.subCaptionTextSize = 16
+                        cdMarker.subCaptionRequestedWidth = 15
+                        cdMarker.captionAligns = [.top]
+                        cdMarker.captionMinZoom = 13
+                        cdMarker.minZoom = 13
+                        // 마커 놓기
+                        cdMarker.mapView = mapView
+                    }
+                } catch {
+                    print("JSON 디코딩 실패: \(error)")
+                }
+            case .failure(let error):
+                print("요청 실패: \(error)")
+            }
+        }
+    }
     
     let locationService = LocationService()
     
@@ -206,6 +271,7 @@ struct MapView: UIViewRepresentable {
         
         loadAndDrawSBPolygons(mapView: mapView)
         loadAndDrawCDPolygons(mapView: mapView)
+        fetchCD(mapView: mapView)
         
         return naverMapView
     }
