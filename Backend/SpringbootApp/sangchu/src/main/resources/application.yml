@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: sangchu-spring
   jackson:
     serialization:
       write-dates-as-timestamps: false
@@ -28,34 +30,14 @@ spring:
   thymeleaf:
     cache: false
 
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#    show-sql: true
-#    open-in-view: false
-#    #DB Table의 Column명과 변수명을 그대로 하고 싶을 때 사용하는 설정
-#    naming:
-#      physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-
-#  cloud:
-#    aws:
-#      s3:
-#        bucket: sangchu-s3
-#      #      folder:
-#      #        [VARIABLE]: [VALUE]
-#      credentials:
-#        access-key: unknown
-#        secret-key: unknown
-#      region:
-#        static: ap-northeast-2
-#        auto: false
-#      stack:
-#        auto: false
-#  servlet:
-#    multipart:
-#      enabled: true
-#      max-file-size: 10MB
-#      max-request-size: 10MB
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: prometheus
+    metrics:
+      tags:
+        application: ${spring.application.name}
 
 server:
   port: 8084 # jenkins와 8080 포트 충돌 방지
