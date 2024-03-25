@@ -38,6 +38,8 @@
 		65FB38D02BB07ADC0097FD2D /* InfraNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38CF2BB07ADC0097FD2D /* InfraNetworkManager.swift */; };
 		65FB38D22BB07BED0097FD2D /* InfraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38D12BB07BED0097FD2D /* InfraModel.swift */; };
 		65FB38D52BB085730097FD2D /* SalesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38D42BB085730097FD2D /* SalesModel.swift */; };
+		65FB38D72BB15FF00097FD2D /* HomeNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38D62BB15FF00097FD2D /* HomeNetworkManager.swift */; };
+		65FB38D92BB160310097FD2D /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38D82BB160310097FD2D /* HomeModel.swift */; };
 		DA0AB18B2BABCCD800D8BBDF /* CDInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0AB18A2BABCCD800D8BBDF /* CDInfoView.swift */; };
 		DA2162192BA9EC2E009750B6 /* CommercialDistrictOutline.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */; };
 		DA7C64A02BA1FF3000BE74DD /* BDMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */; };
@@ -111,6 +113,8 @@
 		65FB38CF2BB07ADC0097FD2D /* InfraNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfraNetworkManager.swift; sourceTree = "<group>"; };
 		65FB38D12BB07BED0097FD2D /* InfraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfraModel.swift; sourceTree = "<group>"; };
 		65FB38D42BB085730097FD2D /* SalesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesModel.swift; sourceTree = "<group>"; };
+		65FB38D62BB15FF00097FD2D /* HomeNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNetworkManager.swift; sourceTree = "<group>"; };
+		65FB38D82BB160310097FD2D /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
 		DA0AB18A2BABCCD800D8BBDF /* CDInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDInfoView.swift; sourceTree = "<group>"; };
 		DA0AB19E2BAD18BA00D8BBDF /* Charts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Charts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CommercialDistrictOutline.geojson; sourceTree = "<group>"; };
@@ -269,6 +273,7 @@
 				65A66B782BA97AC000E4E3D0 /* CameraService.swift */,
 				DAA418892BB07BDF006B48B5 /* ConsumerNetworkManager.swift */,
 				65FB38CF2BB07ADC0097FD2D /* InfraNetworkManager.swift */,
+				65FB38D62BB15FF00097FD2D /* HomeNetworkManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -282,6 +287,7 @@
 				DAA418852BB07B1C006B48B5 /* ConsumerModel.swift */,
 				65FB38D12BB07BED0097FD2D /* InfraModel.swift */,
 				65FB38D42BB085730097FD2D /* SalesModel.swift */,
+				65FB38D82BB160310097FD2D /* HomeModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -681,6 +687,7 @@
 				659A1FA92BA2CA5F00B6FDAB /* HashTagView.swift in Sources */,
 				DAA4188C2BB07D4A006B48B5 /* SalesChartView.swift in Sources */,
 				659A1FA32BA28E5A00B6FDAB /* BookMarkItem.swift in Sources */,
+				65FB38D92BB160310097FD2D /* HomeModel.swift in Sources */,
 				65FB38D22BB07BED0097FD2D /* InfraModel.swift in Sources */,
 				6577BB402B9ECCFF0071A3EA /* ChooseBorough.swift in Sources */,
 				6577BB392B9ECBA40071A3EA /* Color.swift in Sources */,
@@ -695,6 +702,7 @@
 				DA9C59372B9FE9DA007C4C8D /* SangChuApp.swift in Sources */,
 				65A66B792BA97AC000E4E3D0 /* CameraService.swift in Sources */,
 				DAA418882BB07B69006B48B5 /* ConsumerChartView.swift in Sources */,
+				65FB38D72BB15FF00097FD2D /* HomeNetworkManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -859,7 +867,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 438C43K8SQ;
+				DEVELOPMENT_TEAM = X83LNW6267;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
@@ -891,7 +899,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 438C43K8SQ;
+				DEVELOPMENT_TEAM = X83LNW6267;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
