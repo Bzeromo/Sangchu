@@ -30,14 +30,20 @@ spring:
   thymeleaf:
     cache: false
 
-  management:
-    endpoints:
-      web:
-        exposure:
-          include: prometheus
+management:
+  endpoint:
     metrics:
-      tags:
-        application: ${spring.application.name}
+      enabled: true
+    prometheus:
+      enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 server:
   port: 8084 # jenkins와 8080 포트 충돌 방지
