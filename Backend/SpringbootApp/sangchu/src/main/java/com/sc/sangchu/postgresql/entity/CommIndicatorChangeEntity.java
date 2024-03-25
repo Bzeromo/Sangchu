@@ -43,7 +43,7 @@ public class CommIndicatorChangeEntity {
 
     //rdi
     @Column(name = "rdi")
-    private Double RDI;
+    private Double rdi;
 
     //점포 밀집도
     @Column(name = "store_density")

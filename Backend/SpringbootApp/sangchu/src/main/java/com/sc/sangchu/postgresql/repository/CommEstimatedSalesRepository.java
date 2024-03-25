@@ -16,17 +16,17 @@ public interface CommEstimatedSalesRepository extends JpaRepository<CommEstimate
 
     List<CommEstimatedSalesEntity> findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(int year, Long commCode, String majorCategory);
 
-    @Query(
-            "SELECT new com.sc.sangchu.dto.sales.CommQuarterlyGraphDTO(c.yearCode, c.quarterCode, sum(c.weekDaysSales), sum(c.weekendSales))\n" +
-            "FROM CommEstimatedSalesEntity c \n" +
-            "WHERE c.commercialDistrictCode = :commCode\n" +
-            "AND c.majorCategoryName = :majorCategory\n" +
-            "AND c.yearCode IN :year\n" +
-            "GROUP BY c.yearCode, c.quarterCode\n" +
-            "ORDER BY c.yearCode, c.quarterCode \n")
+    @Query("""
+            SELECT new com.sc.sangchu.dto.sales.CommQuarterlyGraphDTO(c.yearCode, c.quarterCode, sum(c.weekDaysSales), sum(c.weekendSales))
+            FROM CommEstimatedSalesEntity c
+            WHERE c.commercialDistrictCode = :commCode
+            AND c.majorCategoryName = :majorCategory
+            AND c.yearCode IN :year
+            GROUP BY c.yearCode, c.quarterCode
+            ORDER BY c.yearCode, c.quarterCode""")
     List<CommQuarterlyGraphDTO> findByQuarterlyData(@Param("commCode")Long commCode, @Param("majorCategory") String majorCategory,
                                                     @Param("year")int[] year);
 
     CommEstimatedSalesEntity findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(int year, int quarter, Long commCode, String serviceCode);
-
+    List<CommEstimatedSalesEntity> findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(int year, int quarter, List<Long> commCode, String serviceCode);
 }

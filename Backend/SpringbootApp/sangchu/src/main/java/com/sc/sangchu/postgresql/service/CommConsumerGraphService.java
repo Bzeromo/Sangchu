@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sc.sangchu.dto.consumer.CommFloatingPopulationDTO;
+import com.sc.sangchu.dto.consumer.CommPopulationAgeDTO;
 import com.sc.sangchu.dto.consumer.CommResidentPopulationDTO;
 import com.sc.sangchu.dto.consumer.CommWorkingPopulationDTO;
 import com.sc.sangchu.postgresql.entity.CommFloatingPopulationEntity;

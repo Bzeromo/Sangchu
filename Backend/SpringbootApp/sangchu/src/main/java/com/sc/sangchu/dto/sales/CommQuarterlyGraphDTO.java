@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class CommQuarterlyGraphDTO {
     private Integer year;
     private Integer quarter;
-    private Double WeekDaySales;
-    private Double WeekendSales;
+    private Double weekDaySales;
+    private Double weekendSales;
 }

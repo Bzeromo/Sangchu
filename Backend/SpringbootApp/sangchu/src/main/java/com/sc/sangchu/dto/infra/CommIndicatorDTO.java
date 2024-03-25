@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class CommIndicatorDTO {
-    private String RDI;
+    private String rdi;
     private String indicator;
 }

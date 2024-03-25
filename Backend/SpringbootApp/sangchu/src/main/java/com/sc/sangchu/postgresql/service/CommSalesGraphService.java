@@ -182,9 +182,9 @@ public class CommSalesGraphService {
         }
 
         return CommSalesDto.builder()
-                .MonthlySales(Math.round(monthlySales / (salesList.size() * 3)))
-                .WeekDaySales(Math.round(weekdaySales / (salesList.size() * 12)))
-                .WeekendSales(Math.round(weekendSales / (salesList.size() * 12)))
+                .monthlySales(Math.round(monthlySales / (salesList.size() * 3)))
+                .weekDaySales(Math.round(weekdaySales / (salesList.size() * 12)))
+                .weekendSales(Math.round(weekendSales / (salesList.size() * 12)))
                 .build();
     }
 

@@ -10,4 +10,6 @@ import java.util.List;
 public interface CommFloatingPopulationRepository extends JpaRepository<CommFloatingPopulationEntity, Integer> {
     CommFloatingPopulationEntity findByCommercialDistrictCodeAndYearCodeAndQuarterCode(Long commCode, Integer year, Integer quarter);
     List<CommFloatingPopulationEntity> findAllByCommercialDistrictCode(Long commCode);
+
+    List<CommFloatingPopulationEntity> findByYearAndQuarterCodeAndCommercialDistrictCode(int year, int quarter, List<Long> commList);
 }

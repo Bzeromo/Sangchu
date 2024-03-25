@@ -37,22 +37,22 @@ public class CommInfraService {
     // RDI 가져오기 (하, 중, 상, 최상)
     public CommIndicatorDTO getRDI (Long commCode) {
         try {
-            List <CommIndicatorChangeEntity> RDIList = commIndicatorChangeRepository.findAll();
+            List <CommIndicatorChangeEntity> rdiList = commIndicatorChangeRepository.findAll();
 
             // 사분위수 계산을 위한 리스트 정렬
-            RDIList = RDIList.stream()
-                    .sorted(Comparator.comparing(CommIndicatorChangeEntity::getRDI))
+            rdiList = rdiList.stream()
+                    .sorted(Comparator.comparing(CommIndicatorChangeEntity::getRdi))
                     .toList();
 
             // 중앙값
-            Double median = getMedianFromSortedRDIList(RDIList);
+            Double median = getMedianFromSortedRDIList(rdiList);
 
             // 중앙값을 기준으로 두 서브리스트로 나눕니다.
-            List<CommIndicatorChangeEntity> lowerHalf = RDIList.stream()
-                    .filter(rdi -> rdi.getRDI() < median)
+            List<CommIndicatorChangeEntity> lowerHalf = rdiList.stream()
+                    .filter(rdi -> rdi.getRdi() < median)
                     .collect(Collectors.toList());
-            List<CommIndicatorChangeEntity> upperHalf = RDIList.stream()
-                    .filter(rdi -> rdi.getRDI() > median)
+            List<CommIndicatorChangeEntity> upperHalf = rdiList.stream()
+                    .filter(rdi -> rdi.getRdi() > median)
                     .collect(Collectors.toList());
 
             // 각 서브리스트의 중앙값을 계산합니다.
@@ -63,7 +63,7 @@ public class CommInfraService {
 
             double value = commIndicatorChangeRepository
                     .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter)
-                    .getRDI();
+                    .getRdi();
 
             if (value < lowerMedian) {
                 quartileGrades = "하";
@@ -75,7 +75,7 @@ public class CommInfraService {
                 quartileGrades = "최상";
             }
 
-            return CommIndicatorDTO.builder().RDI(quartileGrades).build();
+            return CommIndicatorDTO.builder().rdi(quartileGrades).build();
         } catch (Exception e) {
             log.error("getRDI error", e);
         }
@@ -156,10 +156,10 @@ public class CommInfraService {
         int size = sortedList.size();
         if (size % 2 == 1) {
             // 리스트의 크기가 홀수인 경우
-            return sortedList.get(size / 2).getRDI();
+            return sortedList.get(size / 2).getRdi();
         } else {
             // 리스트의 크기가 짝수인 경우
-            return (sortedList.get(size / 2 - 1).getRDI() + sortedList.get(size / 2).getRDI()) / 2.0;
+            return (sortedList.get(size / 2 - 1).getRdi() + sortedList.get(size / 2).getRdi()) / 2.0;
         }
     }
 }
