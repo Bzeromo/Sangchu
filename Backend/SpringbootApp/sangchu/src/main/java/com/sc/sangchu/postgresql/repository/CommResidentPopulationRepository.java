@@ -11,5 +11,4 @@ import java.util.List;
 public interface CommResidentPopulationRepository extends JpaRepository<CommResidentPopulationEntity, Integer> {
     CommResidentPopulationEntity findByCommercialDistrictCodeAndYearCodeAndQuarterCode(Long commCode, Integer year, Integer quarter);
     List<CommResidentPopulationEntity> findAllByCommercialDistrictCode(Long commCode);
-    List<CommResidentPopulationEntity> findByYearCodeAndQuarterCodeAndCommercialDistrictCode(int year, int quarter, Long[] commList);
 }

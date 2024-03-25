@@ -3,19 +3,21 @@ package com.sc.sangchu.postgresql.service;
 import com.sc.sangchu.dto.CommDistDTO;
 import com.sc.sangchu.dto.CommDistRankDTO;
 import com.sc.sangchu.dto.CommDistServiceScoreDTO;
+import com.sc.sangchu.dto.infra.CommStoreTotalCountDTO;
 import com.sc.sangchu.postgresql.entity.CommDistEntity;
 import com.sc.sangchu.postgresql.entity.CommEstimatedSalesEntity;
 import com.sc.sangchu.postgresql.entity.CommFloatingPopulationEntity;
 import com.sc.sangchu.postgresql.entity.CommResidentPopulationEntity;
-import com.sc.sangchu.postgresql.repository.CommDistRepository;
+import com.sc.sangchu.postgresql.repository.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
-import com.sc.sangchu.postgresql.repository.CommEstimatedSalesRepository;
-import com.sc.sangchu.postgresql.repository.CommFloatingPopulationRepository;
-import com.sc.sangchu.postgresql.repository.CommResidentPopulationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,17 +29,19 @@ public class CommDistRecommendService {
     private final CommEstimatedSalesRepository commEstimatedSalesRepository;
     private final CommFloatingPopulationRepository commFloatingPopulationRepository;
     private final CommResidentPopulationRepository commResidentPopulationRepository;
+    private final CommStoreRepository commStoreRepository;
     private final Integer year = 2023;
     private final Integer quarter = 3;
     private final Integer rankLimit = 10;
 
     @Autowired
     public CommDistRecommendService(CommDistRepository commDistRepository,
-                                    CommEstimatedSalesRepository commEstimatedSalesRepository, CommFloatingPopulationRepository commFloatingPopulationRepository, CommResidentPopulationRepository commResidentPopulationRepository) {
+                                    CommEstimatedSalesRepository commEstimatedSalesRepository, CommFloatingPopulationRepository commFloatingPopulationRepository, CommResidentPopulationRepository commResidentPopulationRepository, CommStoreRepository commStoreRepository) {
         this.commDistRepository = commDistRepository;
         this.commEstimatedSalesRepository = commEstimatedSalesRepository;
         this.commFloatingPopulationRepository = commFloatingPopulationRepository;
         this.commResidentPopulationRepository = commResidentPopulationRepository;
+        this.commStoreRepository = commStoreRepository;
     }
 
     // 상권 코드로 상권 데이터 조회
@@ -212,16 +216,17 @@ public class CommDistRecommendService {
     }
 
     public List<CommDistRankDTO> getDistrictRank(Long guCode, String serviceCode){
-        // 자치구에 해당하는 상권 리스트 -> 상권 정보 및 점수
-        List<CommDistEntity>  commDistEntities = commDistRepository.findByGuCode(guCode);
-        if(commDistEntities.isEmpty()) return null;
+        try{
+            // 자치구에 해당하는 상권 리스트 -> 상권 정보 및 점수
+            List<CommDistEntity>  commDistEntities = commDistRepository.findByGuCode(guCode);
+            if(commDistEntities.isEmpty()) return null;
 
-        List<CommDistDTO> commList = setCommDistDtoList(commDistEntities);
-        Long[] commCodeList = setCommCodeList(commDistEntities);
-        // 위의 상권 리스트를 바탕으로 매출액, 유동인구수, 상주인구수, 업종다양성 수
-        List<CommDistRankDTO> commDistRankDTOList = setCommDistRankDTOs(commList, commCodeList, serviceCode);
+            List<CommDistDTO> commList = setCommDistDtoList(commDistEntities);
 
-
+            return setCommDistRankDTOs(commList, serviceCode);
+        }catch (Exception e){
+            log.error("getDistrictRank error", e);
+        }
         return null;
     }
 
@@ -232,6 +237,7 @@ public class CommDistRecommendService {
             CommDistDTO dto;
 
             dto = CommDistDTO.builder()
+                    .commercialDistrictCode(entity.getCommercialDistrictCode())
                     .commercialDistrictName(entity.getCommercialDistrictName())
                     .latitude(entity.getLatitude())
                     .longitude(entity.getLongitude())
@@ -251,30 +257,61 @@ public class CommDistRecommendService {
         }
         return commDistDTOS;
     }
-    public Long[] setCommCodeList(List<CommDistEntity> list){
-        Long[] commCodeList = new Long[list.size()];
+    public List<CommDistRankDTO> setCommDistRankDTOs(List<CommDistDTO> commDistList, String serviceCode){
 
-        int i = 0;
-        for(CommDistEntity entity : list){
-            commCodeList[i] = entity.getCommercialDistrictCode();
-            i++;
-        }
+        List<CommDistRankDTO> list = commDistList.stream()
+                .map(dto -> {
+                    Long cdCode = dto.getCommercialDistrictCode();
+                    String name = dto.getCommercialDistrictName();
 
-        return commCodeList;
-    }
-    public List<CommDistRankDTO> setCommDistRankDTOs(List<CommDistDTO> commDistList, Long[] commCodeList, String serviceCode){
+                    // 서울시 점수 랭킹
+                    List<CommDistEntity> sortedEntities = commDistRepository.findAll()
+                            .stream()
+                            .sorted(Comparator.comparing(CommDistEntity::getCommercialDistrictScore).reversed())
+                            .toList();
+                    Long totalScoreRank = LongStream.range(0, sortedEntities.size())
+                            .filter(i -> sortedEntities.get((int) i).getCommercialDistrictCode().equals(cdCode))
+                            .findFirst().orElse(0L) + 1;
 
-        List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(year, quarter, commCodeList, serviceCode);
-        List<CommFloatingPopulationEntity> floatingList = commFloatingPopulationRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCode(year, quarter, commCodeList);
-        List<CommResidentPopulationEntity> residentList = commResidentPopulationRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCode(year, quarter, commCodeList);
+                    // 현재 분기 매출
+                    CommEstimatedSalesEntity estimatedSalesEntity = commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(year, quarter, cdCode,serviceCode);
 
-        List<CommDistRankDTO> list = new ArrayList<>();
-        for(CommDistDTO dto : commDistList){
-//            CommEstimatedSalesEntity = salesList.stream()
-//                    .filter(sales -> sales.getCommercialDistrictName().equals(dto.getCommercialDistrictName()));
-        }
+                    // 현재 분기 총 업종 점포 수
+                    CommStoreTotalCountDTO commStoreTotalCountDTO = commStoreRepository.findStoreTotalCount(year, quarter, cdCode);
 
+                    // 현재 분기 유동 인구 수
+                    CommFloatingPopulationEntity commFloatingPopulationEntity = commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(cdCode, year, quarter);
 
-        return null;
+                    // 현재 분기 상주 인구 수
+                    CommResidentPopulationEntity commResidentPopulationEntity = commResidentPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(cdCode, year, quarter);
+
+                    return CommDistRankDTO.builder()
+                            .cdCode(dto.getCommercialDistrictCode())
+                            .name(name)
+                            .totalScore(CommDistRankDTO.valueScoreLong.builder()
+                                    .value(totalScoreRank)
+                                    .score(dto.getCommercialDistrictScore())
+                                    .build())
+                            .sales(CommDistRankDTO.valueScoreDouble.builder()
+                                    .value(estimatedSalesEntity.getMonthlySales() != null ? estimatedSalesEntity.getMonthlySales() : 0D)
+                                    .score(dto.getSalesScore())
+                                    .build())
+                            .businessDiversity(CommDistRankDTO.valueScoreLong.builder()
+                                    .value(commStoreTotalCountDTO.getTotalStoreCount() != null ? commStoreTotalCountDTO.getTotalStoreCount() : 0L)
+                                    .score(dto.getRdiScore())
+                                    .build())
+                            .footTraffic(CommDistRankDTO.valueScoreLong.builder()
+                                    .value(commFloatingPopulationEntity.getTotalFloatingPopulation() != null ? commFloatingPopulationEntity.getTotalFloatingPopulation() : 0L)
+                                    .score(dto.getFloatingPopulationScore())
+                                    .build())
+                            .residentialPopulation(CommDistRankDTO.valueScoreLong.builder()
+                                    .value(commResidentPopulationEntity.getTotalResidentPopulation() != null ? commResidentPopulationEntity.getTotalResidentPopulation() : 0L)
+                                    .score(dto.getResidentPopulationScore())
+                                    .build())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return list;
     }
 }

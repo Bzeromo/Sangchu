@@ -1,6 +1,7 @@
 package com.sc.sangchu.controller;
 
 import com.sc.sangchu.dto.CommDistDTO;
+import com.sc.sangchu.dto.CommDistRankDTO;
 import com.sc.sangchu.dto.CommDistServiceScoreDTO;
 import com.sc.sangchu.postgresql.service.CommDistRecommendService;
 import com.sc.sangchu.response.ErrorResponse;
@@ -139,13 +140,13 @@ public class CommDistController {
     public ResponseEntity<?> getDistrictRank(
             @RequestParam(value = "guCode") Long guCode, @RequestParam(value = "serviceCode") String serviceCode) {
         try {
-            CommDistServiceScoreDTO commDistServiceScoreDTO = commDistRecommendService.getServiceCommDist(guCode, serviceCode);
-            if(commDistServiceScoreDTO == null) {
-                return ResponseEntity.badRequest().body(new ErrorResponse("commDistController getServiceCommDist NullException"));
+            List<CommDistRankDTO> commDistRankDTOList = commDistRecommendService.getDistrictRank(guCode, serviceCode);
+            if(commDistRankDTOList == null) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("commDistController getDistrictRank NullException"));
             }
-            return ResponseEntity.ok(commDistServiceScoreDTO);
+            return ResponseEntity.ok(commDistRankDTOList);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse("commDistController getServiceCommDist failure"));
+            return ResponseEntity.badRequest().body(new ErrorResponse("commDistController getDistrictRank failure"));
         }
     }
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class CommDistDTO {
+    private Long commercialDistrictCode;
     private String commercialDistrictName;
     private Double latitude;
     private Double longitude;
