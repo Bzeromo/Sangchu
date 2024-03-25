@@ -74,7 +74,7 @@ struct ConsumerChartView: View {
     @State private var selectedEndpoint: Endpoints = .분기별직장인구
     
     var body: some View {
-        GeometryReader { geometry in
+     
                 VStack (alignment: .leading) {
                     if chartDataSets.isEmpty {
                         Text("해당 데이터가 없습니다.")
@@ -111,7 +111,6 @@ struct ConsumerChartView: View {
                                                      .foregroundColor(Color.black)
                                                      .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
                                                      .fixedSize(horizontal: false, vertical: true)
-                                                     .frame(width: geometry.size.width * 0.065, alignment: .bottom)
                                              }
                                          }
                                          .padding()
@@ -128,18 +127,17 @@ struct ConsumerChartView: View {
                                                          .alignmentGuide(.firstTextBaseline) {
                                                              d in d[.firstTextBaseline]
                                                          }
-                                                         .frame(height: geometry.size.height * 0.1, alignment: .top)
                                                  }
                                              }
                                          }
                                          .chartYAxis {
                                              AxisMarks(preset: .aligned, position: .leading)
                                          }
-                                         .frame(height: geometry.size.height * 0.8)
                                      } // end of VStack
                                  } // end of else
                              } // end of ForEach
                          }
+                        .frame(height: 300)
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
                         .scrollIndicatorsFlash(onAppear: true)
                         .padding()
@@ -148,7 +146,7 @@ struct ConsumerChartView: View {
                          }
                     }
                 }
-        }
+        
     } // end of body
     
     func loadAllData() {
