@@ -1,9 +1,9 @@
 import seaborn as sns
 import matplotlib.pyplot as plt
-import data_load
+import normalization
 
-X = data_load.X
-y = data_load.y
+X = normalization.X
+y = normalization.y
 
 # 독립 변수(X) 리스트
 independent_variables = X.columns
