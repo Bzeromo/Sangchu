@@ -26,9 +26,9 @@ public class CommConsumerGraphService {
     private final CommResidentPopulationRepository commResidentPopulationRepository;
     private final CommWorkingPopulationRepository commWorkingPopulationRepository;
     private final ObjectMapper objectMapper;
-    private final Integer yearLimit = 2022;
-    private final Integer year = 2023;
-    private final Integer quarter = 3;
+    private final static Integer yearLimit = 2022;
+    private final static Integer year = 2023;
+    private final static Integer quarter = 3;
 
     public CommConsumerGraphService(CommFloatingPopulationRepository commFloatingPopulationRepository,
                                     ObjectMapper objectMapper,

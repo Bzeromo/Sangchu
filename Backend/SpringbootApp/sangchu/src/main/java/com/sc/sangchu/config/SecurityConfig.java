@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .headers(headersConfigurer -> headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // For H2 DB
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((requests) -> requests
+                .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/**",
                                 "/swagger-ui/**", "/v3/api-docs/**", "/api/**", "/swagger-resources/**", "/webjars/**").permitAll()
                 )

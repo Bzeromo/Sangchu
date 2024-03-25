@@ -33,7 +33,7 @@ public class PostgreSqlConfig {
     public LocalContainerEntityManagerFactoryBean postgresqlEntityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(postgresqlDataSource());
-        em.setPackagesToScan(new String[] {"com.sc.sangchu.postgresql"});
+        em.setPackagesToScan("com.sc.sangchu.postgresql");
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setShowSql(true);
