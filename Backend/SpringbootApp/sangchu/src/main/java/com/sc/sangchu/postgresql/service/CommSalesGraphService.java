@@ -1,13 +1,16 @@
 package com.sc.sangchu.postgresql.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sc.sangchu.dto.consumer.CommFloatingPopulationDTO;
 import com.sc.sangchu.dto.sales.*;
 import com.sc.sangchu.postgresql.entity.CommEstimatedSalesEntity;
 import com.sc.sangchu.postgresql.repository.CommEstimatedSalesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,12 +24,14 @@ import java.util.Map;
 public class CommSalesGraphService {
 
     private final CommEstimatedSalesRepository commEstimatedSalesRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final LocalDate localDate = LocalDate.now();
 
     @Autowired
-    public CommSalesGraphService(CommEstimatedSalesRepository commEstimatedSalesRepository, ObjectMapper objectMapper) {
+    public CommSalesGraphService(CommEstimatedSalesRepository commEstimatedSalesRepository, RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
         this.commEstimatedSalesRepository = commEstimatedSalesRepository;
+        this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
     }
 
@@ -46,7 +51,20 @@ public class CommSalesGraphService {
     }
 
     public CommQuarterlyGraphJsonDTO getQuarterlyGraphData(Long commCode) {
-        try{
+        String cacheKey = "salesGraph:quarterlyGraph:" + commCode;
+
+        try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommQuarterlyGraphJsonDTO.builder()
+                        .quarterlyGraph(cachedData)
+                        .build();
+            }
+
             //특정 상권 코드의 22~23년도 주중/주말 매출 조회
             List<CommQuarterlyGraphDTO> salesList = commEstimatedSalesRepository.findByQuarterlyData(commCode,
                     "외식업", new int[]{localDate.getYear() - 2, localDate.getYear() - 1});
@@ -73,6 +91,9 @@ public class CommSalesGraphService {
             data.set("series", series);
             chartData.set("data", data);
 
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
+
             return CommQuarterlyGraphJsonDTO.builder()
                     .quarterlyGraph(chartData)
                     .build();
@@ -83,7 +104,20 @@ public class CommSalesGraphService {
     }
 
     public CommSalesGraphJsonDTO getDayGraphData(Long commCode){
-        try{
+        String cacheKey = "salesGraph:dayGraph:" + commCode;
+
+        try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommSalesGraphJsonDTO.builder()
+                        .graphJson(cachedData)
+                        .build();
+            }
+
             List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
                     localDate.getYear() - 1, commCode, "외식업");
             String[] category = {"월", "화", "수", "목", "금", "토", "일"};
@@ -91,7 +125,7 @@ public class CommSalesGraphService {
             if(salesList.isEmpty()){
                 return null;
             }
-            return setSalesGraphJsonDto(calcDailySalesSum(salesList), category, type);
+            return setSalesGraphJsonDto(cacheKey, calcDailySalesSum(salesList), category, type);
         }catch(Exception e){
             log.error("getDayGraphData error", e);
         }
@@ -99,7 +133,20 @@ public class CommSalesGraphService {
     }
 
     public CommSalesGraphJsonDTO getTimeGraphData(Long commCode){
-        try{
+        String cacheKey = "salesGraph:timeGraph:" + commCode;
+
+        try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommSalesGraphJsonDTO.builder()
+                        .graphJson(cachedData)
+                        .build();
+            }
+
             List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
                     localDate.getYear() - 1, commCode, "외식업");
             String[] category = {"00~06시", "06~11시", "11~14시", "14~17시", "17~21시", "21~24시"};
@@ -107,7 +154,7 @@ public class CommSalesGraphService {
             if(salesList.isEmpty()) {
                 return null;
             }
-            return setSalesGraphJsonDto(calcTimeSalesSum(salesList), category, type);
+            return setSalesGraphJsonDto(cacheKey, calcTimeSalesSum(salesList), category, type);
         }catch (Exception e){
             log.error("getDayGraphData error", e);
         }
@@ -115,7 +162,20 @@ public class CommSalesGraphService {
     }
 
     public CommSalesGraphJsonDTO getAgeGraphData(Long commCode){
-        try{
+        String cacheKey = "salesGraph:ageGraph:" + commCode;
+
+        try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommSalesGraphJsonDTO.builder()
+                        .graphJson(cachedData)
+                        .build();
+            }
+
             List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
                     localDate.getYear() - 1, commCode, "외식업");
 
@@ -125,7 +185,7 @@ public class CommSalesGraphService {
             if(salesList.isEmpty()) {
                 return null;
             }
-            return setSalesGraphJsonDto(calcAgeSalesSum(salesList), category, type);
+            return setSalesGraphJsonDto(cacheKey, calcAgeSalesSum(salesList), category, type);
         }catch (Exception e){
             log.error("getAgeGraphData error", e);
         }
@@ -133,7 +193,20 @@ public class CommSalesGraphService {
     }
 
     public CommSalesRatioByServiceJsonDTO getSalesRatioByService(Long commCode){
-        try{
+        String cacheKey = "SalesRatioGraph:salesRatioGraph:" + commCode;
+
+        try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommSalesRatioByServiceJsonDTO.builder()
+                        .graphJson(cachedData)
+                        .build();
+            }
+
             List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
                     localDate.getYear() - 1, commCode, "외식업");
 
@@ -157,6 +230,9 @@ public class CommSalesGraphService {
             data.set("categories", categories);
             data.set("series", series);
             chartData.set("data", data);
+
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
 
             return CommSalesRatioByServiceJsonDTO.builder()
                     .graphJson(chartData)
@@ -287,7 +363,7 @@ public class CommSalesGraphService {
                 .build();
     }
 
-    public CommSalesGraphJsonDTO setSalesGraphJsonDto (CommSalesGraphDTO dto, String[] category, String type){
+    public CommSalesGraphJsonDTO setSalesGraphJsonDto (String cacheKey, CommSalesGraphDTO dto, String[] category, String type){
 
         ObjectNode chartData = objectMapper.createObjectNode();
         chartData.put("chartType", "bar");
@@ -315,6 +391,9 @@ public class CommSalesGraphService {
         data.set("categories", categories);
         data.set("series", series);
         chartData.set("data", data);
+
+        // 차트 데이터 캐시
+        redisTemplate.opsForValue().set(cacheKey, chartData);
 
         return CommSalesGraphJsonDTO.builder()
                 .graphJson(chartData)
