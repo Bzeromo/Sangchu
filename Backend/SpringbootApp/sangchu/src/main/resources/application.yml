@@ -7,7 +7,7 @@ spring:
 
   data:
     redis:
-      host: j10b206.p.ssafy.io
+      host: localhost
       port: 6379
       # username :
       # pw
