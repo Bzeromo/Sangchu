@@ -1,10 +1,10 @@
 package com.sc.sangchu.postgresql.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sc.sangchu.dto.consumer.CommFloatingPopulationDTO;
-import com.sc.sangchu.dto.consumer.CommPopulationAgeDTO;
 import com.sc.sangchu.dto.consumer.CommResidentPopulationDTO;
 import com.sc.sangchu.dto.consumer.CommWorkingPopulationDTO;
 import com.sc.sangchu.postgresql.entity.CommFloatingPopulationEntity;
@@ -14,6 +14,7 @@ import com.sc.sangchu.postgresql.repository.CommFloatingPopulationRepository;
 import com.sc.sangchu.postgresql.repository.CommResidentPopulationRepository;
 import com.sc.sangchu.postgresql.repository.CommWorkingPopulationRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -25,6 +26,7 @@ public class CommConsumerGraphService {
     private final CommFloatingPopulationRepository commFloatingPopulationRepository;
     private final CommResidentPopulationRepository commResidentPopulationRepository;
     private final CommWorkingPopulationRepository commWorkingPopulationRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final static Integer yearLimit = 2022;
     private final static Integer year = 2023;
@@ -33,16 +35,29 @@ public class CommConsumerGraphService {
     public CommConsumerGraphService(CommFloatingPopulationRepository commFloatingPopulationRepository,
                                     ObjectMapper objectMapper,
                                     CommResidentPopulationRepository commResidentPopulationRepository,
-                                    CommWorkingPopulationRepository commWorkingPopulationRepository) {
+                                    CommWorkingPopulationRepository commWorkingPopulationRepository, RedisTemplate<String, Object> redisTemplate) {
         this.commFloatingPopulationRepository = commFloatingPopulationRepository;
         this.objectMapper = objectMapper;
         this.commResidentPopulationRepository = commResidentPopulationRepository;
         this.commWorkingPopulationRepository = commWorkingPopulationRepository;
+        this.redisTemplate = redisTemplate;
     }
 
     // 연령별 유동인구 그래프
-    public CommFloatingPopulationDTO getFloatingPopulationAgeGraph (Long commCode){
+    public CommFloatingPopulationDTO getFloatingPopulationAgeGraph(Long commCode) {
+        String cacheKey = "consumerGraph:floatingPopulationAgeGraph:" + commCode + ":" + year + ":" + quarter;
+
         try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommFloatingPopulationDTO.builder()
+                        .age(cachedData)
+                        .build();
+            }
             CommFloatingPopulationEntity entity =
                     commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
 
@@ -76,6 +91,9 @@ public class CommConsumerGraphService {
             data.set("series", series);
             chartData.set("data", data);
 
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
+
             return CommFloatingPopulationDTO.builder()
                     .age(chartData)
                     .build();
@@ -86,8 +104,21 @@ public class CommConsumerGraphService {
     }
 
     // 시간별 유동인구 그래프
-    public CommFloatingPopulationDTO getFloatingPopulationTimeGraph (Long commCode){
+    public CommFloatingPopulationDTO getFloatingPopulationTimeGraph(Long commCode) {
+        String cacheKey = "consumerGraph:floatingPopulationTimeGraph:" + commCode + ":" + year + ":" + quarter;
+
         try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommFloatingPopulationDTO.builder()
+                        .time(cachedData)
+                        .build();
+            }
+
             CommFloatingPopulationEntity entity =
                     commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
 
@@ -121,6 +152,9 @@ public class CommConsumerGraphService {
             data.set("series", series);
             chartData.set("data", data);
 
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
+
             return CommFloatingPopulationDTO.builder()
                     .time(chartData)
                     .build();
@@ -131,8 +165,21 @@ public class CommConsumerGraphService {
     }
 
     // 요일별 유동인구 그래프
-    public CommFloatingPopulationDTO getFloatingPopulationDayGraph (Long commCode){
+    public CommFloatingPopulationDTO getFloatingPopulationDayGraph(Long commCode) {
+        String cacheKey = "consumerGraph:floatingPopulationDayGraph:" + commCode + ":" + year + ":" + quarter;
+
         try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommFloatingPopulationDTO.builder()
+                        .time(cachedData)
+                        .build();
+            }
+
             CommFloatingPopulationEntity entity =
                     commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
 
@@ -168,6 +215,9 @@ public class CommConsumerGraphService {
             data.set("series", series);
             chartData.set("data", data);
 
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
+
             return CommFloatingPopulationDTO.builder()
                     .day(chartData)
                     .build();
@@ -178,8 +228,21 @@ public class CommConsumerGraphService {
     }
 
     // 총 유동인구 분기별 추이 그래프 (22~23년)
-    public CommFloatingPopulationDTO getFloatingPopulationQuarterlyTrendsGraph (Long commCode){
+    public CommFloatingPopulationDTO getFloatingPopulationQuarterlyTrendsGraph(Long commCode) {
+        String cacheKey = "consumerGraph:floatingPopulationQuarterlyTrendsGraph:" + commCode + ":" + year + ":" + quarter;
+
         try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommFloatingPopulationDTO.builder()
+                        .time(cachedData)
+                        .build();
+            }
+
             List<CommFloatingPopulationEntity> entities =
                     commFloatingPopulationRepository.findAllByCommercialDistrictCode(commCode);
 
@@ -209,7 +272,7 @@ public class CommConsumerGraphService {
 
             ArrayNode seriesDataNode = seriesData.putArray("data");
 
-            for(CommFloatingPopulationEntity entity : sortedEntities)
+            for (CommFloatingPopulationEntity entity : sortedEntities)
                 seriesDataNode.add(entity.getTotalFloatingPopulation());
 
             series.add(seriesData);
@@ -217,6 +280,9 @@ public class CommConsumerGraphService {
             data.set("categories", categories);
             data.set("series", series);
             chartData.set("data", data);
+
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
 
             return CommFloatingPopulationDTO.builder()
                     .quarterlyTrends(chartData)
@@ -228,8 +294,20 @@ public class CommConsumerGraphService {
     }
 
     // 성별 연령대별 상주인구 그래프
-    public CommResidentPopulationDTO getResidentPopulationGenderAgeGraph (Long commCode){
+    public CommResidentPopulationDTO getResidentPopulationGenderAgeGraph(Long commCode) {
+        String cacheKey = "consumerGraph:residentPopulationGenderAgeGraph:" + commCode + ":" + year + ":" + quarter;
+
         try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommResidentPopulationDTO.builder()
+                        .genderAge(cachedData)
+                        .build();
+            }
             CommResidentPopulationEntity entity =
                     commResidentPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
 
@@ -276,6 +354,9 @@ public class CommConsumerGraphService {
             data.set("series", series);
             chartData.set("data", data);
 
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
+
             return CommResidentPopulationDTO.builder()
                     .genderAge(chartData)
                     .build();
@@ -286,8 +367,21 @@ public class CommConsumerGraphService {
     }
 
     // 총 상주인구 분기별 추이 그래프 (22~23년)
-    public CommResidentPopulationDTO getResidentPopulationQuarterlyTrendsGraph (Long commCode){
+    public CommResidentPopulationDTO getResidentPopulationQuarterlyTrendsGraph(Long commCode) {
+        String cacheKey = "consumerGraph:residentPopulationQuarterlyTrendsGraph:" + commCode + ":" + year + ":" + quarter;
+
         try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommResidentPopulationDTO.builder()
+                        .genderAge(cachedData)
+                        .build();
+            }
+
             List<CommResidentPopulationEntity> entities =
                     commResidentPopulationRepository.findAllByCommercialDistrictCode(commCode);
 
@@ -317,7 +411,7 @@ public class CommConsumerGraphService {
 
             ArrayNode seriesDataNode = seriesData.putArray("data");
 
-            for(CommResidentPopulationEntity entity : sortedEntities)
+            for (CommResidentPopulationEntity entity : sortedEntities)
                 seriesDataNode.add(entity.getTotalResidentPopulation());
 
             series.add(seriesData);
@@ -325,6 +419,9 @@ public class CommConsumerGraphService {
             data.set("categories", categories);
             data.set("series", series);
             chartData.set("data", data);
+
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
 
             return CommResidentPopulationDTO.builder()
                     .quarterlyTrends(chartData)
@@ -336,8 +433,21 @@ public class CommConsumerGraphService {
     }
 
     // 성별 연령대별 직장인구 그래프
-    public CommWorkingPopulationDTO getWorkingPopulationGenderAgeGraph (Long commCode){
+    public CommWorkingPopulationDTO getWorkingPopulationGenderAgeGraph(Long commCode) {
+        String cacheKey = "consumerGraph:workingPopulationGenderAgeGraph:" + commCode + ":" + year + ":" + quarter;
+
         try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommWorkingPopulationDTO.builder()
+                        .genderAge(cachedData)
+                        .build();
+            }
+
             CommWorkingPopulationEntity entity =
                     commWorkingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
 
@@ -384,6 +494,9 @@ public class CommConsumerGraphService {
             data.set("series", series);
             chartData.set("data", data);
 
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
+
             return CommWorkingPopulationDTO.builder()
                     .genderAge(chartData)
                     .build();
@@ -394,8 +507,21 @@ public class CommConsumerGraphService {
     }
 
     // 총 직장인구 분기별 추이 그래프 (22~23년)
-    public CommWorkingPopulationDTO getWorkingPopulationQuarterlyTrendsGraph (Long commCode){
+    public CommWorkingPopulationDTO getWorkingPopulationQuarterlyTrendsGraph(Long commCode) {
+        String cacheKey = "consumerGraph:workingPopulationQuarterlyTrendsGraph:" + commCode + ":" + year + ":" + quarter;
+
         try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommWorkingPopulationDTO.builder()
+                        .genderAge(cachedData)
+                        .build();
+            }
+
             List<CommWorkingPopulationEntity> entities =
                     commWorkingPopulationRepository.findAllByCommercialDistrictCode(commCode);
 
@@ -425,7 +551,7 @@ public class CommConsumerGraphService {
 
             ArrayNode seriesDataNode = seriesData.putArray("data");
 
-            for(CommWorkingPopulationEntity entity : sortedEntities)
+            for (CommWorkingPopulationEntity entity : sortedEntities)
                 seriesDataNode.add(entity.getTotalWorkingPopulation());
 
             series.add(seriesData);
@@ -433,6 +559,9 @@ public class CommConsumerGraphService {
             data.set("categories", categories);
             data.set("series", series);
             chartData.set("data", data);
+
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
 
             return CommWorkingPopulationDTO.builder()
                     .quarterlyTrends(chartData)
