@@ -77,19 +77,20 @@ struct CDInfoView: View {
                     }
                     Spacer()
                 }
+                .navigationTitle("\(CDname)")
+                .navigationBarTitleDisplayMode(.inline)
                 .onAppear{
                     // 북마크 같은게 있으면 false를 반환
                     hasMatchingItem = !items.contains { $0.cdCode == CDcode }
                 }
-                //            .navigationBarTitle("\(CDname) [\(CDcode)]", displayMode: .inline)
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading ) {
-                        VStack {
-                            Spacer()
-                            Text("[\(CDcode)]").foregroundColor(.sangchu) // 상권 코드에 sangchu 색상 적용
-                            Text(CDname).foregroundColor(.sangchu) // 상권 이름에 sangchu 색상 적용
-                        }
-                    }
+//                    ToolbarItem(placement: .topBarLeading ) {
+//                        VStack {
+//                            Spacer()
+//                            Text("[\(CDcode)]").foregroundColor(.sangchu) // 상권 코드에 sangchu 색상 적용
+//                            Text(CDname).foregroundColor(.sangchu) // 상권 이름에 sangchu 색상 적용
+//                        }
+//                    }
                     
                     ToolbarItemGroup(placement: .primaryAction) {
                         HStack {

@@ -58,7 +58,8 @@ struct BookMarkList: View {
                                         Text(item.cdTitle).font(.system(size: 22)).bold().foregroundStyle((Color("sangchu")))
                                         Text("\(item.timestamp, format: Date.FormatStyle(date:.numeric, time:.none)) \(item.userMemo)")
                                             .font(.system(size: 13)) // 전체 텍스트에 적용될 폰트 사이즈
-                                            .foregroundColor(Color(hex: "767676")) // 전체 텍스트에 적용될 폰트 색상
+//                                            .foregroundColor(Color(hex: "767676")) // 전체 텍스트에 적용될 폰트 색상 상추색이었음
+                                            .foregroundColor(Color.black) // 전체 텍스트에 적용될 폰트 색상 상추색이었음
                                             .lineLimit(1) // 텍스트가 한 줄로 제한됩니다.
                                     }
                                    Spacer() // 여기에서 배경색을 노란색으로 설정합니다.

@@ -18,6 +18,7 @@ struct SangChuApp: App {
 //                .modelContainer(sharedModelContainer) // 초기값
 //                .modelContainer(for: BookMarkItem.self) // ItemContainer로 묶기 전
                 .modelContainer(ItemsContainer.create(shouldCreateDefaults: &isFirtTimeLaunch)) // 묶은 후
+                .accentColor(Color("sangchu"))
         }
     }
 }
