@@ -59,15 +59,19 @@ public class CommInfraGraphService {
             ArrayNode categories = objectMapper.createArrayNode();
             ArrayNode series = objectMapper.createArrayNode();
 
+            ArrayNode storeCount = objectMapper.createArrayNode();
+            ArrayNode franchiseStoreCount = objectMapper.createArrayNode();
+            ObjectNode seriesData = objectMapper.createObjectNode();
+            seriesData.put("name", "점포 수");
+
             for (CommStoreEntity store : stores) {
                 categories.add(store.getServiceName());
-                ObjectNode seriesData = objectMapper.createObjectNode();
-                seriesData.put("ServiceCode", store.getServiceCode());
-                seriesData.put("serviceName", store.getServiceName());
-                seriesData.put("storeCount", store.getStoreCount());
-                seriesData.put("franchiseStoreCount", store.getFranchiseStoreCount());
-                series.add(seriesData);
+                storeCount.add(store.getStoreCount());
+                franchiseStoreCount.add(store.getFranchiseStoreCount());
             }
+            seriesData.set("storeCount", storeCount);
+            seriesData.set("franchiseStoreCount", franchiseStoreCount);
+            series.add(seriesData);
 
             data.set("categories", categories);
             data.set("series", series);
