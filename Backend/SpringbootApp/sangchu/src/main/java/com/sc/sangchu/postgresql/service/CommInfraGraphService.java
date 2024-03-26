@@ -1,8 +1,10 @@
 package com.sc.sangchu.postgresql.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sc.sangchu.dto.consumer.CommFloatingPopulationDTO;
 import com.sc.sangchu.dto.infra.CommAptDTO;
 import com.sc.sangchu.dto.infra.CommStoreDTO;
 import com.sc.sangchu.postgresql.entity.CommAptEntity;
@@ -11,6 +13,7 @@ import com.sc.sangchu.postgresql.repository.CommAptRepository;
 import com.sc.sangchu.postgresql.repository.CommStoreRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,15 +24,17 @@ public class CommInfraGraphService {
     private final CommStoreRepository commStoreRepository;
     private final CommAptRepository commAptRepository;
     private final ObjectMapper objectMapper;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final Integer year = 2023;
     private final Integer quarter = 3;
 
     @Autowired
     public CommInfraGraphService(CommStoreRepository commStoreRepository, ObjectMapper objectMapper,
-                                 CommAptRepository commAptRepository) {
+                                 CommAptRepository commAptRepository, RedisTemplate<String, Object> redisTemplate) {
         this.commStoreRepository = commStoreRepository;
         this.objectMapper = objectMapper;
         this.commAptRepository = commAptRepository;
+        this.redisTemplate = redisTemplate;
     }
 
     /* json 형태 예시
@@ -50,7 +55,20 @@ public class CommInfraGraphService {
     */
 
     public CommStoreDTO getStoreDataAsJson(Long commCode) {
-        try{
+        String cacheKey = "infraGraph:storeGraph:" + commCode + ":" + year + ":" + quarter;
+
+        try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommStoreDTO.builder()
+                        .storeGraph(cachedData)
+                        .build();
+            }
+
             List<CommStoreEntity> stores = commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "bar");
@@ -77,6 +95,9 @@ public class CommInfraGraphService {
             data.set("series", series);
             chartData.set("data", data);
 
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
+
             return CommStoreDTO.builder()
                     .storeGraph(chartData)
                     .build();
@@ -102,7 +123,20 @@ public class CommInfraGraphService {
     */
 
     public CommAptDTO getAptAreaDataAsJson(Long commCode) {
+        String cacheKey = "infraGraph:aptAreaGraph:" + commCode + ":" + year + ":" + quarter;
+
         try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommAptDTO.builder()
+                        .areaGraph(cachedData)
+                        .build();
+            }
+
             CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "bar");
@@ -133,6 +167,9 @@ public class CommInfraGraphService {
             data.set("series", series);
             chartData.set("data", data);
 
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
+
             return CommAptDTO.builder()
                     .areaGraph(chartData)
                     .build();
@@ -158,7 +195,20 @@ public class CommInfraGraphService {
     */
 
     public CommAptDTO getAptPriceDataAsJson(Long commCode) {
-        try{
+        String cacheKey = "infraGraph:aptPriceGraph:" + commCode + ":" + year + ":" + quarter;
+
+        try {
+            // Redis에서 캐시된 데이터 조회
+            Object dataFromRedis = redisTemplate.opsForValue().get(cacheKey);
+
+            if (dataFromRedis != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
+                return CommAptDTO.builder()
+                        .priceGraph(cachedData)
+                        .build();
+            }
+
             CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "bar");
@@ -166,7 +216,6 @@ public class CommInfraGraphService {
             ObjectNode data = objectMapper.createObjectNode();
             ArrayNode categories = objectMapper.createArrayNode();
             ArrayNode series = objectMapper.createArrayNode();
-
 
             categories.add("1억 미만");
             categories.add("1억~2억");
@@ -192,6 +241,9 @@ public class CommInfraGraphService {
             data.set("categories", categories);
             data.set("series", series);
             chartData.set("data", data);
+
+            // 차트 데이터 캐시
+            redisTemplate.opsForValue().set(cacheKey, chartData);
 
             return CommAptDTO.builder()
                     .priceGraph(chartData)
