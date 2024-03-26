@@ -23,8 +23,8 @@ public class CommInfraService {
     private final CommIndicatorChangeRepository commIndicatorChangeRepository;
     private final CommAptRepository commAptRepository;
     private final CommFacilitiesRepository commFacilitiesRepository;
-    private final Integer year = 2023;
-    private final Integer quarter = 3;
+    private final static Integer YEAR = 2023;
+    private final static Integer QUARTER = 3;
 
     @Autowired
     public CommInfraService(CommIndicatorChangeRepository commIndicatorChangeRepository,
@@ -50,10 +50,10 @@ public class CommInfraService {
             // 중앙값을 기준으로 두 서브리스트로 나눕니다.
             List<CommIndicatorChangeEntity> lowerHalf = rdiList.stream()
                     .filter(rdi -> rdi.getRdi() < median)
-                    .collect(Collectors.toList());
+                    .toList();
             List<CommIndicatorChangeEntity> upperHalf = rdiList.stream()
                     .filter(rdi -> rdi.getRdi() > median)
-                    .collect(Collectors.toList());
+                    .toList();
 
             // 각 서브리스트의 중앙값을 계산합니다.
             Double lowerMedian = lowerHalf.isEmpty() ? null : getMedianFromSortedRDIList(lowerHalf);
@@ -62,7 +62,7 @@ public class CommInfraService {
             String quartileGrades = null;
 
             double value = commIndicatorChangeRepository
-                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter)
+                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, YEAR, QUARTER)
                     .getRdi();
 
             if (value < lowerMedian) {
@@ -86,7 +86,7 @@ public class CommInfraService {
     public CommIndicatorDTO getChangeIndicatorName (Long commCode){
         try {
             String indicator = commIndicatorChangeRepository
-                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter)
+                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, YEAR, QUARTER)
                     .getCommChangeIndicatorName();
 
             return CommIndicatorDTO.builder().indicator(indicator).build();
@@ -100,7 +100,7 @@ public class CommInfraService {
     public CommAptDTO getApt (Long commCode) {
         try {
             CommAptEntity commAptEntity = commAptRepository
-                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, YEAR, QUARTER);
 
             Long apartmentComplexes = commAptEntity
                     .getApartmentComplexes();
@@ -124,7 +124,7 @@ public class CommInfraService {
     public CommFacilitiesDTO getFacilities (Long commCode) {
         try {
             CommFacilitiesEntity commFacilitiesEntity = commFacilitiesRepository
-                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+                    .findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, YEAR, QUARTER);
 
             Long facilities = commFacilitiesEntity
                     .getFacilities();

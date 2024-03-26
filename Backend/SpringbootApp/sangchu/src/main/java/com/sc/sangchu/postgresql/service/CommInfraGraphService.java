@@ -21,8 +21,8 @@ public class CommInfraGraphService {
     private final CommStoreRepository commStoreRepository;
     private final CommAptRepository commAptRepository;
     private final ObjectMapper objectMapper;
-    private final Integer year = 2023;
-    private final Integer quarter = 3;
+    private final static Integer YEAR = 2023;
+    private final static Integer QUARTER = 3;
 
     @Autowired
     public CommInfraGraphService(CommStoreRepository commStoreRepository, ObjectMapper objectMapper,
@@ -51,7 +51,8 @@ public class CommInfraGraphService {
 
     public CommStoreDTO getStoreDataAsJson(Long commCode) {
         try{
-            List<CommStoreEntity> stores = commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+            List<CommStoreEntity> stores = commStoreRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode,
+                YEAR, QUARTER);
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "bar");
 
@@ -103,7 +104,8 @@ public class CommInfraGraphService {
 
     public CommAptDTO getAptAreaDataAsJson(Long commCode) {
         try {
-            CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+            CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode,
+                YEAR, QUARTER);
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "bar");
 
@@ -159,7 +161,8 @@ public class CommInfraGraphService {
 
     public CommAptDTO getAptPriceDataAsJson(Long commCode) {
         try{
-            CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+            CommAptEntity apts = commAptRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode,
+                YEAR, QUARTER);
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "bar");
 

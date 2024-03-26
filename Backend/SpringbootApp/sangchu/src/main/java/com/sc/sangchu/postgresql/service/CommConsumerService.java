@@ -12,8 +12,8 @@ import java.util.List;
 @Slf4j
 public class CommConsumerService {
     private final CommIncomeRepository commIncomeRepository;
-    private final static Integer year = 2023;
-    private final static Integer quarter = 3;
+    private final static Integer YEAR = 2023;
+    private final static Integer QUARTER = 3;
 
     public CommConsumerService (CommIncomeRepository commIncomeRepository) {
         this.commIncomeRepository = commIncomeRepository;
@@ -22,7 +22,8 @@ public class CommConsumerService {
     // 서울시 총 월 평균 소득, 월 평균 소득, 총 지출 가져오기
     public CommIncomeDTO getIncome (Long commCode){
         try {
-            List<CommIncomeEntity>commIncomeEntities = commIncomeRepository.findAllByYearCodeAndQuarterCode(year, quarter);
+            List<CommIncomeEntity>commIncomeEntities = commIncomeRepository.findAllByYearCodeAndQuarterCode(
+                YEAR, QUARTER);
 
             // 월 평균 소득의 합을 계산
             double totalIncome = commIncomeEntities.stream()
@@ -33,7 +34,8 @@ public class CommConsumerService {
             double averageIncome = totalIncome / commIncomeEntities.size();
 
             CommIncomeEntity commIncomeEntity =
-                    commIncomeRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+                    commIncomeRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode,
+                        YEAR, QUARTER);
 
             Double monthlyAverageIncome = commIncomeEntity.getMonthlyAverageIncomeAmount();
             Double expenditureTotal = commIncomeEntity.getExpenditureTotalAmount();
