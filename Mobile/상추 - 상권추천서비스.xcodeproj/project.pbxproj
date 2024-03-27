@@ -35,6 +35,7 @@
 		65A66B792BA97AC000E4E3D0 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B782BA97AC000E4E3D0 /* CameraService.swift */; };
 		65A66B7B2BA97B1900E4E3D0 /* CustomCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B7A2BA97B1900E4E3D0 /* CustomCameraView.swift */; };
 		65A66B7D2BA97B7100E4E3D0 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A66B7C2BA97B7100E4E3D0 /* CameraView.swift */; };
+		65B69AF32BB3F85800AABE50 /* BookMarkNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B69AF22BB3F85800AABE50 /* BookMarkNetworkManager.swift */; };
 		65D720D52BAA604B00AB353F /* SeoulBoroughOutline.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 65D720D42BAA604B00AB353F /* SeoulBoroughOutline.geojson */; };
 		65FB38D02BB07ADC0097FD2D /* InfraNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38CF2BB07ADC0097FD2D /* InfraNetworkManager.swift */; };
 		65FB38D22BB07BED0097FD2D /* InfraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38D12BB07BED0097FD2D /* InfraModel.swift */; };
@@ -113,6 +114,7 @@
 		65A66B782BA97AC000E4E3D0 /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
 		65A66B7A2BA97B1900E4E3D0 /* CustomCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCameraView.swift; sourceTree = "<group>"; };
 		65A66B7C2BA97B7100E4E3D0 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		65B69AF22BB3F85800AABE50 /* BookMarkNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMarkNetworkManager.swift; sourceTree = "<group>"; };
 		65D720D42BAA604B00AB353F /* SeoulBoroughOutline.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SeoulBoroughOutline.geojson; sourceTree = "<group>"; };
 		65FB38CF2BB07ADC0097FD2D /* InfraNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfraNetworkManager.swift; sourceTree = "<group>"; };
 		65FB38D12BB07BED0097FD2D /* InfraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfraModel.swift; sourceTree = "<group>"; };
@@ -285,6 +287,7 @@
 				DAA418892BB07BDF006B48B5 /* ConsumerNetworkManager.swift */,
 				65FB38CF2BB07ADC0097FD2D /* InfraNetworkManager.swift */,
 				65FB38D62BB15FF00097FD2D /* HomeNetworkManager.swift */,
+				65B69AF22BB3F85800AABE50 /* BookMarkNetworkManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -709,6 +712,7 @@
 				6577BB392B9ECBA40071A3EA /* Color.swift in Sources */,
 				DA73BC6C2BB3B69800CFA087 /* MapAdditional.swift in Sources */,
 				659A1FA52BA294DA00B6FDAB /* UpdateBookMark.swift in Sources */,
+				65B69AF32BB3F85800AABE50 /* BookMarkNetworkManager.swift in Sources */,
 				650D1ED32BA19B3A0055B3BA /* BookMarkList.swift in Sources */,
 				65FB38D52BB085730097FD2D /* SalesModel.swift in Sources */,
 				DAD092242BA92A1300A6DF92 /* GeoJSONLoader.swift in Sources */,
@@ -885,7 +889,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 438C43K8SQ;
+				DEVELOPMENT_TEAM = X83LNW6267;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
@@ -917,7 +921,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 438C43K8SQ;
+				DEVELOPMENT_TEAM = X83LNW6267;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";

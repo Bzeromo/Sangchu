@@ -77,16 +77,17 @@ struct UpdateBookMarkView: View {
                     }.padding(.top, 6)
                 }
             }
-           
+            
             VStack(alignment: .leading, spacing: 3 ){
                 Text("\(item.cdTitle)").font(.title).fontWeight(.semibold)
                 HStack{
                     Text("\(item.timestamp, format: Date.FormatStyle(date:.numeric, time:.standard))").font(.system(size:13)).foregroundColor(.gray)
                     
                     Spacer()
-                    Button("정보보러가기") {
-                        dismiss()
-                    }.font(.system(size:13))
+                    NavigationLink(destination: BDMapView(cameraLatitude: item.latitude, cameraLongitude: item.longitude, selectedCDCode: String(item.cdCode), selectedCDName: item.cdTitle)){
+                        Text("정보보러가기").font(.system(size:13))
+                    }
+                    
                 }
             }.padding(.leading , 20).padding(.trailing, 20)
             HStack{

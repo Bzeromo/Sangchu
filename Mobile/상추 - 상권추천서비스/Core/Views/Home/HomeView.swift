@@ -22,6 +22,11 @@ struct HomeView: View {
     @State var gradiant = [Color(hex: "37683B"), Color(hex: "529B58")]// 사용할 그라디언트 색상 배열
 
     let gradientColors: [Color] = [Color(hex: "FF8080"),Color(hex: "FFA680"),Color(hex: "FFBF80"),Color(hex: "FFD480"),Color(hex: "FFE680"),Color(hex: "F4FF80"),Color(hex: "D5FF80"),Color(hex: "A2FF80"),Color(hex: "80FF9E"),Color(hex: "80FFD5"),Color(hex: "80EAFF"),Color(hex: "80A6FF"),Color(hex: "8A80FF"),Color(hex: "BF80FF"),Color(hex: "FD80FF"),Color(hex: "FF8097")]
+   
+    let topColors: [Color] = [Color(hex: "87CC6C"),Color(hex: "6DBCCD"),Color(hex: "C078D2")]
+    
+    let numberTop: [Color] = [Color(hex: "F5DC82"),Color(hex: "FDFF93"),Color(hex: "F6F339"),Color(hex: "93C73D")]
+    let numberBottom: [Color] = [Color(hex: "E36AD4"),Color(hex: "F45E35"),Color(hex: "86D979"),Color(hex: "F0F2ED")]
 
     @State var Top10 : [HomeModel.CommercialDistrict]? = nil
     private var scrollObservableView: some View {
@@ -74,10 +79,10 @@ struct HomeView: View {
                 ZStack{
                     VStack{
                         let offset = $viewModel.offset //  기본값은 47 원하는 액션은 양수
-                        let scaleFactor = max(1, 1 + offset.wrappedValue / 200)
-                        let offsetFactor = min(-10, -10 - offset.wrappedValue )
+                        let scaleFactor = max(1.15, 1.15 + offset.wrappedValue / 380)
+                        let offsetFactor = min(-28, -28 - offset.wrappedValue * 0.8)
                         // 위로하면 양수, 아래로 하면 음수
-                        Image(uiImage: UIImage(named: "AppIcon.png")!)
+                        Image(uiImage: UIImage(named: "Main.png")!)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .scaleEffect(scaleFactor) // 스크롤에 따라 크기 늘림
@@ -86,9 +91,7 @@ struct HomeView: View {
                         Spacer()
                     }
                     
-                    VStack{
-                        LinearGradient(colors: gradiant, startPoint: .bottom, endPoint: .top).frame(height : 150)
-                    }
+                    LinearGradient(colors: gradiant, startPoint: .bottom, endPoint: .top).frame(height : 150)
                     .frame(maxHeight: .infinity, alignment: .bottom)
                     
                     VStack(alignment: .center){
@@ -140,7 +143,8 @@ struct HomeView: View {
                 Text("서울시 상권 Top 10").font(.title2).fontWeight(.semibold).foregroundColor(.black).padding(.leading , 20)
                 Spacer()
                 NavigationLink(destination: BDMapView()) {
-                               Text("지도보러가기")
+                               Text("지도 보기")
+                                .fontWeight(.medium)
                                    .font(.system(size: 17)) // 텍스트 크기 설정
                                    .foregroundColor(Color("sangchu")) // Text Color를 지정합니다. "sangchu"는 Assets에 정의된 색상 이름이어야 합니다.
                                    .padding(.trailing, 20) // 오른쪽 패딩을 추가합니다.
@@ -173,37 +177,40 @@ struct HomeView: View {
                                     NavigationLink(destination: BDMapView(cameraLatitude: district.longitude, cameraLongitude: district.latitude, selectedCDCode: String(district.commercialDistrictCode), selectedCDName: district.commercialDistrictName)){
                                         ZStack {
                                             VStack{
-                                                Text("\(index + 1)").foregroundColor(.white).fontWeight(.bold).font(.system(size: 130))
+                                                Text("\(index + 1)").foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D")).fontWeight(.bold).font(.system(size: 130))
                                             }
                                             .frame(width : 190 , height: 190)
-    //                                        .background(Color("sangchu"))
-                                            .background(Color.pink)
+                                            .background(
+                                                index < 3 ?
+                                                LinearGradient(colors: [numberTop[index % 3] ,numberBottom[index % 3]], startPoint: .top, endPoint: .bottom) : LinearGradient(colors: [numberTop[3] ,numberBottom[3]], startPoint: .top, endPoint: .bottom)
+                                            
+                                            )
                                             .cornerRadius(60)
                                             .rotationEffect(.degrees(-28)).offset(x:120,y:-30)
                                                 HStack{
                                                     VStack(alignment: .leading){
                                                         HStack{
-                                                            Text("\(district.commercialDistrictName)").font(.title).foregroundColor(Color.white).fontWeight(.semibold)
+                                                            Text("\(Int(district.commercialDistrictScore))점").font(.title).foregroundColor(index < 3 ? Color.white : Color.black).fontWeight(.bold)
                                                             Spacer()
                                                         }
                                                         HStack{
                                                             VStack(alignment: .leading){
-                                                                Text("총점").font(.title3)
                                                                 Text("매출점수").font(.caption)
                                                                 Text("상주인구점수").font(.caption)
                                                                 Text("유동인구점수").font(.caption)
                                                                 Text("다양성").font(.caption)
-                                                            }
+                                                            }.hidden()
                                                             VStack(alignment: .leading){
-                                                                Text("\(Int(district.commercialDistrictScore))").font(.title3)
                                                                 Text("\(Int(district.salesScore))").font(.caption)
                                                                 Text("\(Int(district.residentPopulationScore))").font(.caption)
                                                                 Text("\(Int(district.floatingPopulationScore))").font(.caption)
                                                                 Text("\(Int(district.rdiScore))").font(.caption)
-                                                            }
+                                                            }.hidden()
                                                         }
+                                                        
                                                         VStack(alignment: .leading){
-                                                            Text("정보 보러가기").font(.caption2).foregroundColor(.gray)
+                                                            Text(district.commercialDistrictName).font(.title).fontWeight(.bold).foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D")).opacity(0.7).lineLimit(1)
+                                                            Text("정보 보러가기 >").font(.caption2).foregroundColor(Color(hex: "767676"))
                 //                                            Text("상권 코드 \(district.commercialDistrictCode)")
                                                         }
                                                     }.frame(maxWidth: UIScreen.main.bounds.width * 0.6)
@@ -219,7 +226,7 @@ struct HomeView: View {
                                     }
                                     .frame(width: UIScreen.main.bounds.width * 0.8, height : 180)
                                     .padding()
-                                    .background(Color(hex: "A2FF80")) // Top배경
+                                    .background( index < 3 ? topColors[index % 3] : Color.white) // Top배경
                                     .foregroundColor(.white)
                                     .cornerRadius(10)
                                 }
@@ -255,7 +262,7 @@ struct HomeView: View {
                 Text("북마크").font(.title2).fontWeight(.semibold).foregroundColor(.black).padding(.leading , 20)
                 Spacer()
                 NavigationLink (destination: BookMarkList()) {
-                    Text("전체보러가기").font(.system(size: 17)).fontWeight(.regular).foregroundColor(Color("sangchu")).padding(.trailing , 20)
+                    Text("전체 보기").font(.system(size: 17)).fontWeight(.medium).foregroundColor(Color("sangchu")).padding(.trailing , 20)
                 }
             }
             )  {
@@ -288,16 +295,16 @@ struct HomeView: View {
                                                            VStack(alignment: .leading){
                                                                Spacer()
                                                                HStack{
-                                                                   Text("\(items[index].cdTitle)").foregroundColor(.white).padding(.leading, 10).padding(.bottom,7).lineLimit(1)
+                                                                   Text("\(items[index].cdTitle)").foregroundColor(.white).padding(.leading, 10).padding(.bottom,7).lineLimit(1).fontWeight(.semibold)
                                                                    Spacer()
                                                                }
                                                                
                                                            }
                                                            VStack(alignment : .trailing){
-                                                               Text("사진")
+                                                               Text("사진").hidden()
                                                                Spacer()
                                                            }
-                                                       }.frame(width : UIScreen.main.bounds.width * 0.43, height : 100).background(   LinearGradient(colors: [gradientColors[index] ,gradientColors[index].opacity(0.5)], startPoint: .bottom, endPoint: .top)).cornerRadius(10)
+                                                       }.frame(width : UIScreen.main.bounds.width * 0.43, height : 100).background(   LinearGradient(colors: [gradientColors[index] ,gradientColors[index].opacity(0.9)], startPoint: .bottom, endPoint: .top)).cornerRadius(10)
                                                    }
                                                }
                                                // 다음 아이템 (있을 경우)
@@ -312,7 +319,7 @@ struct HomeView: View {
                                                                }
                                                            }
                                                            VStack(alignment : .trailing){
-                                                               Text("사진")
+                                                               Text("사진").hidden()
                                                                Spacer()
                                                            }
                                                        }.frame(width : UIScreen.main.bounds.width * 0.43, height : 100).background(   LinearGradient(colors: [gradientColors[index+1] ,gradientColors[index+1].opacity(0.7)], startPoint: .bottom, endPoint: .top)).cornerRadius(10)
