@@ -28,9 +28,9 @@ public class CommConsumerGraphService {
     private final CommWorkingPopulationRepository commWorkingPopulationRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
-    private final static Integer YEAR_LIMIT = 2022;
-    private final static Integer YEAR = 2023;
-    private final static Integer QUARTER = 3;
+    private static final Integer YEAR_LIMIT = 2022;
+    private static final Integer YEAR = 2023;
+    private static final Integer QUARTER = 3;
 
     public CommConsumerGraphService(CommFloatingPopulationRepository commFloatingPopulationRepository,
                                     ObjectMapper objectMapper,

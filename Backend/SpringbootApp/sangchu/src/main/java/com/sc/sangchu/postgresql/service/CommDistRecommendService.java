@@ -29,9 +29,9 @@ public class CommDistRecommendService {
     private final CommFloatingPopulationRepository commFloatingPopulationRepository;
     private final CommResidentPopulationRepository commResidentPopulationRepository;
     private final CommStoreRepository commStoreRepository;
-    private final static Integer YEAR = 2023;
-    private final static Integer QUARTER = 3;
-    private final static Integer RANK_LIMIT = 10;
+    private static final Integer YEAR = 2023;
+    private static final Integer QUARTER = 3;
+    private static final Integer RANK_LIMIT = 10;
 
     @Autowired
     public CommDistRecommendService(CommDistRepository commDistRepository,

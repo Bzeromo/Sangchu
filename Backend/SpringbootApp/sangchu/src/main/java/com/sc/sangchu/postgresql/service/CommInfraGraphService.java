@@ -24,8 +24,8 @@ public class CommInfraGraphService {
     private final CommAptRepository commAptRepository;
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final static Integer YEAR = 2023;
-    private final static Integer QUARTER = 3;
+    private static final Integer YEAR = 2023;
+    private static final Integer QUARTER = 3;
 
     @Autowired
     public CommInfraGraphService(CommStoreRepository commStoreRepository, ObjectMapper objectMapper,

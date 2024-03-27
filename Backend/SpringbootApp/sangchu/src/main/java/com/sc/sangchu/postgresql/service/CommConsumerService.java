@@ -12,8 +12,8 @@ import java.util.List;
 @Slf4j
 public class CommConsumerService {
     private final CommIncomeRepository commIncomeRepository;
-    private final static Integer YEAR = 2023;
-    private final static Integer QUARTER = 3;
+    private static final Integer YEAR = 2023;
+    private static final Integer QUARTER = 3;
 
     public CommConsumerService (CommIncomeRepository commIncomeRepository) {
         this.commIncomeRepository = commIncomeRepository;
