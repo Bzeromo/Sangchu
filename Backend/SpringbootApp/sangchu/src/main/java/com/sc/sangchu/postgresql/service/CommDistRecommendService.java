@@ -3,6 +3,7 @@ package com.sc.sangchu.postgresql.service;
 import com.sc.sangchu.dto.CommDistDTO;
 import com.sc.sangchu.dto.CommDistRankDTO;
 import com.sc.sangchu.dto.CommDistServiceScoreDTO;
+import com.sc.sangchu.dto.CommDistSetRankDTO;
 import com.sc.sangchu.dto.infra.CommStoreTotalCountDTO;
 import com.sc.sangchu.postgresql.entity.CommDistEntity;
 import com.sc.sangchu.postgresql.entity.CommEstimatedSalesEntity;
@@ -259,19 +260,18 @@ public class CommDistRecommendService {
     }
     public List<CommDistRankDTO> setCommDistRankDTOs(List<CommDistDTO> commDistList, String serviceCode){
 
-        List<CommDistRankDTO> list = commDistList.stream()
+
+        return commDistList.stream()
                 .map(dto -> {
                     Long cdCode = dto.getCommercialDistrictCode();
                     String name = dto.getCommercialDistrictName();
 
-                    // 서울시 점수 랭킹
-                    List<CommDistEntity> sortedEntities = commDistRepository.findAll()
+                    Long totalScoreRank = commDistRepository.findAllByCommercialDistrictCode()
                             .stream()
-                            .sorted(Comparator.comparing(CommDistEntity::getCommercialDistrictScore).reversed())
-                            .toList();
-                    Long totalScoreRank = LongStream.range(0, sortedEntities.size())
-                            .filter(i -> sortedEntities.get((int) i).getCommercialDistrictCode().equals(cdCode))
-                            .findFirst().orElse(0L) + 1;
+                            .filter(f -> f.getCommCode().equals(cdCode))
+                            .mapToLong(CommDistSetRankDTO::getRank)
+                            .findFirst()
+                            .orElse(0L);;
 
                     // 현재 분기 매출
                     CommEstimatedSalesEntity estimatedSalesEntity = commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(year, quarter, cdCode,serviceCode);
@@ -293,25 +293,23 @@ public class CommDistRecommendService {
                                     .score(dto.getCommercialDistrictScore())
                                     .build())
                             .sales(CommDistRankDTO.valueScoreDouble.builder()
-                                    .value(estimatedSalesEntity.getMonthlySales() != null ? estimatedSalesEntity.getMonthlySales() : 0D)
+                                    .value(estimatedSalesEntity != null ? estimatedSalesEntity.getMonthlySales() : 0D)
                                     .score(dto.getSalesScore())
                                     .build())
                             .businessDiversity(CommDistRankDTO.valueScoreLong.builder()
-                                    .value(commStoreTotalCountDTO.getTotalStoreCount() != null ? commStoreTotalCountDTO.getTotalStoreCount() : 0L)
+                                    .value(commStoreTotalCountDTO != null ? commStoreTotalCountDTO.getTotalStoreCount() : 0L)
                                     .score(dto.getRdiScore())
                                     .build())
                             .footTraffic(CommDistRankDTO.valueScoreLong.builder()
-                                    .value(commFloatingPopulationEntity.getTotalFloatingPopulation() != null ? commFloatingPopulationEntity.getTotalFloatingPopulation() : 0L)
+                                    .value(commFloatingPopulationEntity != null ? commFloatingPopulationEntity.getTotalFloatingPopulation() : 0L)
                                     .score(dto.getFloatingPopulationScore())
                                     .build())
                             .residentialPopulation(CommDistRankDTO.valueScoreLong.builder()
-                                    .value(commResidentPopulationEntity.getTotalResidentPopulation() != null ? commResidentPopulationEntity.getTotalResidentPopulation() : 0L)
+                                    .value(commResidentPopulationEntity != null ? commResidentPopulationEntity.getTotalResidentPopulation() : 0L)
                                     .score(dto.getResidentPopulationScore())
                                     .build())
                             .build();
                 })
-                .collect(Collectors.toList());
-
-        return list;
+                .toList();
     }
 }
