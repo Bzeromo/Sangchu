@@ -57,7 +57,6 @@ struct DistrictDetailView: View {
 
 // ScrollView 내부의 카드 하나
 struct CardView: View {
-    
     var districtData: DistrictData // 상권 정보
     var index: Int // 해당 카드의 인덱스
     var selectedFilter: String // 필터링 기준
@@ -198,6 +197,8 @@ struct CardView: View {
 } // end of CardView
 
 struct DistrictRankingView: View {
+    @State private var isLoading = false
+    @State private var hasFetchedData = false // 데이터를 이미 가져왔는지 여부 // 무한 렌더링 방지
     @State private var filteredDistrictsData = FilteredDistrictsData(totalScoreSorted: [], salesSorted: [], footTrafficSorted: [], residentialPopulationSorted: [], businessDiversitySorted: [])
     @State private var selectedPage = 0
     @State private var selectedFilter = "종합순"
@@ -244,23 +245,35 @@ struct DistrictRankingView: View {
                 .padding(.leading, 20)
             }
             .padding(.vertical, 10)
-            
-            TabView {
-                ForEach(currentFilteredData.indices, id: \.self) { index in
-                    CardView(districtData: currentFilteredData[index], index: index, selectedFilter: selectedFilter)
-                        .frame(width: UIScreen.main.bounds.width * 0.8)
-                }
+            if isLoading {
+                Spacer().frame(height: 120)
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
+                    .scaleEffect(5)
             }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always)) // 원형 인디케이터를 항상 표시합니다.
-            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width) // TabView의 크기를 지정합니다.
-            .onAppear {
-                Task {
-                    do {
-                        // API 요청을 통해 filteredDistrictsData를 초기화
-                        let fetchedData = try await API.fetchFilteredDistrictsData(borough: borough, category: category)
-                        self.filteredDistrictsData = fetchedData
-                    } catch {
-                        print("데이터를 가져오는 데 실패했습니다.")
+            else {
+                TabView {
+                    ForEach(currentFilteredData.indices, id: \.self) { index in
+                        CardView(districtData: currentFilteredData[index], index: index, selectedFilter: selectedFilter)
+                            .frame(width: UIScreen.main.bounds.width * 0.8)
+                    }
+                }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always)) // 원형 인디케이터를 항상 표시합니다.
+                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width) // TabView의 크기를 지정합니다.
+                .onAppear {
+                    if !hasFetchedData {
+                        Task {
+                            isLoading = true
+                            do {
+                                // API 요청을 통해 filteredDistrictsData를 초기화
+                                let fetchedData = try await API.fetchFilteredDistrictsData(borough: borough, category: category)
+                                self.filteredDistrictsData = fetchedData
+                            } catch {
+                                print("데이터를 가져오는 데 실패했습니다.")
+                            }
+                            isLoading = false
+                            hasFetchedData = true
+                        }
                     }
                 }
             }
@@ -281,25 +294,6 @@ struct API {
         print("category = \(category)")
         
         let url = "http://3.36.91.181:8084/api/commdist/district-rank?guCode=\(guCode)&serviceCode=\(serviceCode)"
-        
-        // Alamofire의 request를 async/await와 함께 사용
-//        do {
-//            let request = AF.request(url)
-//            let response = try await request.serializingDecodable([DistrictData].self).value
-//            
-//            var tmpFilteredData = FilteredDistrictsData()
-//            tmpFilteredData.totalScoreSorted = response.sorted(by: { $0.totalScore.score > $1.totalScore.score })
-//            tmpFilteredData.salesSorted = response.sorted(by: { $0.sales.score > $1.sales.score })
-//            tmpFilteredData.footTrafficSorted = response.sorted(by: { $0.footTraffic.score > $1.footTraffic.score })
-//            tmpFilteredData.residentialPopulationSorted = response.sorted(by: { $0.residentialPopulation.score > $1.residentialPopulation.score })
-//            tmpFilteredData.businessDiversitySorted = response.sorted(by: { $0.businessDiversity.score > $1.businessDiversity.score })
-//            
-//            return tmpFilteredData
-//        } catch {
-//            print("Request error: \(error)")
-//            throw error
-//        }
-        //
         do {
             let response: DataResponse<[DistrictData], AFError> = try await AF.request(url).serializingDecodable([DistrictData].self).response
             switch response.result {
@@ -320,29 +314,3 @@ struct API {
         }
     }
 }
-
-
-//struct API {
-//    static func fetchFilteredDistrictsData(borough: String, category: String) async throws ->
-//    FilteredDistrictsData {
-//   
-//         샘플용
-//        let sampleData: [DistrictData] = [
-//            DistrictData(cdCode: "3110291", name: "상권A", totalScore: FilteredValue(value: 1000, score: 80), sales: FilteredValue(value: 100, score: 70), footTraffic: FilteredValue(value: 500, score: 90), residentialPopulation: FilteredValue(value: 200, score: 60), businessDiversity: FilteredValue(value: 10, score: 50)), // 한성대 3번출구
-//            DistrictData(cdCode: "3110293", name: "상권B", totalScore: FilteredValue(value: 900, score: 85), sales: FilteredValue(value: 150, score: 75), footTraffic: FilteredValue(value: 400, score: 95), residentialPopulation: FilteredValue(value: 300, score: 55), businessDiversity: FilteredValue(value: 15, score: 45)), // 삼선중학교
-//            DistrictData(cdCode: "3110295", name: "상권C", totalScore: FilteredValue(value: 800, score: 78), sales: FilteredValue(value: 120, score: 82), footTraffic: FilteredValue(value: 450, score: 88), residentialPopulation: FilteredValue(value: 250, score: 65), businessDiversity: FilteredValue(value: 12, score: 48)),
-//            DistrictData(cdCode: "3110281", name: "상권D", totalScore: FilteredValue(value: 700, score: 75), sales: FilteredValue(value: 130, score: 80), footTraffic: FilteredValue(value: 420, score: 85), residentialPopulation: FilteredValue(value: 220, score: 70), businessDiversity: FilteredValue(value: 13, score: 55)),
-//            DistrictData(cdCode: "3110290", name: "상권E", totalScore: FilteredValue(value: 650, score: 72), sales: FilteredValue(value: 110, score: 78), footTraffic: FilteredValue(value: 480, score: 91), residentialPopulation: FilteredValue(value: 210, score: 75), businessDiversity: FilteredValue(value: 11, score: 50)),
-//            DistrictData(cdCode: "3110286", name: "상권F", totalScore: FilteredValue(value: 600, score: 70), sales: FilteredValue(value: 140, score: 77), footTraffic: FilteredValue(value: 430, score: 86), residentialPopulation: FilteredValue(value: 240, score: 68), businessDiversity: FilteredValue(value: 14, score: 53)),
-//            DistrictData(cdCode: "3110297", name: "상권G", totalScore: FilteredValue(value: 550, score: 65), sales: FilteredValue(value: 90, score: 65), footTraffic: FilteredValue(value: 410, score: 80), residentialPopulation: FilteredValue(value: 230, score: 62), businessDiversity: FilteredValue(value: 9, score: 47))
-//        ]
-//
-//        return FilteredDistrictsData(
-//            totalScoreSorted: sampleData.sorted(by: { $0.totalScore.score > $1.totalScore.score }),
-//            salesSorted: sampleData.sorted(by: { $0.sales.score > $1.sales.score }),
-//            footTrafficSorted: sampleData.sorted(by: { $0.footTraffic.score > $1.footTraffic.score }),
-//            residentialPopulationSorted: sampleData.sorted(by: { $0.residentialPopulation.score > $1.residentialPopulation.score }),
-//            businessDiversitySorted: sampleData.sorted(by: { $0.businessDiversity.score > $1.businessDiversity.score })
-//        )
-//    } // end of fetchFilteredDistrictsData
-//} // end of API
