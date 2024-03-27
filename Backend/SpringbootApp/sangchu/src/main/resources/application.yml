@@ -9,8 +9,8 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
-      # username :
-      # pw
+      username : ${REDIS_USERNAME}
+      pw: ${REDIS_PASSWORD}
 
   datasource:
     jdbc-url: ${DB_URL}
