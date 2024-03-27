@@ -42,6 +42,7 @@
 		65FB38D92BB160310097FD2D /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38D82BB160310097FD2D /* HomeModel.swift */; };
 		DA0AB18B2BABCCD800D8BBDF /* CDInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0AB18A2BABCCD800D8BBDF /* CDInfoView.swift */; };
 		DA2162192BA9EC2E009750B6 /* CommercialDistrictOutline.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */; };
+		DA73BC6C2BB3B69800CFA087 /* MapAdditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA73BC6B2BB3B69800CFA087 /* MapAdditional.swift */; };
 		DA7C64A02BA1FF3000BE74DD /* BDMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */; };
 		DA7C64A22BA2062800BE74DD /* NMapsGeometry.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7C64A12BA2062800BE74DD /* NMapsGeometry.xcframework */; };
 		DA7C64A42BA2062800BE74DD /* NMapsMap.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7C64A32BA2062800BE74DD /* NMapsMap.xcframework */; };
@@ -118,6 +119,7 @@
 		DA0AB18A2BABCCD800D8BBDF /* CDInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDInfoView.swift; sourceTree = "<group>"; };
 		DA0AB19E2BAD18BA00D8BBDF /* Charts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Charts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CommercialDistrictOutline.geojson; sourceTree = "<group>"; };
+		DA73BC6B2BB3B69800CFA087 /* MapAdditional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapAdditional.swift; sourceTree = "<group>"; };
 		DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDMapView.swift; sourceTree = "<group>"; };
 		DA7C64A12BA2062800BE74DD /* NMapsGeometry.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NMapsGeometry.xcframework; path = Pods/NMapsGeometry/framework/NMapsGeometry.xcframework; sourceTree = "<group>"; };
 		DA7C64A32BA2062800BE74DD /* NMapsMap.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NMapsMap.xcframework; path = Pods/NMapsMap/framework/NMapsMap.xcframework; sourceTree = "<group>"; };
@@ -388,6 +390,7 @@
 			isa = PBXGroup;
 			children = (
 				DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */,
+				DA73BC6B2BB3B69800CFA087 /* MapAdditional.swift */,
 			);
 			path = MapView;
 			sourceTree = "<group>";
@@ -691,6 +694,7 @@
 				65FB38D22BB07BED0097FD2D /* InfraModel.swift in Sources */,
 				6577BB402B9ECCFF0071A3EA /* ChooseBorough.swift in Sources */,
 				6577BB392B9ECBA40071A3EA /* Color.swift in Sources */,
+				DA73BC6C2BB3B69800CFA087 /* MapAdditional.swift in Sources */,
 				659A1FA52BA294DA00B6FDAB /* UpdateBookMark.swift in Sources */,
 				650D1ED32BA19B3A0055B3BA /* BookMarkList.swift in Sources */,
 				65FB38D52BB085730097FD2D /* SalesModel.swift in Sources */,

@@ -13,6 +13,8 @@ class MapViewModel: ObservableObject {
     @Published var selectedCDCode : String = ""
     @Published var selectedCDName : String = ""
     @Published var showBottomSheet : Bool = false
+    @Published var showBoroughSheet : Bool = false
+    @Published var selectedBoroughLocation: NMGLatLng? = nil
 }
 
 struct CommercialDistrict: Codable {
@@ -295,6 +297,17 @@ struct MapView: UIViewRepresentable {
             }
             cameraLatLng = nil // 중복 이동 방지를 위해 nil로 설정
         }
+        
+        if let boroughLocation = viewModel.selectedBoroughLocation {
+            let cameraUpdate = NMFCameraUpdate(scrollTo: boroughLocation)
+            cameraUpdate.animation = .easeIn
+            uiView.mapView.moveCamera(cameraUpdate) {_ in 
+                uiView.mapView.zoomLevel = 11
+            }
+            
+            // 이동 후 상태 초기화
+            viewModel.selectedBoroughLocation = nil
+        }
     }
 }
 
@@ -351,6 +364,13 @@ struct BDMapView: View {
                                 .presentationDetents([.fraction(0.55), .fraction(0.9)])
                                 .edgesIgnoringSafeArea(.all)
                         }
+                        .sheet(isPresented: $viewModel.showBoroughSheet) {
+                            VStack(alignment: .center) {
+                                MapAdditional(viewModel: viewModel)
+                            }
+                            .presentationDetents([.fraction(0.55), .fraction(0.9)])
+                            .edgesIgnoringSafeArea(.all)
+                        }
                         .onAppear {
                             // 필요한 경우 여기에서 초기 카메라 위치를 설정 (일단 서울 시청으로 해둠!) // 나중에 가능하면 사용자의 현재 위치로!
                             cameraLatLng = NMGLatLng(lat: cameraLatitude ?? 37.5666102, lng: cameraLongitude ?? 126.9783881)
@@ -359,10 +379,30 @@ struct BDMapView: View {
                         }
                 }
                 VStack {
+//                    Button("자치구") {
+//                        viewModel.showBoroughSheet = true
+//                    }
+//                    .buttonStyle(RoundedRectangleButtonStyle(bgColor: .white, textColor: .black, width: 50, hasStroke: false))
                     Spacer()
                     Button("상권 정보 보기") {
                         viewModel.showBottomSheet = true
                     }
+                }
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        viewModel.showBoroughSheet = true
+                    }) {
+                        Text("자치구")
+                            .padding() // 버튼 주변에 패딩 추가
+                            .background(Color.white) // 배경색
+                            .cornerRadius(10) // 모서리 둥글게
+                            .shadow(radius: 3) // 그림자
+                            .padding(.top, 44) // 상단 바와의 거리
+                            .padding(.trailing, 10) // 우측 간격
+                    }
+                    .opacity(0.8)
+                    .offset(x: -10, y: UIApplication.shared.windows.first?.safeAreaInsets.top ?? 45 + 10)
                 }
             } // end of ZStack
         } // end of NavigationView
