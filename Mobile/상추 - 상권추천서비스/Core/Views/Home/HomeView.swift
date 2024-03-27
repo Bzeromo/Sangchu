@@ -22,6 +22,11 @@ struct HomeView: View {
     @State var gradiant = [Color(hex: "37683B"), Color(hex: "529B58")]// 사용할 그라디언트 색상 배열
 
     let gradientColors: [Color] = [Color(hex: "FF8080"),Color(hex: "FFA680"),Color(hex: "FFBF80"),Color(hex: "FFD480"),Color(hex: "FFE680"),Color(hex: "F4FF80"),Color(hex: "D5FF80"),Color(hex: "A2FF80"),Color(hex: "80FF9E"),Color(hex: "80FFD5"),Color(hex: "80EAFF"),Color(hex: "80A6FF"),Color(hex: "8A80FF"),Color(hex: "BF80FF"),Color(hex: "FD80FF"),Color(hex: "FF8097")]
+    
+    let topColors: [Color] = [Color(hex: "87CC6C"),Color(hex: "6DBCCD"),Color(hex: "C078D2")]
+    
+    let numberTop: [Color] = [Color(hex: "F5DC82"),Color(hex: "FDFF93"),Color(hex: "F6F339")]
+    let numberBottom: [Color] = [Color(hex: "E36AD4"),Color(hex: "F45E35"),Color(hex: "86D979")]
 
     @State var Top10 : [HomeModel.CommercialDistrict]? = nil
     private var scrollObservableView: some View {
@@ -176,14 +181,13 @@ struct HomeView: View {
                                                 Text("\(index + 1)").foregroundColor(.white).fontWeight(.bold).font(.system(size: 130))
                                             }
                                             .frame(width : 190 , height: 190)
-    //                                        .background(Color("sangchu"))
-                                            .background(Color.pink)
+                                            .background(LinearGradient(colors: [numberTop[index % 3] ,numberBottom[index % 3]], startPoint: .top, endPoint: .bottom))
                                             .cornerRadius(60)
                                             .rotationEffect(.degrees(-28)).offset(x:120,y:-30)
                                                 HStack{
                                                     VStack(alignment: .leading){
                                                         HStack{
-                                                            Text("\(district.commercialDistrictName)").font(.title).foregroundColor(Color.white).fontWeight(.semibold)
+                                                            Text("\(district.commercialDistrictName)").font(.title).foregroundColor(Color.black).fontWeight(.semibold)
                                                             Spacer()
                                                         }
                                                         HStack{
@@ -203,7 +207,7 @@ struct HomeView: View {
                                                             }
                                                         }
                                                         VStack(alignment: .leading){
-                                                            Text("정보 보러가기").font(.caption2).foregroundColor(.gray)
+                                                            Text("정보 보러가기").font(.caption2)
                 //                                            Text("상권 코드 \(district.commercialDistrictCode)")
                                                         }
                                                     }.frame(maxWidth: UIScreen.main.bounds.width * 0.6)
@@ -219,7 +223,7 @@ struct HomeView: View {
                                     }
                                     .frame(width: UIScreen.main.bounds.width * 0.8, height : 180)
                                     .padding()
-                                    .background(Color(hex: "A2FF80")) // Top배경
+                                    .background(topColors[index % 3]) // Top배경
                                     .foregroundColor(.white)
                                     .cornerRadius(10)
                                 }
@@ -288,7 +292,7 @@ struct HomeView: View {
                                                            VStack(alignment: .leading){
                                                                Spacer()
                                                                HStack{
-                                                                   Text("\(items[index].cdTitle)").foregroundColor(.white).padding(.leading, 10).padding(.bottom,7).lineLimit(1)
+                                                                   Text("\(items[index].cdTitle)").foregroundColor(.white).padding(.leading, 10).padding(.bottom,7).lineLimit(1).fontWeight(.semibold)
                                                                    Spacer()
                                                                }
                                                                
@@ -297,7 +301,7 @@ struct HomeView: View {
                                                                Text("사진")
                                                                Spacer()
                                                            }
-                                                       }.frame(width : UIScreen.main.bounds.width * 0.43, height : 100).background(   LinearGradient(colors: [gradientColors[index] ,gradientColors[index].opacity(0.5)], startPoint: .bottom, endPoint: .top)).cornerRadius(10)
+                                                       }.frame(width : UIScreen.main.bounds.width * 0.43, height : 100).background(   LinearGradient(colors: [gradientColors[index] ,gradientColors[index].opacity(0.9)], startPoint: .bottom, endPoint: .top)).cornerRadius(10)
                                                    }
                                                }
                                                // 다음 아이템 (있을 경우)
