@@ -149,47 +149,41 @@ struct MapView: UIViewRepresentable {
     
     func fetchCD(mapView: NMFMapView) {
         let url = "http://3.36.91.181:8084/api/commdist/all"
-        AF.request(url).responseJSON { response in
+        AF.request(url).responseDecodable(of: [CommercialDistrict].self) { response in
             switch response.result {
-            case .success(let value):
-                do {
-                    // JSON 데이터를 CommercialDistrict 구조체로 디코딩
-                    let districts = try JSONDecoder().decode([CommercialDistrict].self, from: response.data!)
-                    print(districts.count)
-                    // 결과 처리
-                    districts.forEach { district in
-                        let lng = district.latitude
-                        let lat = district.longitude
-                        let dName = district.commercialDistrictName
-                        let dScore = String(format: "%.0f점", district.commercialDistrictScore)
-                        // 마커 관련설정들
-                        let cdMarker = NMFMarker()
-                        // 위치
-                        cdMarker.position = NMGLatLng(lat: lat, lng: lng)
-                        // 마커 이미지
-                        cdMarker.iconImage = NMFOverlayImage(name:"markerIcon.png")
-                        // 사이즈
-                        cdMarker.width = 0.1
-                        cdMarker.height = 0.1
-                        // 캡션(점수) 보조캡션(상권이름)
-                        cdMarker.captionText = dScore
-                        cdMarker.captionTextSize = 30
-                        cdMarker.captionColor = .systemPink
-                        cdMarker.captionHaloColor = .white
-                        cdMarker.subCaptionText = dName
-                        cdMarker.subCaptionTextSize = 16
-                        cdMarker.subCaptionRequestedWidth = 15
-                        cdMarker.captionAligns = [.top]
-                        cdMarker.captionMinZoom = 13
-                        cdMarker.minZoom = 13
-                        // 마커 놓기
-                        cdMarker.mapView = mapView
-                    }
-                } catch {
-                    print("JSON 디코딩 실패: \(error)")
+            case .success(let districts):
+                print(districts.count)
+                // 결과 처리
+                districts.forEach { district in
+                    let lng = district.latitude
+                    let lat = district.longitude
+                    let dName = district.commercialDistrictName
+                    let dScore = String(format: "%.0f점", district.commercialDistrictScore)
+                    // 마커 관련 설정들
+                    let cdMarker = NMFMarker()
+                    // 위치
+                    cdMarker.position = NMGLatLng(lat: lat, lng: lng)
+                    // 마커 이미지
+                    cdMarker.iconImage = NMFOverlayImage(name:"markerIcon.png")
+                    // 사이즈
+                    cdMarker.width = 0.1
+                    cdMarker.height = 0.1
+                    // 캡션(점수) 보조캡션(상권이름)
+                    cdMarker.captionText = dScore
+                    cdMarker.captionTextSize = 30
+                    cdMarker.captionColor = .systemPink
+                    cdMarker.captionHaloColor = .white
+                    cdMarker.subCaptionText = dName
+                    cdMarker.subCaptionTextSize = 16
+                    cdMarker.subCaptionRequestedWidth = 15
+                    cdMarker.captionAligns = [.top]
+                    cdMarker.captionMinZoom = 13
+                    cdMarker.minZoom = 13
+                    // 마커 놓기
+                    cdMarker.mapView = mapView
                 }
             case .failure(let error):
-                print("요청 실패: \(error)")
+                print("요청 실패: \(error.localizedDescription)")
             }
         }
     }

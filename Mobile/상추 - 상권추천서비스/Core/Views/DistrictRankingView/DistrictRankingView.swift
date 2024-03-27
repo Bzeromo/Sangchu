@@ -26,7 +26,7 @@ struct DistrictData: Codable {
 }
 
 struct CommercialDistrictInfo: Codable {
-    var commercialDistrictCode: String?
+    var commercialDistrictCode: Int?
     var commercialDistrictName: String
     var latitude: Double
     var longitude: Double

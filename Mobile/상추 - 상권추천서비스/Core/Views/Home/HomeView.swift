@@ -207,7 +207,6 @@ struct HomeView: View {
                                                                 Text("\(Int(district.rdiScore))").font(.caption)
                                                             }.hidden()
                                                         }
-                                                        
                                                         VStack(alignment: .leading){
                                                             Text(district.commercialDistrictName).font(.title).fontWeight(.bold).foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D")).opacity(0.7).lineLimit(1)
                                                             Text("정보 보러가기 >").font(.caption2).foregroundColor(Color(hex: "767676"))
@@ -256,6 +255,25 @@ struct HomeView: View {
             }
             Divider().background(Color.gray.opacity(0.3)) // 절취선의 색상과 투명도를 설정합니다.
                 .padding(.leading, 20).padding(.top, 20)
+            
+            // 자치구별 Top 상권 Section
+            Section(header: HStack(alignment: .bottom){
+                Text("자치구별 Top 상권").font(.title2).fontWeight(.semibold).foregroundColor(.black).padding(.leading , 20)
+                Spacer()
+            }
+            )  {
+                HStack{
+                    Text("우리 동네 상권의 랭킹은?").font(.system(size: 14)).foregroundColor(.gray).padding(.leading , 20)
+                    Spacer()
+                }
+                BoroughTop10()
+                .safeAreaPadding(.horizontal,15)
+                .contentMargins(10, for: .scrollContent)
+//                .scrollIndicators(.hidden) // 밑에 바 숨겨줌
+            }
+            Divider().background(Color.gray.opacity(0.3)) // 절취선의 색상과 투명도를 설정합니다.
+                .padding(.leading, 20).padding(.top, 20)
+            
             
             // 북마크 Section
             Section(header: HStack(alignment: .bottom){
