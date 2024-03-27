@@ -226,7 +226,7 @@ struct DistrictRankingView: View {
     
     var body: some View {
         VStack {
-            Text("\(borough) 내 상권랭킹").font(.largeTitle).foregroundColor(Color.defaultfont)
+//            Text("\(borough) 내 상권랭킹").font(.largeTitle).foregroundColor(Color.defaultfont)
             
             // 필터링 버튼 추가
             Menu {
@@ -279,6 +279,7 @@ struct DistrictRankingView: View {
             }
             Spacer()
         } // end of VStack
+        .navigationTitle("\(borough)_\(category)")
     } // end of body view
 } // end of DistrictRankingView
 

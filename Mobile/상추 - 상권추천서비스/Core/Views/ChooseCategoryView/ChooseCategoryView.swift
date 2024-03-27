@@ -20,9 +20,52 @@ struct ChooseCategoryView: View {
     @State private var selectedCategory: Category? = nil
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
+    @State private var startAnimation : Bool = false
+    let universalSize = UIScreen.main.bounds
+    
+    
+    func getSinWave(interval : CGFloat, amplitude : CGFloat = 100,baseline:CGFloat = UIScreen.main.bounds.height / 2) ->
+    Path{
+        Path { path in
+            path.move(to: CGPoint(x:0, y:baseline))
+            path.addCurve(to: CGPoint(x : 1 * interval, y : baseline),
+                          control1: CGPoint(x:interval * (0.3),y: amplitude + baseline),
+                          control2: CGPoint(x:interval * (0.7),y: -amplitude + baseline)
+            )
+            path.addCurve(to: CGPoint(x : 2 * interval, y : baseline),
+                          control1: CGPoint(x:interval * (1.3),y: amplitude + baseline),
+                          control2: CGPoint(x:interval * (1.7),y: -amplitude + baseline)
+            )
+            path.addLine(to: CGPoint(x: 2 * interval, y: universalSize.height))
+            path.addLine(to: CGPoint(x: 0 , y: universalSize.height))
+        }
+    }
 
     var body: some View {
-//        GeometryReader { geometry in
+        ZStack{
+            getSinWave(interval: universalSize.width * 1.5 , amplitude: 150, baseline: 65 + universalSize.height / 2)
+            //.stroke(lineWidth: 2) // 선만
+                .foregroundColor(Color.red.opacity(0.3))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 1.5) : 0)
+                .animation(Animation.linear(duration: 5).repeatForever(autoreverses: false))
+            
+            getSinWave(interval: universalSize.width , amplitude: 200, baseline: 70 + universalSize.height / 2)
+                .foregroundColor(Color("sangchu").opacity(0.3))
+                .offset(x: startAnimation ? -1 * (universalSize.width) : 0)
+                .animation(Animation.linear(duration: 11).repeatForever(autoreverses: false))
+            
+            getSinWave(interval: universalSize.width * 3 , amplitude: 200, baseline: 95 + universalSize.height / 2)
+                .foregroundColor(Color.black.opacity(0.2))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 3) : 0)
+                .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
+            
+            getSinWave(interval: universalSize.width * 1.2 , amplitude: 50, baseline: 75 + universalSize.height / 2)
+                .foregroundColor(Color.init(red:0.6, green:0.9, blue : 1).opacity(0.4))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 1.2) : 0)
+                .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
+            
+            // 절취선
+            
             VStack {
                 // 고른 자치구
 //                Text("\(borough)를 고르셨습니다!")
@@ -37,13 +80,12 @@ struct ChooseCategoryView: View {
                         .foregroundColor(Color.sangchu)
                         .padding(15)
                         .minimumScaleFactor(0.5)
-                } // end of HStack
+                }.hidden() // end of HStack
                 
                 Spacer()
                 
                 Text(" \"업종\"")
-                    .font(.system(size: 30)) + Text("을 선택하세요.")
-                    .font(.system(size: 20))
+                    .font(.system(size: 30)).hidden()
                 
                 Spacer()
                 
@@ -60,18 +102,18 @@ struct ChooseCategoryView: View {
                                             Image(category.rawValue.replacingOccurrences(of: "_", with: "-")) // 언더바를 하이픈으로 변경
                                                 .resizable()
                                                 .scaledToFit()
-                                                .frame(width: buttonGeometry.size.width * 0.6, height: buttonGeometry.size.width * 0.6)
+                                                .frame(width: buttonGeometry.size.width * 0.5, height: buttonGeometry.size.width * 0.5)
                                             
                                             Text(category.rawValue)
-                                                .font(.system(size: buttonGeometry.size.width * 0.2))
-                                                .foregroundColor(Color(.defaultfont))
+                                                .font(.system(size: buttonGeometry.size.width * 0.17))
+                                                .foregroundColor(Color.black)
                                                 .padding(3)
                                                 .lineLimit(nil)
                                         }.frame(maxWidth: .infinity, alignment: .center)
                                     }
                                 }
                                 .padding()
-                                .frame(width: geometry.size.width / 3.5, height: geometry.size.width / 3.5) // GeometryReader를 사용하여 크기 동적 조절
+                                .frame(width: geometry.size.width / 3.2, height: geometry.size.width / 3.2) // GeometryReader를 사용하여 크기 동적 조절
                                 .background(Color.clear) // 버튼의 배경을 투명하게 설정
                                 .cornerRadius(15)
                                 .overlay(
@@ -86,38 +128,33 @@ struct ChooseCategoryView: View {
                 }.padding(15) // end of VStack
                 
                 Spacer()
+               
                 
-                // 이전/다음 버튼
+                
                 HStack {
-                    // 이전 버튼
-                    Button("이전") {
-                        self.presentationMode.wrappedValue.dismiss()
-                    }
-                    .buttonStyle(RoundedRectangleButtonStyle(bgColor: Color(.customgray),
-                                                             textColor: .white,
-                                                             width: UIScreen.main.bounds.width / 4,
-                                                             hasStroke: false,
-                                                             shadowRadius: 1, shadowColor: Color.gray.opacity(0.5), shadowOffset: CGSize(width: 2, height: 3)))
-                    .padding([.leading, .bottom])
-
-                    Spacer() // Spacer를 사용하여 버튼 사이의 공간을 최대한 확보
-
-                    // 다음 버튼
-                    NavigationLink("다음", destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue ?? ""))
+                    NavigationLink(self.selectedCategory == nil ? "선택 완료" : "업종 선택", destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue ?? ""))
                         .disabled(selectedCategory == nil) // Picker가 조작되지 않았다면 버튼 비활성화
                         .foregroundColor(.black)
                         .buttonStyle(RoundedRectangleButtonStyle(
-                            bgColor: selectedCategory == nil ? Color(hex: "c6c6c6") : Color.sangchu,
+                            bgColor: self.selectedCategory == nil ? Color(hex: "c6c6c6") : Color.sangchu,
                             textColor: .black,
-                            width: UIScreen.main.bounds.width / 4,
+                            width: UIScreen.main.bounds.width * 0.8,
                             hasStroke: false,
                             shadowRadius: 2,
                             shadowColor: Color.black.opacity(0.1),
                             shadowOffset: CGSize(width: 0, height: 4)))
                         .padding([.trailing, .bottom])
-                } // end of 이전/다음 버튼 HStack
+                }.padding(.bottom, UIScreen.main.bounds.height * 0.07) // end of 이전/다음 버튼 HStack
                 
             } // end of Total VStack
-//        } // end of GeometryReader
+        }
+            .navigationTitle("업종 선택")
+            .ignoresSafeArea(.all)
+            .onAppear{
+                self.startAnimation = true
+            }
+            .background(Color(hex: "F4F5F7"))
+        
+            
     } // end of body View
 } // end of ChooseCategoryView
