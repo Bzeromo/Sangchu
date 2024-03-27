@@ -2,6 +2,8 @@ package com.sc.sangchu.postgresql.service;
 
 import com.sc.sangchu.dto.CommDistDTO;
 import com.sc.sangchu.dto.CommDistRankDTO;
+import com.sc.sangchu.dto.CommDistRankDTO.ValueScoreDouble;
+import com.sc.sangchu.dto.CommDistRankDTO.ValueScoreLong;
 import com.sc.sangchu.dto.CommDistServiceScoreDTO;
 import com.sc.sangchu.dto.CommDistSetRankDTO;
 import com.sc.sangchu.dto.infra.CommStoreTotalCountDTO;
@@ -14,10 +16,6 @@ import com.sc.sangchu.postgresql.repository.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.OptionalInt;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +29,9 @@ public class CommDistRecommendService {
     private final CommFloatingPopulationRepository commFloatingPopulationRepository;
     private final CommResidentPopulationRepository commResidentPopulationRepository;
     private final CommStoreRepository commStoreRepository;
-    private final Integer year = 2023;
-    private final Integer quarter = 3;
-    private final Integer rankLimit = 10;
+    private final static Integer YEAR = 2023;
+    private final static Integer QUARTER = 3;
+    private final static Integer RANK_LIMIT = 10;
 
     @Autowired
     public CommDistRecommendService(CommDistRepository commDistRepository,
@@ -104,7 +102,7 @@ public class CommDistRecommendService {
             List<CommDistEntity> sortedEntities = commDistRepository.findAll()
                     .stream()
                     .sorted(Comparator.comparing(CommDistEntity::getCommercialDistrictScore).reversed())
-                    .limit(rankLimit)
+                    .limit(RANK_LIMIT)
                     .toList();
             if(sortedEntities.isEmpty()) return null;
 
@@ -121,7 +119,7 @@ public class CommDistRecommendService {
             List<CommDistEntity> sortedEntities = commDistRepository.findByGuCode(guCode)
                     .stream()
                     .sorted(Comparator.comparing(CommDistEntity::getCommercialDistrictScore).reversed())
-                    .limit(rankLimit)
+                    .limit(RANK_LIMIT)
                     .toList();
             if(sortedEntities.isEmpty()) return null;
 
@@ -138,7 +136,8 @@ public class CommDistRecommendService {
         try {
             CommDistEntity commDistEntity = commDistRepository.findByCommercialDistrictCode(commCode);
             CommEstimatedSalesEntity commEstimatedSalesEntity =
-                    commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(year, quarter, commCode, serviceCode);
+                    commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(
+                        YEAR, QUARTER, commCode, serviceCode);
 
             return CommDistServiceScoreDTO.builder()
                     .commercialDistrictName(commDistEntity.getCommercialDistrictName())
@@ -178,7 +177,7 @@ public class CommDistRecommendService {
 
                 CommEstimatedSalesEntity commEstimatedSalesEntity =
                         commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(
-                                year, quarter, commCode, serviceCode);
+                            YEAR, QUARTER, commCode, serviceCode);
 
                 if(commEstimatedSalesEntity == null) {
                     continue;
@@ -271,40 +270,44 @@ public class CommDistRecommendService {
                             .filter(f -> f.getCommCode().equals(cdCode))
                             .mapToLong(CommDistSetRankDTO::getRank)
                             .findFirst()
-                            .orElse(0L);;
+                            .orElse(0L);
 
                     // 현재 분기 매출
-                    CommEstimatedSalesEntity estimatedSalesEntity = commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(year, quarter, cdCode,serviceCode);
+                    CommEstimatedSalesEntity estimatedSalesEntity = commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(
+                        YEAR, QUARTER, cdCode,serviceCode);
 
                     // 현재 분기 총 업종 점포 수
-                    CommStoreTotalCountDTO commStoreTotalCountDTO = commStoreRepository.findStoreTotalCount(year, quarter, cdCode);
+                    CommStoreTotalCountDTO commStoreTotalCountDTO = commStoreRepository.findStoreTotalCount(
+                        YEAR, QUARTER, cdCode);
 
                     // 현재 분기 유동 인구 수
-                    CommFloatingPopulationEntity commFloatingPopulationEntity = commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(cdCode, year, quarter);
+                    CommFloatingPopulationEntity commFloatingPopulationEntity = commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(cdCode,
+                        YEAR, QUARTER);
 
                     // 현재 분기 상주 인구 수
-                    CommResidentPopulationEntity commResidentPopulationEntity = commResidentPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(cdCode, year, quarter);
+                    CommResidentPopulationEntity commResidentPopulationEntity = commResidentPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(cdCode,
+                        YEAR, QUARTER);
 
                     return CommDistRankDTO.builder()
                             .cdCode(dto.getCommercialDistrictCode())
                             .name(name)
-                            .totalScore(CommDistRankDTO.valueScoreLong.builder()
+                            .totalScore(ValueScoreLong.builder()
                                     .value(totalScoreRank)
                                     .score(dto.getCommercialDistrictScore())
                                     .build())
-                            .sales(CommDistRankDTO.valueScoreDouble.builder()
+                            .sales(ValueScoreDouble.builder()
                                     .value(estimatedSalesEntity != null ? estimatedSalesEntity.getMonthlySales() : 0D)
                                     .score(dto.getSalesScore())
                                     .build())
-                            .businessDiversity(CommDistRankDTO.valueScoreLong.builder()
+                            .businessDiversity(ValueScoreLong.builder()
                                     .value(commStoreTotalCountDTO != null ? commStoreTotalCountDTO.getTotalStoreCount() : 0L)
                                     .score(dto.getRdiScore())
                                     .build())
-                            .footTraffic(CommDistRankDTO.valueScoreLong.builder()
+                            .footTraffic(ValueScoreLong.builder()
                                     .value(commFloatingPopulationEntity != null ? commFloatingPopulationEntity.getTotalFloatingPopulation() : 0L)
                                     .score(dto.getFloatingPopulationScore())
                                     .build())
-                            .residentialPopulation(CommDistRankDTO.valueScoreLong.builder()
+                            .residentialPopulation(ValueScoreLong.builder()
                                     .value(commResidentPopulationEntity != null ? commResidentPopulationEntity.getTotalResidentPopulation() : 0L)
                                     .score(dto.getResidentPopulationScore())
                                     .build())

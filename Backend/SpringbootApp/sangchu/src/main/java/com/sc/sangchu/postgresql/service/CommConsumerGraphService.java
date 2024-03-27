@@ -28,9 +28,9 @@ public class CommConsumerGraphService {
     private final CommWorkingPopulationRepository commWorkingPopulationRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
-    private final static Integer yearLimit = 2022;
-    private final static Integer year = 2023;
-    private final static Integer quarter = 3;
+    private final static Integer YEAR_LIMIT = 2022;
+    private final static Integer YEAR = 2023;
+    private final static Integer QUARTER = 3;
 
     public CommConsumerGraphService(CommFloatingPopulationRepository commFloatingPopulationRepository,
                                     ObjectMapper objectMapper,
@@ -45,7 +45,7 @@ public class CommConsumerGraphService {
 
     // 연령별 유동인구 그래프
     public CommFloatingPopulationDTO getFloatingPopulationAgeGraph(Long commCode) {
-        String cacheKey = "consumerGraph:floatingPopulationAgeGraph:" + commCode + ":" + year + ":" + quarter;
+        String cacheKey = "consumerGraph:floatingPopulationAgeGraph:" + commCode + ":" + YEAR + ":" + QUARTER;
 
         try {
             // Redis에서 캐시된 데이터 조회
@@ -59,7 +59,8 @@ public class CommConsumerGraphService {
                         .build();
             }
             CommFloatingPopulationEntity entity =
-                    commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+                    commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode,
+                        YEAR, QUARTER);
 
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "bar");
@@ -105,7 +106,7 @@ public class CommConsumerGraphService {
 
     // 시간별 유동인구 그래프
     public CommFloatingPopulationDTO getFloatingPopulationTimeGraph(Long commCode) {
-        String cacheKey = "consumerGraph:floatingPopulationTimeGraph:" + commCode + ":" + year + ":" + quarter;
+        String cacheKey = "consumerGraph:floatingPopulationTimeGraph:" + commCode + ":" + YEAR + ":" + QUARTER;
 
         try {
             // Redis에서 캐시된 데이터 조회
@@ -120,7 +121,8 @@ public class CommConsumerGraphService {
             }
 
             CommFloatingPopulationEntity entity =
-                    commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+                    commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode,
+                        YEAR, QUARTER);
 
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "bar");
@@ -166,7 +168,7 @@ public class CommConsumerGraphService {
 
     // 요일별 유동인구 그래프
     public CommFloatingPopulationDTO getFloatingPopulationDayGraph(Long commCode) {
-        String cacheKey = "consumerGraph:floatingPopulationDayGraph:" + commCode + ":" + year + ":" + quarter;
+        String cacheKey = "consumerGraph:floatingPopulationDayGraph:" + commCode + ":" + YEAR + ":" + QUARTER;
 
         try {
             // Redis에서 캐시된 데이터 조회
@@ -181,7 +183,8 @@ public class CommConsumerGraphService {
             }
 
             CommFloatingPopulationEntity entity =
-                    commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+                    commFloatingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode,
+                        YEAR, QUARTER);
 
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "bar");
@@ -229,7 +232,8 @@ public class CommConsumerGraphService {
 
     // 총 유동인구 분기별 추이 그래프 (22~23년)
     public CommFloatingPopulationDTO getFloatingPopulationQuarterlyTrendsGraph(Long commCode) {
-        String cacheKey = "consumerGraph:floatingPopulationQuarterlyTrendsGraph:" + commCode + ":" + year + ":" + quarter;
+        String cacheKey = "consumerGraph:floatingPopulationQuarterlyTrendsGraph:" + commCode + ":" + YEAR
+            + ":" + QUARTER;
 
         try {
             // Redis에서 캐시된 데이터 조회
@@ -247,7 +251,7 @@ public class CommConsumerGraphService {
                     commFloatingPopulationRepository.findAllByCommercialDistrictCode(commCode);
 
             List<CommFloatingPopulationEntity> sortedEntities = entities.stream()
-                    .filter(entity -> entity.getYearCode() >= yearLimit)
+                    .filter(entity -> entity.getYearCode() >= YEAR_LIMIT)
                     .sorted(Comparator.comparing(CommFloatingPopulationEntity::getYearCode)
                             .thenComparing(CommFloatingPopulationEntity::getQuarterCode))
                     .toList();
@@ -295,7 +299,8 @@ public class CommConsumerGraphService {
 
     // 성별 연령대별 상주인구 그래프
     public CommResidentPopulationDTO getResidentPopulationGenderAgeGraph(Long commCode) {
-        String cacheKey = "consumerGraph:residentPopulationGenderAgeGraph:" + commCode + ":" + year + ":" + quarter;
+        String cacheKey = "consumerGraph:residentPopulationGenderAgeGraph:" + commCode + ":" + YEAR
+            + ":" + QUARTER;
 
         try {
             // Redis에서 캐시된 데이터 조회
@@ -309,7 +314,8 @@ public class CommConsumerGraphService {
                         .build();
             }
             CommResidentPopulationEntity entity =
-                    commResidentPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+                    commResidentPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode,
+                        YEAR, QUARTER);
 
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "bar");
@@ -368,7 +374,8 @@ public class CommConsumerGraphService {
 
     // 총 상주인구 분기별 추이 그래프 (22~23년)
     public CommResidentPopulationDTO getResidentPopulationQuarterlyTrendsGraph(Long commCode) {
-        String cacheKey = "consumerGraph:residentPopulationQuarterlyTrendsGraph:" + commCode + ":" + year + ":" + quarter;
+        String cacheKey = "consumerGraph:residentPopulationQuarterlyTrendsGraph:" + commCode + ":" + YEAR
+            + ":" + QUARTER;
 
         try {
             // Redis에서 캐시된 데이터 조회
@@ -386,7 +393,7 @@ public class CommConsumerGraphService {
                     commResidentPopulationRepository.findAllByCommercialDistrictCode(commCode);
 
             List<CommResidentPopulationEntity> sortedEntities = entities.stream()
-                    .filter(entity -> entity.getYearCode() >= yearLimit)
+                    .filter(entity -> entity.getYearCode() >= YEAR_LIMIT)
                     .sorted(Comparator.comparing(CommResidentPopulationEntity::getYearCode)
                             .thenComparing(CommResidentPopulationEntity::getQuarterCode))
                     .toList();
@@ -434,7 +441,7 @@ public class CommConsumerGraphService {
 
     // 성별 연령대별 직장인구 그래프
     public CommWorkingPopulationDTO getWorkingPopulationGenderAgeGraph(Long commCode) {
-        String cacheKey = "consumerGraph:workingPopulationGenderAgeGraph:" + commCode + ":" + year + ":" + quarter;
+        String cacheKey = "consumerGraph:workingPopulationGenderAgeGraph:" + commCode + ":" + YEAR + ":" + QUARTER;
 
         try {
             // Redis에서 캐시된 데이터 조회
@@ -449,7 +456,8 @@ public class CommConsumerGraphService {
             }
 
             CommWorkingPopulationEntity entity =
-                    commWorkingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode, year, quarter);
+                    commWorkingPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(commCode,
+                        YEAR, QUARTER);
 
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "bar");
@@ -508,7 +516,8 @@ public class CommConsumerGraphService {
 
     // 총 직장인구 분기별 추이 그래프 (22~23년)
     public CommWorkingPopulationDTO getWorkingPopulationQuarterlyTrendsGraph(Long commCode) {
-        String cacheKey = "consumerGraph:workingPopulationQuarterlyTrendsGraph:" + commCode + ":" + year + ":" + quarter;
+        String cacheKey = "consumerGraph:workingPopulationQuarterlyTrendsGraph:" + commCode + ":" + YEAR
+            + ":" + QUARTER;
 
         try {
             // Redis에서 캐시된 데이터 조회
@@ -526,7 +535,7 @@ public class CommConsumerGraphService {
                     commWorkingPopulationRepository.findAllByCommercialDistrictCode(commCode);
 
             List<CommWorkingPopulationEntity> sortedEntities = entities.stream()
-                    .filter(entity -> entity.getYearCode() >= yearLimit)
+                    .filter(entity -> entity.getYearCode() >= YEAR_LIMIT)
                     .sorted(Comparator.comparing(CommWorkingPopulationEntity::getYearCode)
                             .thenComparing(CommWorkingPopulationEntity::getQuarterCode))
                     .toList();

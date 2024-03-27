@@ -10,21 +10,21 @@ public class CommDistRankDTO {
 
     private Long cdCode;
     private String name;
-    private valueScoreLong totalScore;
-    private valueScoreDouble sales;
-    private valueScoreLong footTraffic;
-    private valueScoreLong residentialPopulation;
-    private valueScoreLong businessDiversity;
+    private ValueScoreLong totalScore;
+    private ValueScoreDouble sales;
+    private ValueScoreLong footTraffic;
+    private ValueScoreLong residentialPopulation;
+    private ValueScoreLong businessDiversity;
 
     @Data
     @Builder
-    public static class valueScoreLong{
+    public static class ValueScoreLong {
         Long value;
         Double score;
     }
     @Data
     @Builder
-    public static class valueScoreDouble{
+    public static class ValueScoreDouble {
         Double value;
         Double score;
 
