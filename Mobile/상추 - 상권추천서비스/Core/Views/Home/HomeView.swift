@@ -21,6 +21,7 @@ struct HomeView: View {
     // SwiftData 사용 끝
     @State var gradiant = [Color(hex: "37683B"), Color(hex: "529B58")]// 사용할 그라디언트 색상 배열
 
+    
     let gradientColors: [Color] = [Color(hex: "FF8080"),Color(hex: "FFA680"),Color(hex: "FFBF80"),Color(hex: "FFD480"),Color(hex: "FFE680"),Color(hex: "F4FF80"),Color(hex: "D5FF80"),Color(hex: "A2FF80"),Color(hex: "80FF9E"),Color(hex: "80FFD5"),Color(hex: "80EAFF"),Color(hex: "80A6FF"),Color(hex: "8A80FF"),Color(hex: "BF80FF"),Color(hex: "FD80FF"),Color(hex: "FF8097")]
    
     let topColors: [Color] = [Color(hex: "87CC6C"),Color(hex: "6DBCCD"),Color(hex: "C078D2")]
@@ -76,13 +77,73 @@ struct HomeView: View {
             
             VStack{
                 
+//                ZStack{
+//                    VStack{
+//                        let offset = $viewModel.offset //  기본값은 47 원하는 액션은 양수
+//                        let scaleFactor = max(1.15, 1.15 + offset.wrappedValue / 380)
+//                        let offsetFactor = min(-28, -28 - offset.wrappedValue * 0.8)
+//                        // 위로하면 양수, 아래로 하면 음수
+//                        Image(uiImage: UIImage(named: "Main.png")!)
+//                            .resizable()
+//                            .aspectRatio(contentMode: .fit)
+//                            .scaleEffect(scaleFactor) // 스크롤에 따라 크기 늘림
+//                            .frame(alignment: .top)
+//                            .offset(y: offsetFactor)
+//                        Spacer()
+//                    }
+//                    
+//                    LinearGradient(colors: gradiant, startPoint: .bottom, endPoint: .top).frame(height : 150)
+//                    .frame(maxHeight: .infinity, alignment: .bottom)
+//                    
+//                    VStack(alignment: .center){
+//                        HStack{
+//                            Spacer()
+//                            Button(action: {}) {
+//                                Image(systemName: "magnifyingglass.circle")
+//                                    .resizable()
+//                                    .frame(width: 30, height: 30)
+//                                    .foregroundColor(.black) // 버튼의 크기를 지정합니다.
+//                            }.padding(.top, 40).padding(.trailing,20)
+//                        }
+//                        Spacer()
+//                        VStack(spacing: 7){
+//                            Text("상추")
+//                                .font(.system(size: 17))
+//                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+//                            //                                    .foregroundColor(Color(hex: "767676"))
+//                                .foregroundColor(Color.white)
+//                            Text("맞춤형 분석 서비스를")
+//                                .font(.system(size: 25))
+//                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+//                            //                                    .foregroundColor(Color(hex: "767676"))
+//                                .foregroundColor(Color.white)
+//                            Text("체험해보세요")
+//                                .font(.system(size: 25))
+//                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+//                                .foregroundColor(Color.white)
+//                            NavigationLink(destination: ChooseBorough()) {
+//                                Text("무료체험")
+//                                    .font(.system(size: 17))
+//                                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+//                                    .padding()
+//                                    .frame(width: UIScreen.main.bounds.width * 0.78)
+//                                    .background(Color.white)
+//                                    .foregroundColor(Color("sangchu"))
+//                                    .cornerRadius(10)
+//                            }
+//                        }.padding(.bottom,20)
+//                        
+//                    }
+//                }.frame(height: 500)
+                
+                // 여기서부터 지우면댐
                 ZStack{
                     VStack{
                         let offset = $viewModel.offset //  기본값은 47 원하는 액션은 양수
                         let scaleFactor = max(1.15, 1.15 + offset.wrappedValue / 380)
-                        let offsetFactor = min(-28, -28 - offset.wrappedValue * 0.8)
+                        let offsetFactor = min(-29, -29 - offset.wrappedValue * 0.8)
                         // 위로하면 양수, 아래로 하면 음수
-                        Image(uiImage: UIImage(named: "Main.png")!)
+                        Image(uiImage: UIImage(named: "Main2.png")!)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .scaleEffect(scaleFactor) // 스크롤에 따라 크기 늘림
@@ -91,7 +152,7 @@ struct HomeView: View {
                         Spacer()
                     }
                     
-                    LinearGradient(colors: gradiant, startPoint: .bottom, endPoint: .top).frame(height : 150)
+                    LinearGradient(colors: [Color(hex: "434343"), Color(hex: "434343").opacity(0)], startPoint: .bottom, endPoint: .top).frame(height : 200)
                     .frame(maxHeight: .infinity, alignment: .bottom)
                     
                     VStack(alignment: .center){
@@ -106,34 +167,42 @@ struct HomeView: View {
                         }
                         Spacer()
                         VStack(spacing: 7){
-                            Text("상추")
-                                .font(.system(size: 17))
+                            Label(
+                                title: { Text("상추") },
+                                icon: { Image(systemName: "leaf.fill") }
+                            )
+                                .font(.system(size: 21))
                                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                            //                                    .foregroundColor(Color(hex: "767676"))
-                                .foregroundColor(Color.white)
-                            Text("맞춤형 분석 서비스를")
+                                .foregroundColor(Color(hex: "F2EADA"))
+                                .padding(.bottom, 5)
+                           
+                            Text("창업 초보자를 위한")
                                 .font(.system(size: 25))
                                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                .foregroundColor(Color.white)
+                            
                             //                                    .foregroundColor(Color(hex: "767676"))
                                 .foregroundColor(Color.white)
-                            Text("체험해보세요")
+                            Text("서울시 요식업 상권 분석 서비스")
                                 .font(.system(size: 25))
                                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                 .foregroundColor(Color.white)
                             NavigationLink(destination: ChooseBorough()) {
-                                Text("무료체험")
+                                Text("지금시작하기")
                                     .font(.system(size: 17))
                                     .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                     .padding()
                                     .frame(width: UIScreen.main.bounds.width * 0.78)
-                                    .background(Color.white)
-                                    .foregroundColor(Color("sangchu"))
+                                    .background(Color("sangchu"))
+                                    .foregroundColor(Color.white)
                                     .cornerRadius(10)
                             }
                         }.padding(.bottom,20)
                         
                     }
                 }.frame(height: 500)
+                
+                // 여기까지 VStack은 남겨
             }
             
             Spacer().frame(height: 20)
@@ -208,7 +277,7 @@ struct HomeView: View {
                                                             }.hidden()
                                                         }
                                                         VStack(alignment: .leading){
-                                                            Text(district.commercialDistrictName).font(.title).fontWeight(.bold).foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D")).opacity(0.7).lineLimit(1)
+                                                            Text(district.commercialDistrictName).font(.title).fontWeight(.bold).foregroundColor(index < 3 ? .white.opacity(0.9) : Color(hex: "3D3D3D")).lineLimit(1)
                                                             Text("정보 보러가기 >").font(.caption2).foregroundColor(Color(hex: "767676"))
                 //                                            Text("상권 코드 \(district.commercialDistrictCode)")
                                                         }

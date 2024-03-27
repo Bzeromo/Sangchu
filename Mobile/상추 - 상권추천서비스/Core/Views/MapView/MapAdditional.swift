@@ -15,36 +15,41 @@ struct MapAdditional: View {
     @State private var isPickerTouched: Bool = false
     // 뷰를 제어하기 위함 // 이전버튼에 활용
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-     
+    let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
+    
     var body: some View {
-        Spacer().frame(height: 20)
-        Picker("자치구", selection: $selectedBorough) {
-            ForEach(Borough.allCases) {
-                borough in Text(borough.rawValue)
-            }
-        }
-        .pickerStyle(WheelPickerStyle())
-        .onChange(of: selectedBorough) {
-            isPickerTouched = true
-        }
-        Spacer().frame(height: 10)
-        // 이전/다음 버튼
-        HStack {
-            // 이전 버튼
-            Button("이전") {
-                self.presentationMode.wrappedValue.dismiss()
-            }
-            .buttonStyle(RoundedRectangleButtonStyle(bgColor: Color(.customgray),
-                                                     textColor: .white,
-                                                     width: UIScreen.main.bounds.width / 4,
-                                                     hasStroke: false,
-                                                     shadowRadius: 1, shadowColor: Color.gray.opacity(0.5), shadowOffset: CGSize(width: 2, height: 3)))
-            .padding([.leading, .bottom])
-
-            Spacer() // Spacer를 사용하여 버튼 사이의 공간을 최대한 확보
-
-            // 다음 버튼
-            Button("이동") {
+        
+        VStack{
+            Divider()
+                .frame(minHeight: 5)
+                .background(Color.gray.opacity(0.8)) // 절취선의 색상과 투명도를 설정합니다.
+                .padding(.leading, 150).padding(.trailing, 150).padding(.bottom, 15)
+                
+            Spacer().frame(height: 2)
+            ScrollView{
+                LazyVGrid(columns: columns, spacing: 5) {
+                    ForEach(Borough.allCases, id: \.self) { borough in
+                        Button(action: {
+                            self.selectedBorough = borough
+                            self.isPickerTouched = true
+                        }) {
+                            Text(borough.rawValue)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(self.selectedBorough == borough ? Color.sangchu.opacity(0.9) : Color.white.opacity(0.9))
+                                .foregroundColor(.black)
+                                .fontWeight(self.selectedBorough == borough ? .semibold : .regular)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(Color.black.opacity(0.7), lineWidth: 0.2)
+                                        )
+                        }
+                        
+                    }
+                }
+            }.frame(height : UIScreen.main.bounds.height * 0.55).clipped()
+            Button(!isPickerTouched ? "이동할 지역 선택" : "이동하기") {
                 // 여기에 BDMapView를 해당 자치구의 위도 경도로 이동시키면서 viewModel.showBoroughSheet를 false로 바꿔주고 고른 자치구도 초기화 시켜줘야 함!
                 let location = selectedBorough.location
                 viewModel.selectedBoroughLocation = NMGLatLng(lat: location.latitude, lng: location.longitude)
@@ -55,13 +60,16 @@ struct MapAdditional: View {
             .buttonStyle(RoundedRectangleButtonStyle(
                 bgColor: !isPickerTouched ? Color(hex: "c6c6c6") : Color.sangchu,
                 textColor: .black,
-                width: UIScreen.main.bounds.width / 4,
+                width: UIScreen.main.bounds.width * 0.8,
                 hasStroke: false,
                 shadowRadius: 2,
                 shadowColor: Color.black.opacity(0.1),
                 shadowOffset: CGSize(width: 0, height: 4)))
             .padding([.trailing, .bottom])
-
-        } // end of 이전/다음 버튼 HStack
+            .frame(width: UIScreen.main.bounds.width * 0.8)
+        }
+        
+        
+        
     }
 }

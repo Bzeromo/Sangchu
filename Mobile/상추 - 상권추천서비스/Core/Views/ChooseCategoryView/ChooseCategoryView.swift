@@ -132,7 +132,7 @@ struct ChooseCategoryView: View {
                 
                 
                 HStack {
-                    NavigationLink(self.selectedCategory == nil ? "선택 완료" : "업종 선택", destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue ?? ""))
+                    NavigationLink(self.selectedCategory == nil ? "업종 선택" : "선택 완료", destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue ?? ""))
                         .disabled(selectedCategory == nil) // Picker가 조작되지 않았다면 버튼 비활성화
                         .foregroundColor(.black)
                         .buttonStyle(RoundedRectangleButtonStyle(

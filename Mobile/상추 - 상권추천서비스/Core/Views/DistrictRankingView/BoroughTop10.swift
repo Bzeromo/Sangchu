@@ -54,7 +54,7 @@ struct CommercialDistrictCardView: View {
                             }.hidden()
                         }
                         VStack(alignment: .leading){
-                            Text(district.commercialDistrictName).font(.title).fontWeight(.bold).foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D")).opacity(0.7).lineLimit(1)
+                            Text(district.commercialDistrictName).font(.title).fontWeight(.bold).foregroundColor(index < 3 ? .white.opacity(0.9) : Color(hex: "3D3D3D")).lineLimit(1)
                             Text("정보 보러가기 >").font(.caption2).foregroundColor(Color(hex: "767676"))
                         }
                     }.frame(maxWidth: UIScreen.main.bounds.width * 0.6)
@@ -116,13 +116,12 @@ struct BoroughTop10: View {
                             // 선택된 자치구에 따라 상권 정보 업데이트
                             self.fetchTopCD(guCode: borough.value)
                         }) {
-                            Text(borough.key)
+                            Text(borough.key).font(.system(size: 16)).fontWeight(.medium)
                         }
-                        .padding()
-                        .padding(.horizontal)
+                        .frame(width: 78, height: 37)
                         .background(self.selectedGuCode == borough.value ? Color.sangchu : Color.white)
-                        .foregroundColor(self.selectedGuCode == borough.value ? Color.white : Color.sangchu)
-                        .cornerRadius(10)
+                        .foregroundColor(self.selectedGuCode == borough.value ? Color.white : Color.black)
+                        .cornerRadius(5)
                     }
                 }
             }
@@ -137,7 +136,7 @@ struct BoroughTop10: View {
                                 CommercialDistrictCardView(district: district, index: index, topColors: topColors, numberTop: numberTop, numberBottom: numberBottom)
                             }
                         }
-                    }
+                    }.scrollIndicators(.hidden)
                 }
             }
         }

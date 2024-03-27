@@ -362,7 +362,7 @@ struct BDMapView: View {
                             VStack(alignment: .center) {
                                 MapAdditional(viewModel: viewModel)
                             }
-                            .presentationDetents([.fraction(0.55), .fraction(0.9)])
+                            .presentationDetents([.fraction(0.8)])
                             .edgesIgnoringSafeArea(.all)
                         }
                         .onAppear {
@@ -385,7 +385,8 @@ struct BDMapView: View {
                         .frame(width: UIScreen.main.bounds.width * 0.24, height: UIScreen.main.bounds.height * 0.05)
                         .background(Color.white)
                         .cornerRadius(10)
-                        .padding(.leading , 20)
+                        .padding(.leading , 10)
+                        .padding(.top,3)
     //                    .overlay(
     //                                RoundedRectangle(cornerRadius: 20)
     //                                    .stroke(Color.black, lineWidth: 0.3)
