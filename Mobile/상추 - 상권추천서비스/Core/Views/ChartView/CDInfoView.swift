@@ -39,6 +39,8 @@ struct CDInfoView: View {
     @State var selectedFilterOption: FilterOption = .consumer
     @State var CDcode : String
     @State var CDname : String
+    @State var latitude: Double? = nil
+    @State var longitude: Double? = nil
     @State private var hasMatchingItem: Bool = true
     
     
@@ -48,6 +50,25 @@ struct CDInfoView: View {
     enum AlertType {
         case bookmark
         case location
+    }
+    
+    private func BookMarkInfoDecode() {
+        BookMarkNetworkManager.shared.fetch(endpoint: CDcode) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    do {
+                        let Info = try JSONDecoder().decode(HomeModel.BookMarkDistrict.self, from: data)
+                        self.longitude = Info.latitude
+                        self.latitude = Info.longitude
+                    } catch {
+                        print("Decoding error: \(error)")
+                    }
+                case .failure(let error):
+                    print("Fetch error: \(error)")
+                }
+            }
+        }
     }
     
     var body: some View {
@@ -67,6 +88,7 @@ struct CDInfoView: View {
                         .padding()
                         
                     }
+                    
                     switch selectedFilterOption {
                     case .consumer:
                         ConsumerChartView(cdCode: CDcode)
@@ -82,6 +104,8 @@ struct CDInfoView: View {
                 .onAppear{
                     // 북마크 같은게 있으면 false를 반환
                     hasMatchingItem = !items.contains { $0.cdCode == CDcode }
+                    BookMarkInfoDecode()
+                    
                 }
                 .toolbar {
 //                    ToolbarItem(placement: .topBarLeading ) {
@@ -102,6 +126,12 @@ struct CDInfoView: View {
                                     item.cdCode = self.CDcode
                                     item.cdTitle = self.CDname
                                     item.cdInfo = "이 상권은 망했습니다."
+                                    if let tmplati = latitude {
+                                        item.latitude = tmplati
+                                    }
+                                    if let tmplong = longitude{
+                                        item.longitude = tmplong
+                                    }
                                     withAnimation {
                                         context.insert(item)
                                         hasMatchingItem.toggle()
