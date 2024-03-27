@@ -18,6 +18,12 @@ configurations {
 	}
 }
 
+sonarqube {
+	properties {
+		property 'sonar.gradle.skipCompile', 'true'
+	}
+}
+
 repositories {
 	mavenCentral()
 }

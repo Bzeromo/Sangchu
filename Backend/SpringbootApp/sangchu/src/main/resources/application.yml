@@ -7,15 +7,20 @@ spring:
 
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      username : ${REDIS_USERNAME}
-      pw: ${REDIS_PASSWORD}
+      host: 3.36.91.181
+      port: 6379
+#      host: ${REDIS_HOST}
+#      port: ${REDIS_PORT}
+#      username : ${REDIS_USERNAME}
+#      pw: ${REDIS_PASSWORD}
 
   datasource:
-    jdbc-url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+#    jdbc-url: ${DB_URL}
+#    username: ${DB_USERNAME}
+#    password: ${DB_PASSWORD}
+    jdbc-url: jdbc:postgresql://j10b206.p.ssafy.io:5432/postgres
+    username: postgres
+    password: secret
     driver-class-name: org.postgresql.Driver
     jpa:
       hibernate:

@@ -49,6 +49,7 @@ public class CommDistRecommendService {
             CommDistEntity commDistEntity = commDistRepository.findByCommercialDistrictCode(commCode);
 
             return CommDistDTO.builder()
+                    .commercialDistrictCode(commDistEntity.getCommercialDistrictCode())
                     .commercialDistrictName(commDistEntity.getCommercialDistrictName())
                     .latitude(commDistEntity.getLatitude())
                     .longitude(commDistEntity.getLongitude())
@@ -257,6 +258,7 @@ public class CommDistRecommendService {
         }
         return commDistDTOS;
     }
+
     public List<CommDistRankDTO> setCommDistRankDTOs(List<CommDistDTO> commDistList, String serviceCode){
 
 
