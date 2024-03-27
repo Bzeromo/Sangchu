@@ -155,7 +155,7 @@ struct HomeView: View {
                 }
 //                ScrollView(.horizontal, showsIndicators: false) {
 //                    HStack {
-//                        
+//
 //                        if let top10 = Top10 {
 //                            ForEach(top10) { s in
 //                                Text(s.dongName)
@@ -375,7 +375,7 @@ struct HomeView: View {
                     ) // 검색창
                     
                     HStack{
-                        NavigationLink (destination: BDMapView()) {
+                        NavigationLink (destination: BDMapView(cameraLatitude : nil, cameraLongitude : nil)) {
                             HStack {
                                 VStack (alignment: .leading) {
                                     Text("상권 지도")

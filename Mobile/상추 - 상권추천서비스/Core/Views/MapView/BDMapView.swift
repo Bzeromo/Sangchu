@@ -36,6 +36,7 @@ struct MapView: UIViewRepresentable {
     @Binding var isSymbolTapped: Bool // 심볼이 탭 됐는지 여부
     @Binding var tappedLocation: NMGLatLng // 지도 상의 탭한 좌표
     @Binding var tappedSymbolCaption: String // 지도 상의 탭한 심볼의 이름
+    @Binding var cameraLatLng: NMGLatLng?
     var viewModel: MapViewModel
     
     // GeoJson 파일을 로드해서 Polygon 그리기
@@ -277,6 +278,23 @@ struct MapView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: NMFNaverMapView, context: Context) {
+        if let cameraPosition = cameraLatLng {
+            // 지정된 위치로 카메라 이동
+            print("\(cameraPosition.lat) , \(cameraPosition.lng) 로 이동합니다!")
+            
+            let cameraUpdate = NMFCameraUpdate(scrollTo: cameraPosition)
+            cameraUpdate.animation = .easeIn
+            cameraUpdate.animationDuration = 0.3
+            uiView.mapView.moveCamera(cameraUpdate) {_ in 
+                DispatchQueue.main.async {
+                    // UI 관련 업데이트이므로 메인스레드에서 메인 스레드
+                    if (self.viewModel.selectedCDCode != "" && self.viewModel.selectedCDName != "") {
+                        self.viewModel.showBottomSheet = true
+                    }
+                }
+            }
+            cameraLatLng = nil // 중복 이동 방지를 위해 nil로 설정
+        }
     }
 }
 
@@ -285,13 +303,19 @@ struct BDMapView: View {
     @State private var isSymbolTapped = false
     @State private var tappedLocation = NMGLatLng(lat: 0.0, lng: 0.0)
     @State private var tappedSymbolCaption = ""
+    var cameraLatitude: Double?
+    var cameraLongitude: Double?
+    var selectedCDCode: String?
+    var selectedCDName: String?
+    @State private var cameraLatLng: NMGLatLng?
     @StateObject private var viewModel = MapViewModel()
+    
     
     var body: some View {
         NavigationView {
             ZStack {
                 VStack {
-                    MapView(showAlert: $showAlert, isSymbolTapped: $isSymbolTapped, tappedLocation: $tappedLocation, tappedSymbolCaption: $tappedSymbolCaption, viewModel: viewModel).edgesIgnoringSafeArea(.all)
+                    MapView(showAlert: $showAlert, isSymbolTapped: $isSymbolTapped, tappedLocation: $tappedLocation, tappedSymbolCaption: $tappedSymbolCaption, cameraLatLng: $cameraLatLng, viewModel: viewModel).edgesIgnoringSafeArea(.all)
                         .alert(isPresented: $showAlert) {
                             if isSymbolTapped {
                                 // 심볼 클릭 시
@@ -324,8 +348,14 @@ struct BDMapView: View {
 //                                    }
 //                                    .padding()
                                 }
-                                .presentationDetents([.fraction(0.75), .fraction(0.9)])
+                                .presentationDetents([.fraction(0.55), .fraction(0.9)])
                                 .edgesIgnoringSafeArea(.all)
+                        }
+                        .onAppear {
+                            // 필요한 경우 여기에서 초기 카메라 위치를 설정 (일단 서울 시청으로 해둠!) // 나중에 가능하면 사용자의 현재 위치로!
+                            cameraLatLng = NMGLatLng(lat: cameraLatitude ?? 37.5666102, lng: cameraLongitude ?? 126.9783881)
+                            viewModel.selectedCDCode = selectedCDCode ?? ""
+                            viewModel.selectedCDName = selectedCDName ?? ""
                         }
                 }
                 VStack {

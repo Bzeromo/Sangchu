@@ -25,6 +25,35 @@ struct DistrictData: Identifiable, Codable {
     var businessDiversity: FilteredValue // 업종다양성 및 점수
 }
 
+struct CommercialDistrictInfo: Codable {
+    var commercialDistrictCode: String?
+    var commercialDistrictName: String
+    var latitude: Double
+    var longitude: Double
+    var guCode: Int
+    var guName: String
+    var dongCode: Int
+    var dongName: String
+    var areaSize: Int
+    var commercialDistrictScore: Double
+    var salesScore: Double
+    var residentPopulationScore: Double
+    var floatingPopulationScore: Double
+    var rdiScore: Double
+}
+
+// 위도, 경도 표시
+struct DistrictDetailView: View {
+    var latitude: Double
+    var longitude: Double
+    
+    var body: some View {
+        VStack {
+            Text("위도: \(latitude)")
+            Text("경도: \(longitude)")
+        }
+    }
+}
 
 // ScrollView 내부의 카드 하나
 struct CardView: View {
@@ -33,6 +62,36 @@ struct CardView: View {
     var index: Int // 해당 카드의 인덱스
     var selectedFilter: String // 필터링 기준
     @State var isBookMarked: Bool = false // 좋아요 여부
+    @State private var isActive = false // 네비게이션 링크 활성화 상태
+    @State private var latitude: Double? = nil
+    @State private var longitude: Double? = nil
+    
+    // 위도 경도 받아옴
+    func fetchCoordinates(for cdCode: String) async throws -> (latitude: Double, longitude: Double) {
+        let urlString = "http://3.36.91.181:8084/api/commdist/commercial?commercialDistrictCode=\(cdCode)"
+        guard let url = URL(string: urlString) else {
+            throw URLError(.badURL)
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let districtInfo = try JSONDecoder().decode(CommercialDistrictInfo.self, from: data)
+        
+        return (districtInfo.latitude, districtInfo.longitude)
+    }
+    
+    func fetchAndNavigate() {
+        Task {
+            do {
+                let coordinates = try await fetchCoordinates(for: districtData.cdCode)
+                latitude = coordinates.longitude
+                longitude = coordinates.latitude
+                isActive = true // 화면 전환 트리거
+                print("\\( \(String(describing: latitude)) , \(String(describing: longitude)) \\)")
+            } catch {
+                print(error)
+            }
+        }
+    }
     
     // 필터링에 따라 카드에 보여질 내용 만드는 함수
     func formattedSelectedValue() -> String {
@@ -70,62 +129,83 @@ struct CardView: View {
        }
 
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                // 배경 이미지
-                Image(uiImage: UIImage(named: "RoundRank\(index + 1)")!) // 이 부분의 각 상권의 이미지 또는 순위가 들어가야 함
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .edgesIgnoringSafeArea(.all)
-                
-                // 나머지 UI 컴포넌트
-                VStack {
-                    HStack {
-                        Spacer()
-                        // 우측 상단에 위치한 북마크 버튼
-                        Button(action: { self.isBookMarked.toggle() }) {
-                            Image(systemName: isBookMarked ? "bookmark.fill" : "bookmark")
-                                .foregroundColor(.brown)
-                                .background(Circle().fill(Color.white).frame(width: 40, height: 40).opacity(0.7))
-                        }
-                        .padding(.trailing, 50)
-                        .padding(.top, 50)
-                    }
+            GeometryReader { geometry in
+                ZStack {
+                    // 배경 이미지
+                    Image(uiImage: UIImage(named: "RoundRank\(index + 1)")!) // 이 부분의 각 상권의 이미지 또는 순위가 들어가야 함
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .edgesIgnoringSafeArea(.all)
                     
-                    Spacer()
-                    
-                    // 상권 정보 HStack
-                    HStack {
-                        VStack (alignment: .leading) {
-                            // 상권이름
-                            Text(districtData.name).font(.system(size: 22)).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(Color.defaultfont)
-                                .padding(.horizontal)
-                                .padding(.top, 40)
+                    // 나머지 UI 컴포넌트
+                    VStack {
+                        HStack {
                             Spacer()
-                            // 값 - 고른 필터에 따라 달라짐
-                            Text(formattedSelectedValue()).font(.system(size: 16)).fontWeight(.regular).foregroundColor(Color.customgray)
-                                .padding(.horizontal)
-                                .padding(.bottom, 40)
+                            // 우측 상단에 위치한 북마크 버튼
+                            Button(action: { self.isBookMarked.toggle() }) {
+                                Image(systemName: isBookMarked ? "bookmark.fill" : "bookmark")
+                                    .foregroundColor(.brown)
+                                    .background(Circle().fill(Color.white).frame(width: 40, height: 40).opacity(0.7))
+                            }
+                            .padding(.trailing, 50)
+                            .padding(.top, 50)
                         }
+                        
                         Spacer()
-                        Text("\(selectedScore())점")
-                            .font(.largeTitle)
-                            .padding(.horizontal, 10)
-                            .foregroundColor(Color.sangchu)
+                        
+                        // 상권 정보 HStack
+                        HStack {
+                            VStack (alignment: .leading) {
+                                // 상권이름
+                                Text(districtData.name).font(.system(size: 22)).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(Color.defaultfont)
+                                    .padding(.horizontal)
+                                    .padding(.top, 40)
+                                Spacer()
+                                // 값 - 고른 필터에 따라 달라짐
+                                Text(formattedSelectedValue()).font(.system(size: 16)).fontWeight(.regular).foregroundColor(Color.customgray)
+                                    .padding(.horizontal)
+                                    .padding(.bottom, 40)
+                            }
+                            Spacer()
+                            Text("\(selectedScore())점")
+                                .font(.largeTitle)
+                                .padding(.horizontal, 10)
+                                .foregroundColor(Color.sangchu)
+                        }
+                        .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.20)
+                        .background(Color.white.opacity(0.7))
+                        .cornerRadius(15)
+                        .padding(.bottom, 5)
+                        .padding(.horizontal, 20)
+                        // end of 상권 정보 HStack
+                    } // end of 나머지 UI 컴포넌트
+                }
+                .frame(width: min(geometry.size.width, geometry.size.height) , height: min(geometry.size.width, geometry.size.height) )
+                .background(Color.clear)
+                .shadow(color: Color.black.opacity(0.3), radius: 5, x: 3, y: 3)
+//                .onTapGesture {
+//                    Task {
+//                        do {
+//                            let coordinates = try await fetchCoordinates(for: districtData.cdCode)
+//                            let tmplatitude = coordinates.latitude
+//                            let tmplongitude = coordinates.longitude
+//                            print("\\( \(tmplatitude) , \(tmplongitude) \\)")
+//                        } catch {
+//                            print("좌표를 가져오는 데 실패했습니다: \(error)")
+//                        }
+//                    }
+//                }
+                .onTapGesture {
+                    fetchAndNavigate()
+                }
+                .background(
+                    NavigationLink(destination: BDMapView(cameraLatitude: latitude, cameraLongitude: longitude, selectedCDCode: districtData.cdCode, selectedCDName: districtData.name), isActive: $isActive) {
+                        EmptyView()
                     }
-                    .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.20)
-                    .background(Color.white.opacity(0.7))
-                    .cornerRadius(15)
-                    .padding(.bottom, 5)
-                    .padding(.horizontal, 20)
-                    // end of 상권 정보 HStack
-                } // end of 나머지 UI 컴포넌트
-            }
-            .frame(width: min(geometry.size.width, geometry.size.height) , height: min(geometry.size.width, geometry.size.height) )
-            .background(Color.clear)
-            .shadow(color: Color.black.opacity(0.3), radius: 5, x: 3, y: 3)
-            // end of ZStack
-        } // end of GeometryReader
+                    .hidden() // NavigationLink를 숨깁니다.
+                )
+                // end of ZStack
+            } // end of GeometryReader
     } // end of body view
 } // end of CardView
 
@@ -206,8 +286,8 @@ struct API {
 
         // 샘플용
         let sampleData: [DistrictData] = [
-            DistrictData(cdCode: "3110291", name: "상권A", totalScore: FilteredValue(value: 1000, score: 80), sales: FilteredValue(value: 100, score: 70), footTraffic: FilteredValue(value: 500, score: 90), residentialPopulation: FilteredValue(value: 200, score: 60), businessDiversity: FilteredValue(value: 10, score: 50)),
-            DistrictData(cdCode: "3110293", name: "상권B", totalScore: FilteredValue(value: 900, score: 85), sales: FilteredValue(value: 150, score: 75), footTraffic: FilteredValue(value: 400, score: 95), residentialPopulation: FilteredValue(value: 300, score: 55), businessDiversity: FilteredValue(value: 15, score: 45)),
+            DistrictData(cdCode: "3110291", name: "상권A", totalScore: FilteredValue(value: 1000, score: 80), sales: FilteredValue(value: 100, score: 70), footTraffic: FilteredValue(value: 500, score: 90), residentialPopulation: FilteredValue(value: 200, score: 60), businessDiversity: FilteredValue(value: 10, score: 50)), // 한성대 3번출구
+            DistrictData(cdCode: "3110293", name: "상권B", totalScore: FilteredValue(value: 900, score: 85), sales: FilteredValue(value: 150, score: 75), footTraffic: FilteredValue(value: 400, score: 95), residentialPopulation: FilteredValue(value: 300, score: 55), businessDiversity: FilteredValue(value: 15, score: 45)), // 삼선중학교
             DistrictData(cdCode: "3110295", name: "상권C", totalScore: FilteredValue(value: 800, score: 78), sales: FilteredValue(value: 120, score: 82), footTraffic: FilteredValue(value: 450, score: 88), residentialPopulation: FilteredValue(value: 250, score: 65), businessDiversity: FilteredValue(value: 12, score: 48)),
             DistrictData(cdCode: "3110281", name: "상권D", totalScore: FilteredValue(value: 700, score: 75), sales: FilteredValue(value: 130, score: 80), footTraffic: FilteredValue(value: 420, score: 85), residentialPopulation: FilteredValue(value: 220, score: 70), businessDiversity: FilteredValue(value: 13, score: 55)),
             DistrictData(cdCode: "3110290", name: "상권E", totalScore: FilteredValue(value: 650, score: 72), sales: FilteredValue(value: 110, score: 78), footTraffic: FilteredValue(value: 480, score: 91), residentialPopulation: FilteredValue(value: 210, score: 75), businessDiversity: FilteredValue(value: 11, score: 50)),

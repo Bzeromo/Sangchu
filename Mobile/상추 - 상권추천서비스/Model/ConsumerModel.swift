@@ -3,7 +3,7 @@
 //  상추 - 상권추천서비스
 //
 //  Created by 안상준 on 3/25/24.
-//
+// Identifiable, Hashable
 
 import Foundation
 class ConsumerModel {
@@ -42,10 +42,52 @@ class ConsumerModel {
     
     // About Chart
     // 차트로 만들 수 있게해주는 구조체
-    struct ChartData: Identifiable {
+    struct ChartData: Identifiable, Hashable {
         let id = UUID()
         var label: String
         var value: Double
     }
     
 }
+
+/////////////////////////////////////////////////////////////////////
+
+//import Foundation
+//
+//class ConsumerModel {
+//    struct ChartTypeAndData: Codable, Hashable {
+//        var chartType: String
+//        var data: ChartableData
+//    }
+//    
+//    struct ChartableData: Codable, Hashable {
+//        var categories: [String]
+//        var series: [SeriesData]
+//        
+//        static func == (lhs: ChartableData, rhs: ChartableData) -> Bool {
+//            lhs.categories == rhs.categories && lhs.series == rhs.series
+//        }
+//        
+//        func hash(into hasher: inout Hasher) {
+//            hasher.combine(categories)
+//            hasher.combine(series)
+//        }
+//    }
+//    
+//    struct SeriesData: Codable, Hashable {
+//        var name: String
+//        var data: [Int]
+//    }
+//    
+//    struct FloatingApiResponse: Codable {
+//        var age: ChartTypeAndData?
+//        var time: ChartTypeAndData?
+//        var day: ChartTypeAndData?
+//        var quarterlyTrends: ChartTypeAndData?
+//    }
+//    
+//    struct ResidentOrWorkingApiResponse: Codable {
+//        var genderAge: ChartTypeAndData?
+//        var quarterlyTrends: ChartTypeAndData?
+//    }
+//}
