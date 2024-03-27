@@ -394,15 +394,16 @@ struct BDMapView: View {
                         viewModel.showBoroughSheet = true
                     }) {
                         Text("자치구")
-                            .padding() // 버튼 주변에 패딩 추가
-                            .background(Color.white) // 배경색
-                            .cornerRadius(10) // 모서리 둥글게
-                            .shadow(radius: 3) // 그림자
-                            .padding(.top, 44) // 상단 바와의 거리
-                            .padding(.trailing, 10) // 우측 간격
+                            .padding(.vertical, 10)
+                            .padding(.horizontal)
+                            .background(Color.white)
+                            .cornerRadius(10)
+                            .shadow(radius: 3)
+                            .padding(.top, 45)
+                            .padding(.trailing, 10)
                     }
                     .opacity(0.8)
-                    .offset(x: -10, y: UIApplication.shared.windows.first?.safeAreaInsets.top ?? 45 + 10)
+                    .offset(x: -10, y: 45 + 10)
                 }
             } // end of ZStack
         } // end of NavigationView

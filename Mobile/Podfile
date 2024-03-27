@@ -8,8 +8,8 @@ target '상추 - 상권추천서비스' d
   pod 'NMapsMap'
 
 	# 네트워크 라이브러리
-	pod 'Alamofire' , '5.1'
-	# JSON	
+	pod 'Alamofire', '~> 5.5'
+	# JSON
 	pod 'SwiftyJSON'
   # Pods for 상추 - 상권추천서비스
 

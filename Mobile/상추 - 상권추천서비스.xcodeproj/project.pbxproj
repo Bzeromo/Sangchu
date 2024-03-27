@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		049CC6E74DE8FDC2DA4E15E2 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		1505664B781325EC87AB279F /* Pods__________________________Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3299718A27F9909A5F7DEA4 /* Pods__________________________Tests.framework */; };
+		33D9216EDF93FF69B94BDFDE /* Pods____________________________________________________UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77141FAD1CF79BF45105934D /* Pods____________________________________________________UITests.framework */; };
 		650D1ED32BA19B3A0055B3BA /* BookMarkList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D1ED22BA19B3A0055B3BA /* BookMarkList.swift */; };
 		650D1ED72BA19B580055B3BA /* CreateBookMark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650D1ED62BA19B580055B3BA /* CreateBookMark.swift */; };
 		6577BAF12B9EB65A0071A3EA /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6577BAF02B9EB65A0071A3EA /* Item.swift */; };
@@ -43,6 +44,7 @@
 		DA0AB18B2BABCCD800D8BBDF /* CDInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0AB18A2BABCCD800D8BBDF /* CDInfoView.swift */; };
 		DA2162192BA9EC2E009750B6 /* CommercialDistrictOutline.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */; };
 		DA73BC6C2BB3B69800CFA087 /* MapAdditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA73BC6B2BB3B69800CFA087 /* MapAdditional.swift */; };
+		DA73BC6E2BB3FABB00CFA087 /* VariableMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA73BC6D2BB3FABB00CFA087 /* VariableMapping.swift */; };
 		DA7C64A02BA1FF3000BE74DD /* BDMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */; };
 		DA7C64A22BA2062800BE74DD /* NMapsGeometry.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7C64A12BA2062800BE74DD /* NMapsGeometry.xcframework */; };
 		DA7C64A42BA2062800BE74DD /* NMapsMap.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7C64A32BA2062800BE74DD /* NMapsMap.xcframework */; };
@@ -78,6 +80,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		09D246C8F43F82CD35A31B00 /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig"; sourceTree = "<group>"; };
 		2F519EC2938AE4DA5EA35D0C /* Pods__________________________.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods__________________________.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		356999E792C5115C677E5DCD /* Pods-상추 - 상권추천서비스.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스.release.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스/Pods-상추 - 상권추천서비스.release.xcconfig"; sourceTree = "<group>"; };
 		650D1ED22BA19B3A0055B3BA /* BookMarkList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookMarkList.swift; sourceTree = "<group>"; };
@@ -116,10 +119,14 @@
 		65FB38D42BB085730097FD2D /* SalesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesModel.swift; sourceTree = "<group>"; };
 		65FB38D62BB15FF00097FD2D /* HomeNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNetworkManager.swift; sourceTree = "<group>"; };
 		65FB38D82BB160310097FD2D /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
+		77141FAD1CF79BF45105934D /* Pods____________________________________________________UITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods____________________________________________________UITests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B02B0998ADD62EB92CB79AA0 /* Pods-상추 - 상권추천서비스Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스Tests.debug.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스Tests/Pods-상추 - 상권추천서비스Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		D79F20F681C8FDA4CBFF0DFF /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig"; sourceTree = "<group>"; };
 		DA0AB18A2BABCCD800D8BBDF /* CDInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDInfoView.swift; sourceTree = "<group>"; };
 		DA0AB19E2BAD18BA00D8BBDF /* Charts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Charts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CommercialDistrictOutline.geojson; sourceTree = "<group>"; };
 		DA73BC6B2BB3B69800CFA087 /* MapAdditional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapAdditional.swift; sourceTree = "<group>"; };
+		DA73BC6D2BB3FABB00CFA087 /* VariableMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableMapping.swift; sourceTree = "<group>"; };
 		DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDMapView.swift; sourceTree = "<group>"; };
 		DA7C64A12BA2062800BE74DD /* NMapsGeometry.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NMapsGeometry.xcframework; path = Pods/NMapsGeometry/framework/NMapsGeometry.xcframework; sourceTree = "<group>"; };
 		DA7C64A32BA2062800BE74DD /* NMapsMap.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NMapsMap.xcframework; path = Pods/NMapsMap/framework/NMapsMap.xcframework; sourceTree = "<group>"; };
@@ -165,6 +172,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				049CC6E74DE8FDC2DA4E15E2 /* (null) in Frameworks */,
+				33D9216EDF93FF69B94BDFDE /* Pods____________________________________________________UITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,6 +252,7 @@
 				6577BB3B2B9ECBC30071A3EA /* RoundedRectangleButtonStyle.swift */,
 				DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */,
 				6577BB382B9ECBA40071A3EA /* Color.swift */,
+				DA73BC6D2BB3FABB00CFA087 /* VariableMapping.swift */,
 			);
 			path = Extenstion;
 			sourceTree = "<group>";
@@ -371,6 +380,7 @@
 				DA7C64A32BA2062800BE74DD /* NMapsMap.xcframework */,
 				2F519EC2938AE4DA5EA35D0C /* Pods__________________________.framework */,
 				F3299718A27F9909A5F7DEA4 /* Pods__________________________Tests.framework */,
+				77141FAD1CF79BF45105934D /* Pods____________________________________________________UITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -418,6 +428,9 @@
 				FD19B19524DAAC11DC241F04 /* Pods-상추 - 상권추천서비스.debug.xcconfig */,
 				356999E792C5115C677E5DCD /* Pods-상추 - 상권추천서비스.release.xcconfig */,
 				EA2725CE8634C61412ECAB48 /* Pods-상추 - 상권추천서비스Tests.release.xcconfig */,
+				09D246C8F43F82CD35A31B00 /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig */,
+				D79F20F681C8FDA4CBFF0DFF /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig */,
+				B02B0998ADD62EB92CB79AA0 /* Pods-상추 - 상권추천서비스Tests.debug.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -700,6 +713,7 @@
 				65FB38D52BB085730097FD2D /* SalesModel.swift in Sources */,
 				DAD092242BA92A1300A6DF92 /* GeoJSONLoader.swift in Sources */,
 				659A1FA72BA2C70000B6FDAB /* HashTagItem.swift in Sources */,
+				DA73BC6E2BB3FABB00CFA087 /* VariableMapping.swift in Sources */,
 				65A66B7D2BA97B7100E4E3D0 /* CameraView.swift in Sources */,
 				65A66B7B2BA97B1900E4E3D0 /* CustomCameraView.swift in Sources */,
 				DAD092202BA8A77B00A6DF92 /* LocationService.swift in Sources */,
@@ -928,6 +942,7 @@
 		};
 		6577BB132B9EB65C0071A3EA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B02B0998ADD62EB92CB79AA0 /* Pods-상추 - 상권추천서비스Tests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -969,6 +984,7 @@
 		};
 		6577BB162B9EB65C0071A3EA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 09D246C8F43F82CD35A31B00 /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -987,6 +1003,7 @@
 		};
 		6577BB172B9EB65C0071A3EA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D79F20F681C8FDA4CBFF0DFF /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;

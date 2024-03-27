@@ -1,22 +1,22 @@
 import SwiftUI
+import Alamofire
 
-struct FilteredDistrictsData: Codable {
-    var totalScoreSorted: [DistrictData]
-    var salesSorted: [DistrictData]
-    var footTrafficSorted: [DistrictData]
-    var residentialPopulationSorted: [DistrictData]
-    var businessDiversitySorted: [DistrictData]
+struct FilteredDistrictsData : Codable {
+    var totalScoreSorted: [DistrictData] = []
+    var salesSorted: [DistrictData] = []
+    var footTrafficSorted: [DistrictData] = []
+    var residentialPopulationSorted: [DistrictData] = []
+    var businessDiversitySorted: [DistrictData] = []
 }
 
 struct FilteredValue : Codable {
     var value: Int // 실제 값 // ex) 매출 1억 // 단 총점순인 경우 서울시 전체에서의 점수
-    var score: Int // 점수 // ex) 매출별 점수 98
+    var score: Double // 점수 // ex) 매출별 점수 98
 }
 
 // 상권 정보
-struct DistrictData: Identifiable, Codable {
-    var id: String {cdCode}
-    var cdCode: String // 상권 코드
+struct DistrictData: Codable {
+    var cdCode: Int // 상권 코드
     var name: String // 상권 이름
     var totalScore: FilteredValue // 총점
     var sales: FilteredValue // 매출액 및 점수
@@ -82,7 +82,7 @@ struct CardView: View {
     func fetchAndNavigate() {
         Task {
             do {
-                let coordinates = try await fetchCoordinates(for: districtData.cdCode)
+                let coordinates = try await fetchCoordinates(for: String(districtData.cdCode))
                 latitude = coordinates.longitude
                 longitude = coordinates.latitude
                 isActive = true // 화면 전환 트리거
@@ -111,7 +111,7 @@ struct CardView: View {
         }
     }
     
-    func selectedScore() -> Int {
+    func selectedScore() -> Double {
            switch selectedFilter {
            case "종합순":
                    return districtData.totalScore.score
@@ -132,7 +132,7 @@ struct CardView: View {
             GeometryReader { geometry in
                 ZStack {
                     // 배경 이미지
-                    Image(uiImage: UIImage(named: "RoundRank\(index + 1)")!) // 이 부분의 각 상권의 이미지 또는 순위가 들어가야 함
+                    Image(uiImage: UIImage(named: "RoundRank\(index + 1)") ?? UIImage(named: "RoundRank9")!)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .edgesIgnoringSafeArea(.all)
@@ -183,23 +183,11 @@ struct CardView: View {
                 .frame(width: min(geometry.size.width, geometry.size.height) , height: min(geometry.size.width, geometry.size.height) )
                 .background(Color.clear)
                 .shadow(color: Color.black.opacity(0.3), radius: 5, x: 3, y: 3)
-//                .onTapGesture {
-//                    Task {
-//                        do {
-//                            let coordinates = try await fetchCoordinates(for: districtData.cdCode)
-//                            let tmplatitude = coordinates.latitude
-//                            let tmplongitude = coordinates.longitude
-//                            print("\\( \(tmplatitude) , \(tmplongitude) \\)")
-//                        } catch {
-//                            print("좌표를 가져오는 데 실패했습니다: \(error)")
-//                        }
-//                    }
-//                }
                 .onTapGesture {
                     fetchAndNavigate()
                 }
                 .background(
-                    NavigationLink(destination: BDMapView(cameraLatitude: latitude, cameraLongitude: longitude, selectedCDCode: districtData.cdCode, selectedCDName: districtData.name), isActive: $isActive) {
+                    NavigationLink(destination: BDMapView(cameraLatitude: latitude, cameraLongitude: longitude, selectedCDCode: String(districtData.cdCode), selectedCDName: districtData.name), isActive: $isActive) {
                         EmptyView()
                     }
                     .hidden() // NavigationLink를 숨깁니다.
@@ -283,24 +271,78 @@ struct DistrictRankingView: View {
 
 struct API {
     static func fetchFilteredDistrictsData(borough: String, category: String) async throws -> FilteredDistrictsData {
+        guard let guCode = VariableMapping.boroughsToGuCode[borough],
+              let serviceCode = VariableMapping.categoryToServiceCode[category] else {
+            print("여기서 막힘!")
+            throw URLError(.badURL)
+        }
 
-        // 샘플용
-        let sampleData: [DistrictData] = [
-            DistrictData(cdCode: "3110291", name: "상권A", totalScore: FilteredValue(value: 1000, score: 80), sales: FilteredValue(value: 100, score: 70), footTraffic: FilteredValue(value: 500, score: 90), residentialPopulation: FilteredValue(value: 200, score: 60), businessDiversity: FilteredValue(value: 10, score: 50)), // 한성대 3번출구
-            DistrictData(cdCode: "3110293", name: "상권B", totalScore: FilteredValue(value: 900, score: 85), sales: FilteredValue(value: 150, score: 75), footTraffic: FilteredValue(value: 400, score: 95), residentialPopulation: FilteredValue(value: 300, score: 55), businessDiversity: FilteredValue(value: 15, score: 45)), // 삼선중학교
-            DistrictData(cdCode: "3110295", name: "상권C", totalScore: FilteredValue(value: 800, score: 78), sales: FilteredValue(value: 120, score: 82), footTraffic: FilteredValue(value: 450, score: 88), residentialPopulation: FilteredValue(value: 250, score: 65), businessDiversity: FilteredValue(value: 12, score: 48)),
-            DistrictData(cdCode: "3110281", name: "상권D", totalScore: FilteredValue(value: 700, score: 75), sales: FilteredValue(value: 130, score: 80), footTraffic: FilteredValue(value: 420, score: 85), residentialPopulation: FilteredValue(value: 220, score: 70), businessDiversity: FilteredValue(value: 13, score: 55)),
-            DistrictData(cdCode: "3110290", name: "상권E", totalScore: FilteredValue(value: 650, score: 72), sales: FilteredValue(value: 110, score: 78), footTraffic: FilteredValue(value: 480, score: 91), residentialPopulation: FilteredValue(value: 210, score: 75), businessDiversity: FilteredValue(value: 11, score: 50)),
-            DistrictData(cdCode: "3110286", name: "상권F", totalScore: FilteredValue(value: 600, score: 70), sales: FilteredValue(value: 140, score: 77), footTraffic: FilteredValue(value: 430, score: 86), residentialPopulation: FilteredValue(value: 240, score: 68), businessDiversity: FilteredValue(value: 14, score: 53)),
-            DistrictData(cdCode: "3110297", name: "상권G", totalScore: FilteredValue(value: 550, score: 65), sales: FilteredValue(value: 90, score: 65), footTraffic: FilteredValue(value: 410, score: 80), residentialPopulation: FilteredValue(value: 230, score: 62), businessDiversity: FilteredValue(value: 9, score: 47))
-        ]
+        print("guCode = \(guCode)")
+        print("category = \(category)")
+        
+        let url = "http://3.36.91.181:8084/api/commdist/district-rank?guCode=\(guCode)&serviceCode=\(serviceCode)"
+        
+        // Alamofire의 request를 async/await와 함께 사용
+//        do {
+//            let request = AF.request(url)
+//            let response = try await request.serializingDecodable([DistrictData].self).value
+//            
+//            var tmpFilteredData = FilteredDistrictsData()
+//            tmpFilteredData.totalScoreSorted = response.sorted(by: { $0.totalScore.score > $1.totalScore.score })
+//            tmpFilteredData.salesSorted = response.sorted(by: { $0.sales.score > $1.sales.score })
+//            tmpFilteredData.footTrafficSorted = response.sorted(by: { $0.footTraffic.score > $1.footTraffic.score })
+//            tmpFilteredData.residentialPopulationSorted = response.sorted(by: { $0.residentialPopulation.score > $1.residentialPopulation.score })
+//            tmpFilteredData.businessDiversitySorted = response.sorted(by: { $0.businessDiversity.score > $1.businessDiversity.score })
+//            
+//            return tmpFilteredData
+//        } catch {
+//            print("Request error: \(error)")
+//            throw error
+//        }
+        //
+        do {
+            let response: DataResponse<[DistrictData], AFError> = try await AF.request(url).serializingDecodable([DistrictData].self).response
+            switch response.result {
+            case .success(let districtDatas):
+                var tmpFilteredData = FilteredDistrictsData()
+                tmpFilteredData.totalScoreSorted = districtDatas.sorted(by: { $0.totalScore.score > $1.totalScore.score })
+                tmpFilteredData.salesSorted = districtDatas.sorted(by: { $0.sales.score > $1.sales.score })
+                tmpFilteredData.footTrafficSorted = districtDatas.sorted(by: { $0.footTraffic.score > $1.footTraffic.score })
+                tmpFilteredData.residentialPopulationSorted = districtDatas.sorted(by: { $0.residentialPopulation.score > $1.residentialPopulation.score })
+                tmpFilteredData.businessDiversitySorted = districtDatas.sorted(by: { $0.businessDiversity.score > $1.businessDiversity.score })
+                return tmpFilteredData
+            case .failure(let error):
+                print("Request error: \(error)")
+                throw error
+            }
+        } catch {
+            throw error
+        }
+    }
+}
 
-        return FilteredDistrictsData(
-            totalScoreSorted: sampleData.sorted(by: { $0.totalScore.score > $1.totalScore.score }),
-            salesSorted: sampleData.sorted(by: { $0.sales.score > $1.sales.score }),
-            footTrafficSorted: sampleData.sorted(by: { $0.footTraffic.score > $1.footTraffic.score }),
-            residentialPopulationSorted: sampleData.sorted(by: { $0.residentialPopulation.score > $1.residentialPopulation.score }),
-            businessDiversitySorted: sampleData.sorted(by: { $0.businessDiversity.score > $1.businessDiversity.score })
-        )
-    } // end of fetchFilteredDistrictsData
-} // end of API
+
+//struct API {
+//    static func fetchFilteredDistrictsData(borough: String, category: String) async throws ->
+//    FilteredDistrictsData {
+//   
+//         샘플용
+//        let sampleData: [DistrictData] = [
+//            DistrictData(cdCode: "3110291", name: "상권A", totalScore: FilteredValue(value: 1000, score: 80), sales: FilteredValue(value: 100, score: 70), footTraffic: FilteredValue(value: 500, score: 90), residentialPopulation: FilteredValue(value: 200, score: 60), businessDiversity: FilteredValue(value: 10, score: 50)), // 한성대 3번출구
+//            DistrictData(cdCode: "3110293", name: "상권B", totalScore: FilteredValue(value: 900, score: 85), sales: FilteredValue(value: 150, score: 75), footTraffic: FilteredValue(value: 400, score: 95), residentialPopulation: FilteredValue(value: 300, score: 55), businessDiversity: FilteredValue(value: 15, score: 45)), // 삼선중학교
+//            DistrictData(cdCode: "3110295", name: "상권C", totalScore: FilteredValue(value: 800, score: 78), sales: FilteredValue(value: 120, score: 82), footTraffic: FilteredValue(value: 450, score: 88), residentialPopulation: FilteredValue(value: 250, score: 65), businessDiversity: FilteredValue(value: 12, score: 48)),
+//            DistrictData(cdCode: "3110281", name: "상권D", totalScore: FilteredValue(value: 700, score: 75), sales: FilteredValue(value: 130, score: 80), footTraffic: FilteredValue(value: 420, score: 85), residentialPopulation: FilteredValue(value: 220, score: 70), businessDiversity: FilteredValue(value: 13, score: 55)),
+//            DistrictData(cdCode: "3110290", name: "상권E", totalScore: FilteredValue(value: 650, score: 72), sales: FilteredValue(value: 110, score: 78), footTraffic: FilteredValue(value: 480, score: 91), residentialPopulation: FilteredValue(value: 210, score: 75), businessDiversity: FilteredValue(value: 11, score: 50)),
+//            DistrictData(cdCode: "3110286", name: "상권F", totalScore: FilteredValue(value: 600, score: 70), sales: FilteredValue(value: 140, score: 77), footTraffic: FilteredValue(value: 430, score: 86), residentialPopulation: FilteredValue(value: 240, score: 68), businessDiversity: FilteredValue(value: 14, score: 53)),
+//            DistrictData(cdCode: "3110297", name: "상권G", totalScore: FilteredValue(value: 550, score: 65), sales: FilteredValue(value: 90, score: 65), footTraffic: FilteredValue(value: 410, score: 80), residentialPopulation: FilteredValue(value: 230, score: 62), businessDiversity: FilteredValue(value: 9, score: 47))
+//        ]
+//
+//        return FilteredDistrictsData(
+//            totalScoreSorted: sampleData.sorted(by: { $0.totalScore.score > $1.totalScore.score }),
+//            salesSorted: sampleData.sorted(by: { $0.sales.score > $1.sales.score }),
+//            footTrafficSorted: sampleData.sorted(by: { $0.footTraffic.score > $1.footTraffic.score }),
+//            residentialPopulationSorted: sampleData.sorted(by: { $0.residentialPopulation.score > $1.residentialPopulation.score }),
+//            businessDiversitySorted: sampleData.sorted(by: { $0.businessDiversity.score > $1.businessDiversity.score })
+//        )
+//    } // end of fetchFilteredDistrictsData
+//} // end of API
