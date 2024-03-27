@@ -102,8 +102,7 @@ struct InfraChartView: View {
                                     .chartYAxis {
                                         AxisMarks(preset: .aligned, position: .leading)
                                     }
-                                    
-                                    
+                                    .padding(.bottom, 40)
                                 }
                             } // end of else
                         } // end of ForEach

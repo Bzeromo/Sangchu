@@ -32,4 +32,17 @@ class ConsumerNetworkManager {
             print("잘못된 엔드포인트 매개변수입니다.")
         }
     }
+    
+    func fetchAsync(endpoint: String?, commercialDistrictCode: String) async throws -> Data {
+        try await withCheckedThrowingContinuation { continuation in
+            fetch(endpoint: endpoint, commercialDistrictCode: commercialDistrictCode) { result in
+                switch result {
+                case .success(let data):
+                    continuation.resume(returning: data)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
 }

@@ -13,6 +13,6 @@ struct SalesChartView: View {
     
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("매출 관련 데이터는 준비중입니다.")
     }
 }

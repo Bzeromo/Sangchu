@@ -1,6 +1,6 @@
 //
 //  ConsumerChartView.swift
-//  상추 - 상권추천서비스
+//  상추 - 상권추천서비스
 //
 //  Created by 안상준 on 3/25/24.
 //
@@ -19,9 +19,9 @@ enum Endpoints: String, CaseIterable, Identifiable {
     case 시간대별유동인구 = "floatingDataByTime"
     case 연령별유동인구 = "floatingDataByAge"
     case 분기별상주인구 = "residentDataByQuarter"
-    case 성연령별상주인구 = "residentBySexAndAge"
+    case 성연령별상주인구 = "residentByGenderAndAge"
     case 분기별직장인구 = "workingDataByQuarter"
-    case 성연령별직장인구 = "workingDataBySexAndAge"
+    case 성연령별직장인구 = "workingDataByGenderAndAge"
 
     var englishEndpoint: String {
         switch self {
@@ -47,44 +47,43 @@ enum Endpoints: String, CaseIterable, Identifiable {
     var displayName: String {
             switch self {
                 case .분기별유동인구:
-                    return "분기별 유동 인구"
+                    return "분기별유동인구"
                 case .요일별유동인구:
-                    return "요일별 유동 인구"
+                    return "요일별유동인구"
                 case .시간대별유동인구:
-                    return "시간대별 유동 인구"
+                    return "시간대별유동인구"
                 case .연령별유동인구:
-                    return "연령별 유동 인구"
+                    return "연령별유동인구"
                 case .분기별상주인구:
-                    return "분기별 상주 인구"
+                    return "분기별상주인구"
                 case .성연령별상주인구:
-                    return "성/연령별 상주 인구"
+                    return "성/연령별상주인구"
                 case .분기별직장인구:
-                    return "분기별 직장 인구"
+                    return "분기별직장인구"
                 case .성연령별직장인구:
-                    return "성/연령별 직장 인구"
+                    return "성/연령별직장인구"
             }
         } // end of displayName
+    
 }
 
 
 struct ConsumerChartView: View {
-    @State private var chartDataSets: [[ConsumerModel.ChartData]] = Array(repeating: [], count: Endpoints.allCases.count)
     // 차트 데이터들이 들어가 있는 배열 상태값
+    @State private var chartDataSets: [[ConsumerModel.ChartData]] = Array(repeating: [], count: Endpoints.allCases.count)
     @State var cdCode: String = ""
-    @State private var selectedEndpoint: Endpoints = .분기별직장인구
     
     var body: some View {
-     
                 VStack (alignment: .leading) {
                     if chartDataSets.isEmpty {
                         Text("해당 데이터가 없습니다.")
                             .padding()
                     } else {
                         TabView {
-                             ForEach(0..<chartDataSets.count, id: \.self) { index in
+                            ForEach(0..<chartDataSets.count, id: \.self) { index in
+//                                Text("\(index)")
                                  if (chartDataSets[index].isEmpty) {
-                                     Text("준비중인 데이터입니다.")
-                                         .font(.largeTitle)
+//                                     ProgressView().progressViewStyle(CircularProgressViewStyle())
                                  }
                                  else {
                                      VStack {
@@ -101,8 +100,8 @@ struct ConsumerChartView: View {
                                          // Chart view
                                          Chart(chartDataSets[index]) { data in
                                              BarMark(
-                                                x: .value("Quarter", data.label),
-                                                y: .value("Population", data.value)
+                                                x: .value("n", data.label),
+                                                y: .value("v", data.value)
                                              )
                                              .cornerRadius(5)
                                              .annotation(position: .top, alignment: .center) {
@@ -116,7 +115,7 @@ struct ConsumerChartView: View {
                                          .padding()
                                          // x축 관련 설정
                                          .chartXAxis {
-                                             AxisMarks(values: .automatic) { value in
+                                             AxisMarks() { value in
                                                  AxisGridLine(centered: true)
                                                  AxisTick()
                                                      .foregroundStyle(Color.clear)// x축 눈금 // 있지만 안보이게! // 없애면 x축 글자들 겹쳐서 보일수도 있음!
@@ -133,16 +132,16 @@ struct ConsumerChartView: View {
                                          .chartYAxis {
                                              AxisMarks(preset: .aligned, position: .leading)
                                          }
+                                         .padding(.bottom, 40)
                                      } // end of VStack
                                  } // end of else
                              } // end of ForEach
                          }
                         .frame(height: 300)
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
-                        .scrollIndicatorsFlash(onAppear: true)
                         .padding()
                         .onAppear {
-                             loadAllData()
+                            loadAllData()
                          }
                     }
                 }
@@ -151,12 +150,12 @@ struct ConsumerChartView: View {
     
     func loadAllData() {
         for (index, endpoint) in Endpoints.allCases.enumerated() {
-            print("endpoint = " + endpoint.id + "의 데이터를 가져오겠습니다.")
+            print(endpoint.rawValue)
             if endpoint.rawValue.contains("floating") {
-                print("유동인구 관련 함수 호출")
+//                print("유동인구 관련 함수 호출")
                 loadFloatingData(endpoint : endpoint, index: index)
             } else {
-                print("상주/직장인구 관련 함수 호출")
+//                print("상주/직장인구 관련 함수 호출")
                 loadResidentOrWorkingData(endpoint : endpoint, index: index)
             }
         }
@@ -174,18 +173,15 @@ struct ConsumerChartView: View {
                             let residentOrWorkingApiResponse = try JSONDecoder().decode(ConsumerModel.ResidentOrWorkingApiResponse.self, from: data)
                             
                             // 분기별 - quarterlyTrends
-                            if endpoint.englishEndpoint.contains("quarterly-trends") {
+                            if endpoint.englishEndpoint.contains("quarterly") {
                                 if let seriesData = residentOrWorkingApiResponse.quarterlyTrends?.data.series.first {
                                     //
                                     self.chartDataSets[index] = zip(residentOrWorkingApiResponse.quarterlyTrends?.data.categories ?? [] , seriesData.data)
                                         .map { (category, value) in ConsumerModel.ChartData(label: category, value: Double(value)) }
-                                    if self.chartDataSets[index].isEmpty {
-                                        print("Decoding Value Error!")
-                                    }
                                 }
                             }
                             // 성/연령별 - genderAge
-                            if endpoint.englishEndpoint.contains("gender-age") {
+                            else if endpoint.englishEndpoint.contains("age") {
                                 if let seriesData = residentOrWorkingApiResponse.genderAge?.data.series.first {
                                     //
                                     self.chartDataSets[index] = zip(residentOrWorkingApiResponse.genderAge?.data.categories ?? [] , seriesData.data)
@@ -202,7 +198,6 @@ struct ConsumerChartView: View {
                         }
                 // api 통신 실패하면
                     case .failure(let error):
-                        print(selectedEndpoint.rawValue)
                         print("API Networking Error: \(error.localizedDescription)")
                 }
             }
@@ -221,7 +216,7 @@ struct ConsumerChartView: View {
                             let floatingApiResponse = try JSONDecoder().decode(ConsumerModel.FloatingApiResponse.self, from: data)
                             
                             // 분기별 - quarterlyTrends
-                            if endpoint.englishEndpoint.contains("quarterly-trends") {
+                            if endpoint.englishEndpoint.contains("quarterly") {
                                 if let seriesData = floatingApiResponse.quarterlyTrends?.data.series.first {
                                     //
                                     self.chartDataSets[index] = zip(floatingApiResponse.quarterlyTrends?.data.categories ?? [] , seriesData.data)
@@ -232,7 +227,7 @@ struct ConsumerChartView: View {
                                 }
                             }
                             // 요일별 - day
-                            if endpoint.englishEndpoint.contains("day") {
+                            else if endpoint.englishEndpoint.contains("day") {
                                 if let seriesData = floatingApiResponse.day?.data.series.first {
                                     //
                                     self.chartDataSets[index] = zip(floatingApiResponse.day?.data.categories ?? [] , seriesData.data)
@@ -244,7 +239,7 @@ struct ConsumerChartView: View {
                                 }
                             }
                             // 시간대별 - time
-                            if endpoint.englishEndpoint.contains("time") {
+                            else if endpoint.englishEndpoint.contains("time") {
                                 if let seriesData = floatingApiResponse.time?.data.series.first {
                                     //
                                     self.chartDataSets[index] = zip(floatingApiResponse.time?.data.categories ?? [] , seriesData.data)
@@ -256,7 +251,7 @@ struct ConsumerChartView: View {
                                 }
                             }
                             // 연령별 - age
-                            if endpoint.englishEndpoint.contains("age") {
+                            else if endpoint.englishEndpoint.contains("age") {
                                 if let seriesData = floatingApiResponse.age?.data.series.first {
                                     //
                                     self.chartDataSets[index] = zip(floatingApiResponse.age?.data.categories ?? [] , seriesData.data)
@@ -274,12 +269,9 @@ struct ConsumerChartView: View {
                         }
                 // api 통신 실패하면
                     case .failure(let error):
-                        print(selectedEndpoint.rawValue)
                         print("API Networking Error: \(error.localizedDescription)")
                 }
             }
         }
-    }
-    
+    } //end of loadFloatingData
 } // end of ContentView
-
