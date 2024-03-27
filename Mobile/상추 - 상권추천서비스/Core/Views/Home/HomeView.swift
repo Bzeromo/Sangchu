@@ -20,8 +20,6 @@ struct HomeView: View {
     @Query private var items: [BookMarkItem]
     // SwiftData 사용 끝
     @State var gradiant = [Color(hex: "37683B"), Color(hex: "529B58")]// 사용할 그라디언트 색상 배열
-    
-
 
     let gradientColors: [Color] = [Color(hex: "FF8080"),Color(hex: "FFA680"),Color(hex: "FFBF80"),Color(hex: "FFD480"),Color(hex: "FFE680"),Color(hex: "F4FF80"),Color(hex: "D5FF80"),Color(hex: "A2FF80"),Color(hex: "80FF9E"),Color(hex: "80FFD5"),Color(hex: "80EAFF"),Color(hex: "80A6FF"),Color(hex: "8A80FF"),Color(hex: "BF80FF"),Color(hex: "FD80FF"),Color(hex: "FF8097")]
 
@@ -172,46 +170,48 @@ struct HomeView: View {
                             // 배열이 비어 있지 않은 경우에만 내부 로직 실행
                             if !top10.isEmpty {
                                 ForEach(Array(zip(top10.indices, top10)), id: \.0) { index, district in
-                                    ZStack {
-                                        VStack{
-                                            Text("\(index + 1)").foregroundColor(.white).fontWeight(.bold).font(.system(size: 130))
-                                        }
-                                        .frame(width : 190 , height: 190)
-//                                        .background(Color("sangchu"))
-                                        .background(Color.pink)
-                                        .cornerRadius(60)
-                                        .rotationEffect(.degrees(-28)).offset(x:120,y:-30)
-                                            HStack{
-                                                VStack(alignment: .leading){
-                                                    HStack{
-                                                        Text("\(district.commercialDistrictName)").font(.title).foregroundColor(Color.white).fontWeight(.semibold)
-                                                        Spacer()
-                                                    }
-                                                    HStack{
-                                                        VStack(alignment: .leading){
-                                                            Text("총점").font(.title3)
-                                                            Text("매출점수").font(.caption)
-                                                            Text("상주인구점수").font(.caption)
-                                                            Text("유동인구점수").font(.caption)
-                                                            Text("다양성").font(.caption)
-                                                        }
-                                                        VStack(alignment: .leading){
-                                                            Text("\(Int(district.commercialDistrictScore))").font(.title3)
-                                                            Text("\(Int(district.salesScore))").font(.caption)
-                                                            Text("\(Int(district.residentPopulationScore))").font(.caption)
-                                                            Text("\(Int(district.floatingPopulationScore))").font(.caption)
-                                                            Text("\(Int(district.rdiScore))").font(.caption)
-                                                        }
-                                                    }
-                                                    VStack(alignment: .leading){
-                                                        Text("정보 보러가기").font(.caption2).foregroundColor(.gray)
-            //                                            Text("상권 코드 \(district.commercialDistrictCode)")
-                                                    }
-                                                }.frame(maxWidth: UIScreen.main.bounds.width * 0.6)
-                                                Spacer()
+                                    NavigationLink(destination: BDMapView(cameraLatitude: district.longitude, cameraLongitude: district.latitude, selectedCDCode: String(district.commercialDistrictCode), selectedCDName: district.commercialDistrictName)){
+                                        ZStack {
+                                            VStack{
+                                                Text("\(index + 1)").foregroundColor(.white).fontWeight(.bold).font(.system(size: 130))
                                             }
-                                        
-                                        
+                                            .frame(width : 190 , height: 190)
+    //                                        .background(Color("sangchu"))
+                                            .background(Color.pink)
+                                            .cornerRadius(60)
+                                            .rotationEffect(.degrees(-28)).offset(x:120,y:-30)
+                                                HStack{
+                                                    VStack(alignment: .leading){
+                                                        HStack{
+                                                            Text("\(district.commercialDistrictName)").font(.title).foregroundColor(Color.white).fontWeight(.semibold)
+                                                            Spacer()
+                                                        }
+                                                        HStack{
+                                                            VStack(alignment: .leading){
+                                                                Text("총점").font(.title3)
+                                                                Text("매출점수").font(.caption)
+                                                                Text("상주인구점수").font(.caption)
+                                                                Text("유동인구점수").font(.caption)
+                                                                Text("다양성").font(.caption)
+                                                            }
+                                                            VStack(alignment: .leading){
+                                                                Text("\(Int(district.commercialDistrictScore))").font(.title3)
+                                                                Text("\(Int(district.salesScore))").font(.caption)
+                                                                Text("\(Int(district.residentPopulationScore))").font(.caption)
+                                                                Text("\(Int(district.floatingPopulationScore))").font(.caption)
+                                                                Text("\(Int(district.rdiScore))").font(.caption)
+                                                            }
+                                                        }
+                                                        VStack(alignment: .leading){
+                                                            Text("정보 보러가기").font(.caption2).foregroundColor(.gray)
+                //                                            Text("상권 코드 \(district.commercialDistrictCode)")
+                                                        }
+                                                    }.frame(maxWidth: UIScreen.main.bounds.width * 0.6)
+                                                    Spacer()
+                                                }
+                                            
+                                            
+                                        }
                                     }
                                     .scrollTransition{ content, phase in
                                             content
