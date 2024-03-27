@@ -379,33 +379,55 @@ struct BDMapView: View {
                         }
                 }
                 VStack {
-//                    Button("자치구") {
-//                        viewModel.showBoroughSheet = true
-//                    }
-//                    .buttonStyle(RoundedRectangleButtonStyle(bgColor: .white, textColor: .black, width: 50, hasStroke: false))
-                    Spacer()
-                    Button("상권 정보 보기") {
-                        viewModel.showBottomSheet = true
+                    VStack{
+                        
+                    }.frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.11).background(Color.white)
+                    HStack{
+                        Button(action: {
+                            viewModel.showBoroughSheet = true
+                        }) {
+                            Label("자치구", systemImage: "mappin.and.ellipse.circle.fill").foregroundColor(.black)
+                        }
+                        .frame(width: UIScreen.main.bounds.width * 0.24, height: UIScreen.main.bounds.height * 0.05)
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .padding(.leading , 20)
+    //                    .overlay(
+    //                                RoundedRectangle(cornerRadius: 20)
+    //                                    .stroke(Color.black, lineWidth: 0.3)
+    //                            )
+                        .shadow(radius: 2, x: 1 , y: 1)
+                        
+                        Spacer()
                     }
-                }
-                HStack {
+                    
+                    
+                    
                     Spacer()
+                    
                     Button(action: {
-                        viewModel.showBoroughSheet = true
+                        viewModel.showBottomSheet = true
                     }) {
-                        Text("자치구")
-                            .padding(.vertical, 10)
-                            .padding(.horizontal)
-                            .background(Color.white)
-                            .cornerRadius(10)
-                            .shadow(radius: 3)
-                            .padding(.top, 45)
-                            .padding(.trailing, 10)
+                        Label("상권 정보 보기", systemImage: "info.bubble.fill").foregroundColor(.black)
                     }
-                    .opacity(0.8)
-                    .offset(x: -10, y: 45 + 10)
+                    .frame(width: UIScreen.main.bounds.width * 0.5, height: UIScreen.main.bounds.height * 0.05)
+                    .background(Color.white)
+                    .cornerRadius(20)
+//                    .overlay(
+//                                RoundedRectangle(cornerRadius: 20)
+//                                    .stroke(Color.black, lineWidth: 0.3)
+//                            )
+                    .shadow(radius: 2, x: 1 , y: 1)
+                    
+                    Spacer().frame(height: UIScreen.main.bounds.height * 0.1)
+                    
                 }
-            } // end of ZStack
-        } // end of NavigationView
+                
+                
+                   
+            }.ignoresSafeArea() // end of ZStack
+            
+        } 
+        .navigationBarTitle("지도", displayMode: .inline)// end of NavigationView
     } // end of bodyView
 } // end of BDMapView

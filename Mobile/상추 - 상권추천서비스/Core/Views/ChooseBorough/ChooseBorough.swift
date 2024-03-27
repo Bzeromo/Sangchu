@@ -118,83 +118,124 @@ enum Borough: String, CaseIterable, Identifiable {
 struct ChooseBorough: View {
     @State private var selectedBorough: Borough = .강남구
     @State private var isPickerTouched: Bool = false
+    let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     // 뷰를 제어하기 위함 // 이전버튼에 활용
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @State private var startAnimation : Bool = false
         
+    let universalSize = UIScreen.main.bounds
+    
+    // amplitude는 진폭 원래는 150 값이 들어있었음
+    // interval 은 UIScreen.width size
+    func getSinWave(interval : CGFloat, amplitude : CGFloat = 100,baseline:CGFloat = UIScreen.main.bounds.height / 2) ->
+    Path{
+        Path { path in
+            path.move(to: CGPoint(x:0, y:baseline))
+            path.addCurve(to: CGPoint(x : 1 * interval, y : baseline),
+                          control1: CGPoint(x:interval * (0.3),y: amplitude + baseline),
+                          control2: CGPoint(x:interval * (0.7),y: -amplitude + baseline)
+            )
+            path.addCurve(to: CGPoint(x : 2 * interval, y : baseline),
+                          control1: CGPoint(x:interval * (1.3),y: amplitude + baseline),
+                          control2: CGPoint(x:interval * (1.7),y: -amplitude + baseline)
+            )
+            path.addLine(to: CGPoint(x: 2 * interval, y: universalSize.height))
+            path.addLine(to: CGPoint(x: 0 , y: universalSize.height))
+        }
+    }
     
     var body: some View {
-        VStack {
-            HStack {
-                Text("지역")
-                    .font(.title)
-                    .foregroundColor(Color.sangchu)
-                    .padding(15)
-                Text("업종")
-                    .font(.title2)
-                    .foregroundColor(Color(hex: "767676"))
-                    .padding(15)
-            } // end of HStack
+        ZStack{
+            getSinWave(interval: universalSize.width * 1.5 , amplitude: 150, baseline: 65 + universalSize.height / 2)
+            //.stroke(lineWidth: 2) // 선만
+                .foregroundColor(Color.red.opacity(0.3))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 1.5) : 0)
+                .animation(Animation.linear(duration: 5).repeatForever(autoreverses: false))
             
-            Spacer()
+            getSinWave(interval: universalSize.width , amplitude: 200, baseline: 70 + universalSize.height / 2)
+                .foregroundColor(Color("sangchu").opacity(0.3))
+                .offset(x: startAnimation ? -1 * (universalSize.width) : 0)
+                .animation(Animation.linear(duration: 11).repeatForever(autoreverses: false))
             
-            Text(" \"자치구\"")
-                .font(.system(size: 30)) + Text("를 선택하세요.")
-                .font(.system(size: 20))
+            getSinWave(interval: universalSize.width * 3 , amplitude: 200, baseline: 95 + universalSize.height / 2)
+                .foregroundColor(Color.black.opacity(0.2))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 3) : 0)
+                .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
             
-            BoroughMap() // 서울 자치구 25개 지도
-
-            Spacer()
+            getSinWave(interval: universalSize.width * 1.2 , amplitude: 50, baseline: 75 + universalSize.height / 2)
+                .foregroundColor(Color.init(red:0.6, green:0.9, blue : 1).opacity(0.4))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 1.2) : 0)
+                .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
+//            
             
-            // 자치구 선택 Picker
-            Picker("자치구", selection: $selectedBorough) {
-                ForEach(Borough.allCases) {
-                    borough in Text(borough.rawValue)
-                }
+            
+            // 절취선
+            VStack {
+                Spacer().frame(height: UIScreen.main.bounds.height * 0.13)
+                // 자치구 선택 Picker
+//                Picker("자치구", selection: $selectedBorough) {
+//                    ForEach(Borough.allCases) {
+//                        borough in Text(borough.rawValue)
+//                    }
+//                }
+//                .pickerStyle(WheelPickerStyle())
+//                .onChange(of: selectedBorough) {
+//                    isPickerTouched = true
+//                }
+                
+//                ScrollView {
+                            LazyVGrid(columns: columns, spacing: 5) {
+                                ForEach(Borough.allCases, id: \.self) { borough in
+                                    Button(action: {
+                                        self.selectedBorough = borough
+                                        self.isPickerTouched = true
+                                    }) {
+                                        Text(borough.rawValue)
+                                            .padding()
+                                            .frame(maxWidth: .infinity)
+                                            .background(self.selectedBorough == borough ? Color.sangchu.opacity(0.9) : Color.white.opacity(0.9))
+                                            .foregroundColor(.black)
+                                            .fontWeight(self.selectedBorough == borough ? .semibold : .regular)
+                                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                                            .overlay(
+                                                        RoundedRectangle(cornerRadius: 10)
+                                                            .stroke(Color.black.opacity(0.7), lineWidth: 0.2)
+                                                    )
+                                    }
+                                    
+                                }
+                            }
+                            .padding()
+//                }.frame(height : UIScreen.main.bounds.height * 0.6).clipped()
+                
+                Spacer()
+                
+                // 이전/다음 버튼
+                HStack {
+                    NavigationLink(self.isPickerTouched == true ? "선택 완료" : "지역 선택", destination: ChooseCategoryView(borough: selectedBorough.rawValue))
+                        .disabled(!isPickerTouched) // Picker가 조작되지 않았다면 버튼 비활성화
+                        .foregroundColor(.black)
+                        .buttonStyle(RoundedRectangleButtonStyle(
+                            bgColor: !isPickerTouched ? Color(hex: "c6c6c6") : Color.sangchu,
+                            textColor: .black,
+                            width: UIScreen.main.bounds.width * 0.8,
+                            hasStroke: false,
+                            shadowRadius: 2,
+                            shadowColor: Color.black.opacity(0.1),
+                            shadowOffset: CGSize(width: 0, height: 4)))
+                        .padding([.trailing, .bottom])
+                }.padding(.bottom,20) // end of 이전/다음 버튼 HStack
+                
+    //            Text(selectedBorough.rawValue) // 고른 자치구 확인용
             }
-            .pickerStyle(WheelPickerStyle())
-//            .onChange(of: selectedBorough) { newValue in
-//                isPickerTouched = true
-//            }
-            .onChange(of: selectedBorough) {
-                isPickerTouched = true
-            }
-            
-            Spacer()
-            
-            // 이전/다음 버튼
-            HStack {
-                // 이전 버튼
-                Button("이전") {
-                    self.presentationMode.wrappedValue.dismiss()
-                }
-                .buttonStyle(RoundedRectangleButtonStyle(bgColor: Color(.customgray),
-                                                         textColor: .white,
-                                                         width: UIScreen.main.bounds.width / 4,
-                                                         hasStroke: false,
-                                                         shadowRadius: 1, shadowColor: Color.gray.opacity(0.5), shadowOffset: CGSize(width: 2, height: 3)))
-                .padding([.leading, .bottom])
-
-                Spacer() // Spacer를 사용하여 버튼 사이의 공간을 최대한 확보
-
-                // 다음 버튼
-                NavigationLink("다음", destination: ChooseCategoryView(borough: selectedBorough.rawValue))
-                    .disabled(!isPickerTouched) // Picker가 조작되지 않았다면 버튼 비활성화
-                    .foregroundColor(.black)
-                    .buttonStyle(RoundedRectangleButtonStyle(
-                        bgColor: !isPickerTouched ? Color(hex: "c6c6c6") : Color.sangchu,
-                        textColor: .black,
-                        width: UIScreen.main.bounds.width / 4,
-                        hasStroke: false,
-                        shadowRadius: 2,
-                        shadowColor: Color.black.opacity(0.1),
-                        shadowOffset: CGSize(width: 0, height: 4)))
-                    .padding([.trailing, .bottom])
-
-            } // end of 이전/다음 버튼 HStack
-
-            Spacer()
-            
-//            Text(selectedBorough.rawValue) // 고른 자치구 확인용
-        } // end of VStack
+            // end of VStack
+        }
+        .navigationTitle("지역 선택")
+        .ignoresSafeArea(.all)
+        .onAppear{
+            self.startAnimation = true
+        }
+        .background(Color(hex: "F4F5F7"))
+        
     } // end of body view
 } // end of ChooseBorough view
