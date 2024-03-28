@@ -24,12 +24,27 @@ struct SangChuApp: App {
 }
 
 struct ContentView: View {
-//    @State private var selectedTab = "홈"
+    @State private var showMainView = false
+    
     
     var body: some View {
-        NavigationStack{
-            HomeView()
+        ZStack{
+            if showMainView {
+                NavigationStack{
+                    HomeView()
+                }
+            } else {
+                SplashView().onAppear{
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                        withAnimation{
+                            showMainView = true
+                        }
+                    }
+                }
+            }
         }
+        
+        
        
     }
 }

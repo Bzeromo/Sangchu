@@ -145,6 +145,30 @@ struct MapView: UIViewRepresentable {
         }
 
     } // end of loadAndDrawCDPolygons
+    
+    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+        let size = image.size
+
+        let widthRatio  = targetSize.width  / size.width
+        let heightRatio = targetSize.height / size.height
+
+        var newSize: CGSize
+        if(widthRatio > heightRatio) {
+            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+        } else {
+            newSize = CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
+        }
+
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return newImage!
+    }
+
 
     
     func fetchCD(mapView: NMFMapView) {
@@ -158,25 +182,38 @@ struct MapView: UIViewRepresentable {
                     let lng = district.latitude
                     let lat = district.longitude
                     let dName = district.commercialDistrictName
-                    let dScore = String(format: "%.0f점", district.commercialDistrictScore)
+                    let dScore = String(format: "총점 %.0f", district.commercialDistrictScore)
                     // 마커 관련 설정들
                     let cdMarker = NMFMarker()
+                    let resizedImage = resizeImage(image: UIImage(named: "markerIcon.png")!, targetSize: CGSize(width: 50, height: 50))
+
+                    cdMarker.iconImage = NMFOverlayImage(image: resizedImage)
                     // 위치
                     cdMarker.position = NMGLatLng(lat: lat, lng: lng)
+                    
                     // 마커 이미지
-                    cdMarker.iconImage = NMFOverlayImage(name:"markerIcon.png")
+//                    cdMarker.iconImage = NMFOverlayImage(name:"markerIcon.png")
                     // 사이즈
-                    cdMarker.width = 0.1
-                    cdMarker.height = 0.1
+//                    cdMarker.iconImage = NMFOverlayImage(name:"leaf.fill")
+                    cdMarker.width = 0.07
+                    cdMarker.height = 0.07
                     // 캡션(점수) 보조캡션(상권이름)
-                    cdMarker.captionText = dScore
-                    cdMarker.captionTextSize = 30
-                    cdMarker.captionColor = .systemPink
-                    cdMarker.captionHaloColor = .white
-                    cdMarker.subCaptionText = dName
-                    cdMarker.subCaptionTextSize = 16
-                    cdMarker.subCaptionRequestedWidth = 15
-                    cdMarker.captionAligns = [.top]
+                    if dName.count > 8 {
+                        let index = dName.index(dName.startIndex, offsetBy: 8)
+                        cdMarker.captionText = String(dName[..<index]) + "..."
+                    } else {
+                        cdMarker.captionText = dName
+                    }
+                    cdMarker.captionTextSize = 15
+                    cdMarker.captionRequestedWidth = 140
+//                    cdMarker.captionColor = .systemPink // 글씨색 , UIColor red green blure로 설정 가능
+//                    cdMarker.captionHaloColor = .white // 테두리색
+                    // captionOffset = 15 양수일수록 아래로
+                    cdMarker.subCaptionText = dScore
+                    cdMarker.subCaptionTextSize = 15
+                    cdMarker.subCaptionRequestedWidth = 100
+//                    cdMarker.subCaptionColor = Color("") // 글씨색 , UIColor red green blure로 설정 가능
+//                    cdMarker.captionAligns = [.top]
                     cdMarker.captionMinZoom = 13
                     cdMarker.minZoom = 13
                     // 마커 놓기
