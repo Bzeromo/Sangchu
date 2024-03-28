@@ -423,6 +423,7 @@ struct BDMapView: View {
             }.ignoresSafeArea() // end of ZStack
             
         } 
-        .navigationBarTitle("지도", displayMode: .inline)// end of NavigationView
+        .navigationBarTitle("지도", displayMode: .inline)
+        // end of NavigationView
     } // end of bodyView
 } // end of BDMapView

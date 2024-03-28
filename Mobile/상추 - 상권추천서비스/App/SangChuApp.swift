@@ -8,8 +8,11 @@ struct SangChuApp: App {
     
     init() {
         // indicatort 색 조정
-        UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.sangchu
-        UIPageControl.appearance().pageIndicatorTintColor = UIColor.gray.withAlphaComponent(0.5)
+//        UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.sangchu
+//        UIPageControl.appearance().pageIndicatorTintColor = UIColor.gray.withAlphaComponent(0.5)
+        // NavigationBar 색 조정
+        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.black]
+        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.black]
     }
     
     var body: some Scene {
@@ -18,7 +21,7 @@ struct SangChuApp: App {
 //                .modelContainer(sharedModelContainer) // 초기값
 //                .modelContainer(for: BookMarkItem.self) // ItemContainer로 묶기 전
                 .modelContainer(ItemsContainer.create(shouldCreateDefaults: &isFirtTimeLaunch)) // 묶은 후
-                .accentColor(Color("sangchu"))
+//                .accentColor(Color("sangchu"))
         }
     }
 }

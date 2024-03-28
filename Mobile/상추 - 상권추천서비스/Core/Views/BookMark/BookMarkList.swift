@@ -7,6 +7,17 @@
 
 import SwiftUI
 import SwiftData
+
+extension View {
+    func navigationTitleView<Content: View>(_ content: () -> Content) -> some View {
+        self.toolbar {
+            ToolbarItem(placement: .principal) {
+                content()
+            }
+        }
+    }
+}
+
 struct BookMarkList: View {
     
     @Environment(\.modelContext) var context
@@ -41,8 +52,9 @@ struct BookMarkList: View {
     }
     
     
-    private var showNavigationBar = true
-    var body: some View {        
+//    private var showNavigationBar = true
+    
+    var body: some View {
             List{
                 ForEach(filteredItems){ item in
                                         NavigationLink(destination: UpdateBookMarkView(item: item)){
@@ -55,11 +67,12 @@ struct BookMarkList: View {
                                      Text(item.timestamp, style: .relative) // 상대적인 시간 표시 (예: 5 minutes ago)
                                      */
                                     VStack(alignment : .leading){
-                                        Text(item.cdTitle).font(.system(size: 22)).bold().foregroundStyle((Color("sangchu")))
+                                        Text(item.cdTitle).font(.system(size: 22)).bold()
+//                                            .foregroundStyle((Color("sangchu")))
                                         Text("\(item.timestamp, format: Date.FormatStyle(date:.numeric, time:.none)) \(item.userMemo)")
                                             .font(.system(size: 13)) // 전체 텍스트에 적용될 폰트 사이즈
 //                                            .foregroundColor(Color(hex: "767676")) // 전체 텍스트에 적용될 폰트 색상 상추색이었음
-                                            .foregroundColor(Color.black) // 전체 텍스트에 적용될 폰트 색상 상추색이었음
+//                                            .foregroundColor(Color) // 전체 텍스트에 적용될 폰트 색상 상추색이었음
                                             .lineLimit(1) // 텍스트가 한 줄로 제한됩니다.
                                     }
                                    Spacer() // 여기에서 배경색을 노란색으로 설정합니다.
@@ -114,31 +127,14 @@ struct BookMarkList: View {
                     }
                 } // ForEach
             }
-//            .navigationBarTitle("북마크", displayMode: .inline)
-            .navigationTitle("북마크")
-//            .navigationBarBackButtonHidden(true)
-//                    .navigationBarItems(leading: Button(action: {
-//                        self.presentationMode.wrappedValue.dismiss()
-//                    }) {
-//                        HStack {
-//                            Image(systemName: "chevron.backward") // 시스템 아이콘 사용, 원하는 이미지로 변경 가능
-//                        }
-//                    })
+            .navigationTitleView {
+                // 커스텀 이미지를 네비게이션 타이틀로 사용
+                Image("bookmarkNavi")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 30) // 이미지 크기 조정
+            }
             .toolbar {
-//                ToolbarItemGroup(placement: .primaryAction) {
-//                    Button {
-//                        hashCreate.toggle()
-//                    } label: {
-//                        Image(systemName: "plus")
-//                    }
-//                    
-////                    Button(action: {
-////                        showCreate.toggle()
-////                    }, label: {
-////                        Image(systemName: "minus")
-////                    })
-//                }
-                
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button {
                         hashCreate.toggle()
@@ -171,15 +167,7 @@ struct BookMarkList: View {
                 if filteredItems.isEmpty{
                     ContentUnavailableView.search
                 }
-            } // 항목이 없을때 없다고 표시해줌
-//            .sheet(isPresented: $showCreate,
-//                   content: {
-//                NavigationStack{
-//                    CreateBookMarkView()
-//                }
-//                .presentationDetents([.medium])
-//
-//            })
+            }
             .sheet(isPresented: $hashCreate,
                    content: {
                 NavigationStack{
@@ -192,8 +180,8 @@ struct BookMarkList: View {
             .padding(.horizontal, 10)
             
          // VStack
-        .background(Color(hex: "F4F5F7"))
-        .accentColor(Color("sangchu")) // 툴바 자식들 색상
+//            .background(Color.customGray)
+//        .accentColor(Color("sangchu")) // 툴바 자식들 색상
     }
 }
 
