@@ -2,42 +2,42 @@ import pandas as pd
 
 ##### 데이터 조회 ######
 # 추정매출-상권 데이터 로드
-df_sales = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/추정매출-상권.csv', encoding='cp949')
+df_sales = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Backend/Regression Analysis/data_transform/추정매출-상권.csv', encoding='cp949')
 
 # 점포-상권 데이터 로드
-df_store = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/점포-상권.csv', encoding='cp949')
+df_store = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Backend/Regression Analysis/data_transform/점포-상권.csv', encoding='cp949')
 merged_data = pd.merge(df_sales, df_store, on=['year_code', 'quarter_code', 'commercial_district_code'], how='left')
 
 # 상권변화지표-상권 데이터 로드
-df_commercial_change = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/상권변화지표-상권.csv', encoding='cp949')
+df_commercial_change = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Backend/Regression Analysis/data_transform/상권변화지표-상권.csv', encoding='cp949')
 merged_data = pd.merge(merged_data, df_commercial_change, on=['year_code', 'quarter_code', 'commercial_district_code'], how='left')
 
 # 상주인구-상권 데이터 로드
-df_resident_population = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/상주인구-상권.csv', encoding='cp949')
+df_resident_population = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Backend/Regression Analysis/data_transform/상주인구-상권.csv', encoding='cp949')
 merged_data = pd.merge(merged_data, df_resident_population, on=['year_code', 'quarter_code', 'commercial_district_code'], how='left')
 
 # 길단위인구-상권 데이터 로드
-df_foot_traffic = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/길단위인구-상권.csv', encoding='cp949')
+df_foot_traffic = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Backend/Regression Analysis/data_transform/길단위인구-상권.csv', encoding='cp949')
 merged_data = pd.merge(merged_data, df_foot_traffic, on=['year_code', 'quarter_code', 'commercial_district_code'], how='left')
 
 # 영역-상권 데이터 로드
-df_area = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/영역-상권.csv', encoding='cp949')
+df_area = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Backend/Regression Analysis/data_transform/영역-상권.csv', encoding='cp949')
 merged_data = pd.merge(merged_data, df_area, on='commercial_district_code', how='left')
 
 # 집객시설-상권 데이터 로드
-df_facilities = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/집객시설-상권.csv', encoding='cp949')
+df_facilities = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Backend/Regression Analysis/data_transform/집객시설-상권.csv', encoding='cp949')
 merged_data = pd.merge(merged_data, df_facilities, on=['year_code', 'quarter_code', 'commercial_district_code'], how='left')
 
 # 직장인구-상권 데이터 로드
-df_working_population = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/직장인구-상권.csv', encoding='cp949')
+df_working_population = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Backend/Regression Analysis/data_transform/직장인구-상권.csv', encoding='cp949')
 merged_data = pd.merge(merged_data, df_working_population, on=['year_code', 'quarter_code', 'commercial_district_code'], how='left')
 
 # 소득-상권 데이터 로드
-df_income = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/소득-상권.csv', encoding='cp949')
+df_income = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Backend/Regression Analysis/data_transform/소득-상권.csv', encoding='cp949')
 merged_data = pd.merge(merged_data, df_income, on=['year_code', 'quarter_code', 'commercial_district_code'], how='left')
 
 # 아파트-상권 데이터 로드
-df_apartment = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/아파트-상권.csv', encoding='cp949')
+df_apartment = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Backend/Regression Analysis/data_transform/아파트-상권.csv', encoding='cp949')
 merged_data = pd.merge(merged_data, df_apartment, on=['year_code', 'quarter_code', 'commercial_district_code'], how='left')
 
 merged_data.dropna(inplace=True)
