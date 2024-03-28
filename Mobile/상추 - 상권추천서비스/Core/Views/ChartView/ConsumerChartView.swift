@@ -109,7 +109,8 @@ struct ConsumerChartView: View {
                                                      .font(.caption2)
                                                      .foregroundColor(Color.black)
                                                      .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
-                                                     .fixedSize(horizontal: false, vertical: true)
+                                                     .fixedSize(horizontal: false, vertical: true) // 수직 방향으로 크기 고정 해제
+                                                     .frame(width: 35)
                                              }
                                          }
                                          .padding()
@@ -162,7 +163,6 @@ struct ConsumerChartView: View {
     }
 
     private func loadResidentOrWorkingData(endpoint: Endpoints, index: Int) {
-        print(endpoint.englishEndpoint + "으로 상주/직장인구 요청 보냅니다잉!")
         ConsumerNetworkManager.shared.fetch(endpoint: endpoint.englishEndpoint , commercialDistrictCode: cdCode) { result in
             DispatchQueue.main.async {
                 switch result {
@@ -205,7 +205,6 @@ struct ConsumerChartView: View {
     } // end of loadData
     
     private func loadFloatingData(endpoint: Endpoints, index: Int) {
-        print(endpoint.englishEndpoint + "으로 유동인구 요청 보냅니다잉!")
         ConsumerNetworkManager.shared.fetch(endpoint: endpoint.englishEndpoint , commercialDistrictCode: cdCode) { result in
             DispatchQueue.main.async {
                 switch result {
@@ -264,7 +263,6 @@ struct ConsumerChartView: View {
                             }
                             
                         } catch {
-                            print(String(index) + "번째에서 오류!")
                             print("Decoding error: \(error)")
                         }
                 // api 통신 실패하면

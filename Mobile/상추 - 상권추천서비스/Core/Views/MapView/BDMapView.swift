@@ -88,10 +88,10 @@ struct MapView: UIViewRepresentable {
                 if case let .polygon(polygonCoordinates) = feature.geometry.coordinates {
                     let coords = polygonCoordinates.first!.map { NMGLatLng(lat: $0[1], lng: $0[0]) }
                     if let polygonOverlay = NMFPolygonOverlay(coords) {
-                        polygonOverlay.fillColor = UIColor.blue.withAlphaComponent(0.2)
+                        polygonOverlay.fillColor = UIColor.blue.withAlphaComponent(0.05)
 //                        polygonOverlay.fillColor = UIColor.clear
-                        polygonOverlay.outlineColor = UIColor.blue.withAlphaComponent(0.7)
-                        polygonOverlay.outlineWidth = 3
+                        polygonOverlay.outlineColor = UIColor.blue.withAlphaComponent(0.5)
+                        polygonOverlay.outlineWidth = 1
                         polygonOverlay.minZoom = 9
                         
                         // 폴리곤 터치 시 해당 상권 정보 시트로 띄우기
@@ -115,10 +115,10 @@ struct MapView: UIViewRepresentable {
                         for polygon in polygons {
                             let coords = polygon.map { NMGLatLng(lat: $0[1], lng: $0[0]) }
                             if let polygonOverlay = NMFPolygonOverlay(coords) {
-                                polygonOverlay.fillColor = UIColor.red.withAlphaComponent(0.2)
+                                polygonOverlay.fillColor = UIColor.purple.withAlphaComponent(0.05)
 //                                polygonOverlay.fillColor = UIColor.clear
-                                polygonOverlay.outlineColor = UIColor.red.withAlphaComponent(0.7)
-                                polygonOverlay.outlineWidth = 3
+                                polygonOverlay.outlineColor = UIColor.purple.withAlphaComponent(0.5)
+                                polygonOverlay.outlineWidth = 1
                                 polygonOverlay.minZoom = 9
                                 
                                 // 폴리곤 터치 시 해당 상권 정보 시트로 띄우기
@@ -187,16 +187,20 @@ struct MapView: UIViewRepresentable {
                     let cdMarker = NMFMarker()
                     let resizedImage = resizeImage(image: UIImage(named: "markerIcon.png")!, targetSize: CGSize(width: 50, height: 50))
 
+                    // 마커 터치 이벤트
+                    cdMarker.touchHandler = { _ in
+                        return false
+                    }
+                    cdMarker.globalZIndex = -250000
+                    
+                    // 마커 이미지
                     cdMarker.iconImage = NMFOverlayImage(image: resizedImage)
                     // 위치
                     cdMarker.position = NMGLatLng(lat: lat, lng: lng)
                     
-                    // 마커 이미지
-//                    cdMarker.iconImage = NMFOverlayImage(name:"markerIcon.png")
-                    // 사이즈
-//                    cdMarker.iconImage = NMFOverlayImage(name:"leaf.fill")
-                    cdMarker.width = 0.07
-                    cdMarker.height = 0.07
+                    // 마커 사이즈
+                    cdMarker.width = 0.001
+                    cdMarker.height = 0.001
                     // 캡션(점수) 보조캡션(상권이름)
                     if dName.count > 8 {
                         let index = dName.index(dName.startIndex, offsetBy: 8)
@@ -237,24 +241,24 @@ struct MapView: UIViewRepresentable {
         }
         
         // 지도를 탭했을 때 호출되는 메서드 구현 (해당 위도와 경도를 alert로 띄우기)
-        func mapView(_ mapView: NMFMapView, didTapMap latLng: NMGLatLng, point: CGPoint) {
+//        func mapView(_ mapView: NMFMapView, didTapMap latLng: NMGLatLng, point: CGPoint) {
 //            print("지도 좌표: \(latLng.lat), \(latLng.lng) / 화면 좌표: \(point.x), \(point.y)")
-            self.parent.tappedLocation = latLng
-            self.parent.isSymbolTapped = false // 탭한 게 심볼은 아님을 알려줘야 함
-            self.parent.showAlert = true
-        }
+//            self.parent.tappedLocation = latLng
+//            self.parent.isSymbolTapped = false // 탭한 게 심볼은 아님을 알려줘야 함
+//            self.parent.showAlert = true
+//        }
         
         // 지도의 심볼을 탭했을 때 호출되는 메서드 구현
-        func mapView(_ mapView: NMFMapView, didTap symbol: NMFSymbol) -> Bool {
-            // 심볼의 caption을 가져와서 parent에 저장하고, alert 띄우기
-            if let caption = symbol.caption {
-                self.parent.tappedSymbolCaption = caption
-                self.parent.isSymbolTapped = true // 탭한 게 심볼임을 알려줘야 함
-                self.parent.showAlert = true
-                return true
-            }
-            return false
-        }
+//        func mapView(_ mapView: NMFMapView, didTap symbol: NMFSymbol) -> Bool {
+//            // 심볼의 caption을 가져와서 parent에 저장하고, alert 띄우기
+//            if let caption = symbol.caption {
+//                self.parent.tappedSymbolCaption = caption
+//                self.parent.isSymbolTapped = true // 탭한 게 심볼임을 알려줘야 함
+//                self.parent.showAlert = true
+//                return true
+//            }
+//            return false
+//        }
     }
     
     func makeCoordinator() -> Coordinator {
