@@ -39,19 +39,19 @@ y = merge_df['monthly_sales_now']
 # # y = merge_df['sales_diff']
 
 # 독립 변수 선택 
-X = merge_df[['monthly_sales_previous',
-                 'total_foot_traffic_previous', 'traffic_diff',
-                 'commercial_change_previous', 'rdi_previous',
-                 'store_density_previous', 'rdi_diff', 'store_density_diff',
-                 'commercial_change_diff', 'total_resident_population_previous',
-                 'resident_population_diff', 'monthly_average_income_amount_previous',
-                 'expenditure_total_amount_previous', 'income_diff', 'expend_diff',
-                 'apartment_avg_price_by_area_previous', 'apartment_avg_diff',
-                 'area_size', 'total_store_previous', 'store_count_diff',
-                 'total_working_population_previous',
-                 'total_facilities_previous']]
+# X = merge_df[['monthly_sales_previous',
+#                  'total_foot_traffic_previous', 'traffic_diff',
+#                  'commercial_change_previous', 'rdi_previous',
+#                  'store_density_previous', 'rdi_diff', 'store_density_diff',
+#                  'commercial_change_diff', 'total_resident_population_previous',
+#                  'resident_population_diff', 'monthly_average_income_amount_previous',
+#                  'expenditure_total_amount_previous', 'income_diff', 'expend_diff',
+#                  'apartment_avg_price_by_area_previous', 'apartment_avg_diff',
+#                  'area_size', 'total_store_previous', 'store_count_diff',
+#                  'total_working_population_previous',
+#                  'total_facilities_previous']]
 # 상주인구, 유동인구, 업종 다양성
-# X = merge_df[[
-#               'total_foot_traffic_previous',
-#               'rdi_previous',
-#               'total_resident_population_previous']]
+X = merge_df[[
+              'total_foot_traffic_previous',
+              'rdi_previous',
+              'total_resident_population_previous']]
