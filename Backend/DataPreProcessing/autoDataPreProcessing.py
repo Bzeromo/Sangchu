@@ -38,6 +38,8 @@ def load_and_preprocess(df, filters=None, rename_cols=None, drop_cols=None, is_c
     if filters:
         for condition in filters:
             df = df.query(condition)
+    if 'TRDAR_CD_NM' in df.columns:
+        df.loc[:, 'TRDAR_CD_NM'] = df['TRDAR_CD_NM'].apply(lambda x: x.split('(')[0])
     if rename_cols:
         df = df.rename(columns=rename_cols)
     if change_facility:
@@ -94,7 +96,6 @@ area_with_commercial_district_df = load_and_preprocess(
 )
 area_with_commercial_district_df[['latitude', 'longitude']] = area_with_commercial_district_df.apply(transform_coords,
                                                                                                      axis=1)
-
 # 점포-상권 데이터 로딩 및 전처리
 store_with_commercial_district_df = load_and_preprocess(
     store_with_commercial_district_df,
@@ -222,6 +223,12 @@ commercial_district_change_indicator_with_commercial_district_df = load_and_prep
     drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM', 'OPR_SALE_MT_AVRG', 'CLS_SALE_MT_AVRG', 'SU_OPR_SALE_MT_AVRG',
                'SU_CLS_SALE_MT_AVRG']
 )
+
+# RDI 값 계산
+commercial_district_change_indicator_with_commercial_district_df = calc_RDI(store_with_seoul_df,
+                                                                            store_with_commercial_district_df,
+                                                                            area_with_commercial_district_df,
+                                                                            commercial_district_change_indicator_with_commercial_district_df)
 
 # 길단위인구-상권 데이터 로딩 및 전처리
 foot_traffic_with_commercial_district_df = load_and_preprocess(
