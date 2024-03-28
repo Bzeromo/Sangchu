@@ -214,9 +214,9 @@ struct HomeView: View {
                 NavigationLink(destination: BDMapView()) {
                                Text("지도 보기")
                                 .fontWeight(.medium)
-                                   .font(.system(size: 17)) // 텍스트 크기 설정
-                                   .foregroundColor(Color("sangchu")) // Text Color를 지정합니다. "sangchu"는 Assets에 정의된 색상 이름이어야 합니다.
-                                   .padding(.trailing, 20) // 오른쪽 패딩을 추가합니다.
+                                   .font(.system(size: 17)) // 텍스트 크기
+                                   .foregroundColor(Color("sangchu"))
+                                   .padding(.trailing, 20) // 오른쪽 패딩
                            }
             }
             )  {
@@ -224,19 +224,6 @@ struct HomeView: View {
                     Text("서울에서 뜨고있는 상권을 한눈에!").font(.system(size: 14)).foregroundColor(.gray).padding(.leading , 20)
                     Spacer()
                 }
-//                ScrollView(.horizontal, showsIndicators: false) {
-//                    HStack {
-//
-//                        if let top10 = Top10 {
-//                            ForEach(top10) { s in
-//                                Text(s.dongName)
-//                            }
-//                        } else {
-//                            // Top10이 nil일 때 표시할 내용
-//                            Text("데이터가 없습니다.")
-//                        }
-//                    }
-//                }
                 ScrollView(.horizontal){
                     LazyHStack{
                         if let top10 = Top10 {
