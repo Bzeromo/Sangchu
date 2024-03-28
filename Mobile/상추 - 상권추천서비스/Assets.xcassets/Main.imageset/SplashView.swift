@@ -27,7 +27,7 @@ struct SplashView: View {
                        }
             
             VStack() {
-                Image(uiImage: UIImage(named: "AppIcon.png")!)
+                Image(uiImage: UIImage(named: "Splash.png")!)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 150 , height: 150)
