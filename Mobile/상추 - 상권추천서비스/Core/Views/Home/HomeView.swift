@@ -163,7 +163,7 @@ struct HomeView: View {
                                     .resizable()
                                     .frame(width: 30, height: 30)
                                     .foregroundColor(.black) // 버튼의 크기를 지정합니다.
-                            }.padding(.top, 40).padding(.trailing,20)
+                            }.padding(.top, 40).padding(.trailing,20).hidden() // 검색기능 만들고 숨김해제
                         }
                         Spacer()
                         VStack(spacing: 7){
@@ -314,12 +314,11 @@ struct HomeView: View {
             
             // 자치구별 Top 상권 Section
             Section(header: HStack(alignment: .bottom){
-                Text("자치구별 Top 상권").font(.title2).fontWeight(.semibold).foregroundColor(.black).padding(.leading , 20)
+                Text("자치구별 인기 상권 🔥").font(.title2).fontWeight(.semibold).foregroundColor(.black).padding(.leading , 20)
                 Spacer()
             }
             )  {
-                HStack{
-                    Text("우리 동네 상권의 랭킹은?").font(.system(size: 14)).foregroundColor(.gray).padding(.leading , 20)
+                HStack{                    Text("우리 동네 상권의 랭킹은?").font(.system(size: 14)).foregroundColor(.gray).padding(.leading , 20)
                     Spacer()
                 }
                 BoroughTop10()
