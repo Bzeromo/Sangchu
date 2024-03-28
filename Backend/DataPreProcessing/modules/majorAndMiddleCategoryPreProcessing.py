@@ -96,19 +96,19 @@ category_mapping = {
                          'CS300041': '잡화소매', 'CS300042': '잡화소매', 'CS300043': '전자소매'}}
 
 def categorization_into_major_and_medium_categories_by_service_industry_code_name(df):
-    # 상권코드명 컬럼 옆 컬럼으로 추가하기
-    target_idx = df.columns.get_loc('서비스_업종_코드') + 1
+    # 상권코드명 컬럼 옆 인덱스 구하기
+    target_idx = df.columns.get_loc('SVC_INDUTY_CD') + 1
 
-    # 서비스_업종_코드_명을 기준으로 대분류, 중분류 대응 값 할당하기
-    df['major_category_code'] = df['서비스_업종_코드'].map(category_mapping['major_category_code'])
-    df['major_category_code_name'] = df['서비스_업종_코드'].map(category_mapping['major_category_code_name'])
-    df['middle_category_code'] = df['서비스_업종_코드'].map(category_mapping['middle_category_code'])
-    df['middle_category_code_name'] = df['서비스_업종_코드'].map(category_mapping['middle_category_code_name'])
+    # 서비스 업종 코드명을 기준으로 대분류, 중분류 대응 값 할당
+    major_category_code = df['SVC_INDUTY_CD'].map(category_mapping['major_category_code'])
+    major_category_code_name = df['SVC_INDUTY_CD'].map(category_mapping['major_category_code_name'])
+    middle_category_code = df['SVC_INDUTY_CD'].map(category_mapping['middle_category_code'])
+    middle_category_code_name = df['SVC_INDUTY_CD'].map(category_mapping['middle_category_code_name'])
 
-    # 정의한 위치에 컬럼을 재배치
-    columns_order = df.columns.tolist()
-    for column_name in ['middle_category_code_name', 'middle_category_code', 'major_category_code_name', 'major_category_code']:
-        columns_order.insert(target_idx, columns_order.pop(columns_order.index(column_name)))
-    df = df[columns_order]
+    # 새로운 컬럼들을 원하는 위치에 직접 추가
+    df.insert(target_idx, 'major_category_code', major_category_code)
+    df.insert(target_idx + 1, 'major_category_code_name', major_category_code_name)
+    df.insert(target_idx + 2, 'middle_category_code', middle_category_code)
+    df.insert(target_idx + 3, 'middle_category_code_name', middle_category_code_name)
 
     return df
