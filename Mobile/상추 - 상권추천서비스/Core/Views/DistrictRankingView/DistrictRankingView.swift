@@ -193,6 +193,28 @@ struct DistrictRankingView: View {
     var category : String
     let filters = ["종합순", "매출순", "유동인구순", "상주인구순", "업종다양성순", "점포밀도순"]
     
+    let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
+    @State private var startAnimation : Bool = false
+    let universalSize = UIScreen.main.bounds
+    
+    
+    func getSinWave(interval : CGFloat, amplitude : CGFloat = 100,baseline:CGFloat = UIScreen.main.bounds.height / 2) ->
+    Path{
+        Path { path in
+            path.move(to: CGPoint(x:0, y:baseline))
+            path.addCurve(to: CGPoint(x : 1 * interval, y : baseline),
+                          control1: CGPoint(x:interval * (0.3),y: amplitude + baseline),
+                          control2: CGPoint(x:interval * (0.7),y: -amplitude + baseline)
+            )
+            path.addCurve(to: CGPoint(x : 2 * interval, y : baseline),
+                          control1: CGPoint(x:interval * (1.3),y: amplitude + baseline),
+                          control2: CGPoint(x:interval * (1.7),y: -amplitude + baseline)
+            )
+            path.addLine(to: CGPoint(x: 2 * interval, y: universalSize.height))
+            path.addLine(to: CGPoint(x: 0 , y: universalSize.height))
+        }
+    }
+    
     private var currentFilteredData: [DistrictData] {
         switch selectedFilter {
         case "종합순":
@@ -211,61 +233,91 @@ struct DistrictRankingView: View {
     }
     
     var body: some View {
-        VStack {
-            Spacer().frame(height: 40)
-            // 필터링 버튼 추가
-            Menu {
-                ForEach(filters, id: \.self) { filter in
-                    Button(filter) {
-                        selectedFilter = filter
-                    }
-                }
-            }
-            label: {
-                HStack {
-                    Text(selectedFilter)
-                    Image(systemName: "chevron.down")
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 20)
-            }
-            if isLoading {
-                VStack {
-                    Spacer().frame(height: 120)
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
-                        .scaleEffect(5)
-                }
-            }
-            else {
-                TabView {
-                    ForEach(currentFilteredData.indices, id: \.self) { index in
-                        CardView(districtData: currentFilteredData[index], index: index, selectedFilter: selectedFilter)
-                            .frame(width: UIScreen.main.bounds.width * 0.8)
-                    }
-                }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never)) // 원형 인디케이터를 항상 표시합니다.
-                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.35) // TabView의 크기를 지정합니다.
-                .onAppear {
-                    if !hasFetchedData {
-                        Task {
-                            isLoading = true
-                            do {
-                                // API 요청을 통해 filteredDistrictsData를 초기화
-                                let fetchedData = try await API.fetchFilteredDistrictsData(borough: borough, category: category)
-                                self.filteredDistrictsData = fetchedData
-                            } catch {
-                                print("데이터를 가져오는 데 실패했습니다.")
-                            }
-                            isLoading = false
-                            hasFetchedData = true
+        ZStack{
+            getSinWave(interval: universalSize.width * 1.5 , amplitude: 150, baseline: 65 + universalSize.height / 2)
+            //.stroke(lineWidth: 2) // 선만
+                .foregroundColor(Color.red.opacity(0.3))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 1.5) : 0)
+                .animation(Animation.linear(duration: 5).repeatForever(autoreverses: false))
+            
+            getSinWave(interval: universalSize.width , amplitude: 200, baseline: 70 + universalSize.height / 2)
+                .foregroundColor(Color("sangchu").opacity(0.3))
+                .offset(x: startAnimation ? -1 * (universalSize.width) : 0)
+                .animation(Animation.linear(duration: 11).repeatForever(autoreverses: false))
+            
+            getSinWave(interval: universalSize.width * 3 , amplitude: 200, baseline: 95 + universalSize.height / 2)
+                .foregroundColor(Color.black.opacity(0.2))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 3) : 0)
+                .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
+            
+            getSinWave(interval: universalSize.width * 1.2 , amplitude: 50, baseline: 75 + universalSize.height / 2)
+                .foregroundColor(Color.init(red:0.6, green:0.9, blue : 1).opacity(0.4))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 1.2) : 0)
+                .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
+            
+            
+            VStack {
+                Spacer().frame(height: 40)
+                // 필터링 버튼 추가
+                Menu {
+                    ForEach(filters, id: \.self) { filter in
+                        Button(filter) {
+                            selectedFilter = filter
                         }
                     }
                 }
+                label: {
+                    HStack {
+                        Text(selectedFilter)
+                        Image(systemName: "chevron.down")
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 20)
+                }
+                if isLoading {
+                    VStack {
+                        Spacer().frame(height: 120)
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
+                            .scaleEffect(5)
+                    }
+                }
+                else {
+                    TabView {
+                        ForEach(currentFilteredData.indices, id: \.self) { index in
+                            CardView(districtData: currentFilteredData[index], index: index, selectedFilter: selectedFilter)
+                                .frame(width: UIScreen.main.bounds.width * 0.8)
+                        }
+                    }
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never)) // 원형 인디케이터를 항상 표시합니다.
+                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.35) // TabView의 크기를 지정합니다.
+                    .onAppear {
+                        if !hasFetchedData {
+                            Task {
+                                isLoading = true
+                                do {
+                                    // API 요청을 통해 filteredDistrictsData를 초기화
+                                    let fetchedData = try await API.fetchFilteredDistrictsData(borough: borough, category: category)
+                                    self.filteredDistrictsData = fetchedData
+                                } catch {
+                                    print("데이터를 가져오는 데 실패했습니다.")
+                                }
+                                isLoading = false
+                                hasFetchedData = true
+                            }
+                        }
+                    }
+                }
+                Spacer()
+            } // end of VStack
+            
+        }.navigationTitle("\(borough)_\(category)")
+            .ignoresSafeArea(.all)
+            .onAppear{
+                self.startAnimation = true
             }
-            Spacer()
-        } // end of VStack
-        .navigationTitle("\(borough)_\(category)")
+            .background(Color(hex: "F4F5F7"))
+        
     } // end of body view
 } // end of DistrictRankingView
 

@@ -412,7 +412,7 @@ struct BDMapView: View {
                 VStack {
                     VStack{
                         
-                    }.frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.11).background(Color.white)
+                    }.frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.115).background(Color.white)
                     HStack{
                         Button(action: {
                             viewModel.showBoroughSheet = true

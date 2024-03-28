@@ -55,6 +55,8 @@ struct BookMarkList: View {
 //    private var showNavigationBar = true
     
     var body: some View {
+        ZStack(alignment : .top){
+            Spacer().frame(height: UIScreen.main.bounds.height * 0.115).background(Color.white)
             List{
                 ForEach(filteredItems){ item in
                                         NavigationLink(destination: UpdateBookMarkView(item: item)){
@@ -127,13 +129,15 @@ struct BookMarkList: View {
                     }
                 } // ForEach
             }
-            .navigationTitleView {
-                // 커스텀 이미지를 네비게이션 타이틀로 사용
-                Image("bookmarkNavi")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 30) // 이미지 크기 조정
-            }
+            .offset(y : 130)
+            .navigationTitle(Text("북마크"))
+//            .navigationTitleView {
+//                // 커스텀 이미지를 네비게이션 타이틀로 사용
+//                Image("bookmarkNavi")
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(height: 30) // 이미지 크기 조정
+//            }
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button {
@@ -178,6 +182,8 @@ struct BookMarkList: View {
             .listSectionSpacing(8)
             .scrollContentBackground(.hidden)
             .padding(.horizontal, 10)
+        }.ignoresSafeArea()
+            
             
          // VStack
 //            .background(Color.customGray)
