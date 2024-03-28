@@ -18,7 +18,7 @@ struct CommercialDistrictCardView: View {
     var numberBottom: [Color]
 
     var body: some View {
-        NavigationLink(destination: BDMapView(cameraLatitude: district.longitude, cameraLongitude: district.latitude, selectedCDCode: String(district.commercialDistrictCode!) , selectedCDName: district.commercialDistrictName)) {
+        NavigationLink(destination: BDMapView(cameraLatitude: district.longitude, cameraLongitude: district.latitude, selectedCDCode: String(district.commercialDistrictCode) , selectedCDName: district.commercialDistrictName)) {
             ZStack {
                 // 등수 관련 UI
                 VStack{
@@ -83,15 +83,6 @@ struct BoroughTop10: View {
     
     @State private var selectedGuCode: Int = VariableMapping.boroughsToGuCode["강남구"] ?? 11680
     
-    // 색상관련
-    @State var gradiant = [Color(hex: "37683B"), Color(hex: "529B58")]// 사용할 그라디언트 색상 배열
-    let gradientColors: [Color] = [Color(hex: "FF8080"),Color(hex: "FFA680"),Color(hex: "FFBF80"),Color(hex: "FFD480"),Color(hex: "FFE680"),Color(hex: "F4FF80"),Color(hex: "D5FF80"),Color(hex: "A2FF80"),Color(hex: "80FF9E"),Color(hex: "80FFD5"),Color(hex: "80EAFF"),Color(hex: "80A6FF"),Color(hex: "8A80FF"),Color(hex: "BF80FF"),Color(hex: "FD80FF"),Color(hex: "FF8097")]
-   
-    let topColors: [Color] = [Color(hex: "87CC6C"),Color(hex: "6DBCCD"),Color(hex: "C078D2")]
-    
-    let numberTop: [Color] = [Color(hex: "F5DC82"),Color(hex: "FDFF93"),Color(hex: "F6F339"),Color(hex: "93C73D")]
-    let numberBottom: [Color] = [Color(hex: "E36AD4"),Color(hex: "F45E35"),Color(hex: "86D979"),Color(hex: "F0F2ED")]
-    
     func fetchTopCD(guCode: Int) {
         let urlString = "http://3.36.91.181:8084/api/commdist/gu/top?guCode=\(guCode)"
         AF.request(urlString).responseDecodable(of: [CommercialDistrictInfo].self) { response in
@@ -125,6 +116,7 @@ struct BoroughTop10: View {
                     }
                 }
             }
+//            .scrollTargetLayout()
             .scrollIndicators(.hidden)
             
             // 자치구별 Top상권
@@ -133,16 +125,20 @@ struct BoroughTop10: View {
                     ScrollView(.horizontal) {
                         HStack {
                             ForEach(Array(zip(commercialDistricts.indices, commercialDistricts)), id: \.0) { index, district in
-                                CommercialDistrictCardView(district: district, index: index, topColors: topColors, numberTop: numberTop, numberBottom: numberBottom)
+                                CommercialDistrictCardView(district: district, index: index, topColors: AppColors.topColors, numberTop: AppColors.numberTop, numberBottom: AppColors.numberBottom)
                             }
                         }
                     }.scrollIndicators(.hidden)
                 }
             }
+            .scrollTargetLayout()
+            .scrollIndicators(.hidden)
+            .scrollTargetBehavior(.paging)
         }
         .onAppear {
             // 뷰가 나타날 때 디폴트 값(강남구)으로 데이터 불러오기
             self.fetchTopCD(guCode: self.selectedGuCode)
         }
+        
     }
 }

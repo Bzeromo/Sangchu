@@ -26,7 +26,7 @@ struct DistrictData: Codable {
 }
 
 struct CommercialDistrictInfo: Codable {
-    var commercialDistrictCode: Int?
+    var commercialDistrictCode: Int
     var commercialDistrictName: String
     var latitude: Double
     var longitude: Double
@@ -42,31 +42,28 @@ struct CommercialDistrictInfo: Codable {
     var rdiScore: Double
 }
 
-// 위도, 경도 표시
-struct DistrictDetailView: View {
-    var latitude: Double
-    var longitude: Double
-    
-    var body: some View {
-        VStack {
-            Text("위도: \(latitude)")
-            Text("경도: \(longitude)")
-        }
-    }
-}
+//// 위도, 경도 표시
+//struct DistrictDetailView: View {
+//    var latitude: Double
+//    var longitude: Double
+//    
+//    var body: some View {
+//        VStack {
+//            Text("위도: \(latitude)")
+//            Text("경도: \(longitude)")
+//        }
+//    }
+//}
 
 // ScrollView 내부의 카드 하나
 struct CardView: View {
     var districtData: DistrictData // 상권 정보
     var index: Int // 해당 카드의 인덱스
     var selectedFilter: String // 필터링 기준
-    @State var isBookMarked: Bool = false // 좋아요 여부
-    @State private var isActive = false // 네비게이션 링크 활성화 상태
-    @State private var latitude: Double? = nil
-    @State private var longitude: Double? = nil
     
-    // 위도 경도 받아옴
-    func fetchCoordinates(for cdCode: String) async throws -> (latitude: Double, longitude: Double) {
+    @State private var districtInfo: CommercialDistrictInfo? = nil
+    
+    func fetchCommercialDistrictInfo(for cdCode: String) async throws {
         let urlString = "http://3.36.91.181:8084/api/commdist/commercial?commercialDistrictCode=\(cdCode)"
         guard let url = URL(string: urlString) else {
             throw URLError(.badURL)
@@ -75,28 +72,14 @@ struct CardView: View {
         let (data, _) = try await URLSession.shared.data(from: url)
         let districtInfo = try JSONDecoder().decode(CommercialDistrictInfo.self, from: data)
         
-        return (districtInfo.latitude, districtInfo.longitude)
-    }
-    
-    func fetchAndNavigate() {
-        Task {
-            do {
-                let coordinates = try await fetchCoordinates(for: String(districtData.cdCode))
-                latitude = coordinates.longitude
-                longitude = coordinates.latitude
-                isActive = true // 화면 전환 트리거
-                print("\\( \(String(describing: latitude)) , \(String(describing: longitude)) \\)")
-            } catch {
-                print(error)
-            }
-        }
+        self.districtInfo = districtInfo
     }
     
     // 필터링에 따라 카드에 보여질 내용 만드는 함수
     func formattedSelectedValue() -> String {
         switch selectedFilter {
         case "종합순":
-                return "서울시 내 \(districtData.totalScore.value)점"
+                return "서울시 내 상권 중 \(districtData.totalScore.value)등"
         case "매출순":
                 return "\(districtData.sales.value)원"
         case "유동인구순":
@@ -128,72 +111,75 @@ struct CardView: View {
        }
 
     var body: some View {
-            GeometryReader { geometry in
-                ZStack {
-                    // 배경 이미지
-                    Image(uiImage: UIImage(named: "RoundRank\(index + 1)") ?? UIImage(named: "RoundRank9")!)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .edgesIgnoringSafeArea(.all)
-                    
-                    // 나머지 UI 컴포넌트
-                    VStack {
-                        HStack {
-                            Spacer()
-                            // 우측 상단에 위치한 북마크 버튼
-                            Button(action: { self.isBookMarked.toggle() }) {
-                                Image(systemName: isBookMarked ? "bookmark.fill" : "bookmark")
-                                    .foregroundColor(.brown)
-                                    .background(Circle().fill(Color.white).frame(width: 40, height: 40).opacity(0.7))
+            VStack {
+                // districtInfo 상태 변수가 nil이 아닐 경우에만 NavigationLink를 표시합니다.
+                if let districtInfo = districtInfo {
+                    // districtInfo가 존재한다면, NavigationLink를 통해 상세 정보 뷰(BDMapView)로 이동합니다.
+                    // 이동할 때, districtInfo의 정보(위도, 경도, 상권 코드, 상권 이름)를 BDMapView에 전달합니다.
+                    NavigationLink(destination: BDMapView(cameraLatitude: districtInfo.longitude, cameraLongitude: districtInfo.latitude, selectedCDCode: String(districtInfo.commercialDistrictCode), selectedCDName: districtInfo.commercialDistrictName)) {
+                        ZStack {
+                            // 등수, 상권 이름 등을 표시하는 UI 구성
+                            VStack {
+                                Text("\(index + 1)")
+                                    .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
+                                    .fontWeight(.bold)
+                                    .font(.system(size: 130))
                             }
-                            .padding(.trailing, 50)
-                            .padding(.top, 50)
-                        }
-                        
-                        Spacer()
-                        
-                        // 상권 정보 HStack
-                        HStack {
-                            VStack (alignment: .leading) {
-                                // 상권이름
-                                Text(districtData.name).font(.system(size: 22)).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(Color.defaultfont)
-                                    .padding(.horizontal)
-                                    .padding(.top, 40)
+                            .frame(width: 190, height: 190)
+                            .background(
+                                LinearGradient(colors: [AppColors.numberTop[index % 3], AppColors.numberBottom[index % 3]], startPoint: .top, endPoint: .bottom)
+                            )
+                            .cornerRadius(60)
+                            .rotationEffect(.degrees(-28))
+                            .offset(x: 120, y: -30)
+                            
+                            // 상권 이름 및 추가 정보를 표시하는 영역
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(districtInfo.commercialDistrictName)
+                                        .font(.title)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
+//                                        .opacity(0.7)
+                                        .lineLimit(1)
+                                    // 여기
+                                    Text(formattedSelectedValue())
+                                        .font(.headline)
+                                        .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
+                                        .padding(.top, 2)
+
+                                    Text("\(String(format: "%.0f", selectedScore())) 점")
+                                        .font(.largeTitle)
+                                        .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
+                                }
+                                .frame(maxWidth: UIScreen.main.bounds.width * 0.6)
                                 Spacer()
-                                // 값 - 고른 필터에 따라 달라짐
-                                Text(formattedSelectedValue()).font(.system(size: 16)).fontWeight(.regular).foregroundColor(Color.customgray)
-                                    .padding(.horizontal)
-                                    .padding(.bottom, 40)
                             }
-                            Spacer()
-                            Text("\(selectedScore())점")
-                                .font(.largeTitle)
-                                .padding(.horizontal, 10)
-                                .foregroundColor(Color.sangchu)
                         }
-                        .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.20)
-                        .background(Color.white.opacity(0.7))
-                        .cornerRadius(15)
-                        .padding(.bottom, 5)
-                        .padding(.horizontal, 20)
-                        // end of 상권 정보 HStack
-                    } // end of 나머지 UI 컴포넌트
-                }
-                .frame(width: min(geometry.size.width, geometry.size.height) , height: min(geometry.size.width, geometry.size.height) )
-                .background(Color.clear)
-                .shadow(color: Color.black.opacity(0.3), radius: 5, x: 3, y: 3)
-                .onTapGesture {
-                    fetchAndNavigate()
-                }
-                .background(
-                    NavigationLink(destination: BDMapView(cameraLatitude: latitude, cameraLongitude: longitude, selectedCDCode: String(districtData.cdCode), selectedCDName: districtData.name), isActive: $isActive) {
-                        EmptyView()
                     }
-                    .hidden() // NavigationLink를 숨깁니다.
-                )
-                // end of ZStack
-            } // end of GeometryReader
-    } // end of body view
+                    .frame(width: UIScreen.main.bounds.width * 0.8, height: 180)
+                    .padding()
+                    .background(index < 3 ? AppColors.topColors[index % 3] : Color.white)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                } else {
+                    // districtInfo가 nil일 경우, 로딩 표시
+                    Spacer().frame(height: 120)
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
+                        .scaleEffect(3)
+                }
+            }
+            .onAppear {
+                Task {
+                    do {
+                        try await fetchCommercialDistrictInfo(for: String(districtData.cdCode))
+                    } catch {
+                        print("Error fetching district info: \(error)")
+                    }
+                }
+            }
+        }
 } // end of CardView
 
 struct DistrictRankingView: View {
@@ -226,8 +212,7 @@ struct DistrictRankingView: View {
     
     var body: some View {
         VStack {
-//            Text("\(borough) 내 상권랭킹").font(.largeTitle).foregroundColor(Color.defaultfont)
-            
+            Spacer().frame(height: 40)
             // 필터링 버튼 추가
             Menu {
                 ForEach(filters, id: \.self) { filter in
@@ -244,12 +229,13 @@ struct DistrictRankingView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, 20)
             }
-            .padding(.vertical, 10)
             if isLoading {
-                Spacer().frame(height: 120)
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
-                    .scaleEffect(5)
+                VStack {
+                    Spacer().frame(height: 120)
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
+                        .scaleEffect(5)
+                }
             }
             else {
                 TabView {
@@ -258,8 +244,8 @@ struct DistrictRankingView: View {
                             .frame(width: UIScreen.main.bounds.width * 0.8)
                     }
                 }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always)) // 원형 인디케이터를 항상 표시합니다.
-                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width) // TabView의 크기를 지정합니다.
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never)) // 원형 인디케이터를 항상 표시합니다.
+                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.35) // TabView의 크기를 지정합니다.
                 .onAppear {
                     if !hasFetchedData {
                         Task {

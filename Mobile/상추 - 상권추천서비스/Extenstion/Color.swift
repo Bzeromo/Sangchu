@@ -31,3 +31,11 @@ extension Color {
         )
     }
 }
+
+struct AppColors {
+    static let gradient = [Color(hex: "37683B"), Color(hex: "529B58")]
+    static let gradientColors = [Color(hex: "FF8080"), Color(hex: "FFA680"), Color(hex: "FFBF80"), Color(hex: "FFD480"), Color(hex: "FFE680"), Color(hex: "F4FF80"), Color(hex: "D5FF80"), Color(hex: "A2FF80"), Color(hex: "80FF9E"), Color(hex: "80FFD5"), Color(hex: "80EAFF"), Color(hex: "80A6FF"), Color(hex: "8A80FF"), Color(hex: "BF80FF"), Color(hex: "FD80FF"), Color(hex: "FF8097")]
+    static let topColors = [Color(hex: "87CC6C"), Color(hex: "6DBCCD"), Color(hex: "C078D2")]
+    static let numberTop = [Color(hex: "F5DC82"), Color(hex: "FDFF93"), Color(hex: "F6F339"), Color(hex: "93C73D")]
+    static let numberBottom = [Color(hex: "E36AD4"), Color(hex: "F45E35"), Color(hex: "86D979"), Color(hex: "F0F2ED")]
+}
