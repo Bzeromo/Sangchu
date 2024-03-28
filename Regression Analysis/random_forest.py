@@ -1,7 +1,6 @@
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-import data_load
 import normalization
 
 X = normalization.X
@@ -11,7 +10,8 @@ y = normalization.y
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # 랜덤 포레스트 모델을 사용하여 테스트 세트에 대한 예측 수행
-model = RandomForestRegressor()
+# 하이퍼 파라미터 적용
+model = RandomForestRegressor(n_estimators=100, max_depth=20, random_state=42)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 
@@ -34,3 +34,10 @@ def mape(y_true, y_pred):
 # 예측값과 실제값을 가지고 MAPE 계산
 mape_value = mape(y_test, y_pred)
 print("MAPE:", mape_value)
+
+# 특성 중요도 확인
+importances = model.feature_importances_
+
+# 각 독립 변수의 중요도 출력
+for i, importance in enumerate(importances):
+    print(f"Feature {i+1}: Importance = {importance}")

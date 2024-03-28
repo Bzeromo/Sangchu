@@ -6,9 +6,6 @@ import normalization
 X = normalization.X
 y = normalization.y
 
-# 데이터 분할
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
 # 탐색할 하이퍼파라미터 그리드 생성
 param_grid = {
     'n_estimators': [50, 100, 150],
@@ -20,7 +17,6 @@ param_grid = {
     'max_features': ['auto', 'sqrt', 'log2', None],
     'max_leaf_nodes': [None, 10, 20, 50],
     'min_impurity_decrease': [0.0, 0.1, 0.2],
-    'min_impurity_split': [None, 0.1, 0.2],
     'bootstrap': [True, False],
     'oob_score': [True, False],
     'n_jobs': [None, -1],
@@ -31,11 +27,11 @@ param_grid = {
 }
 
 # 그리드 탐색 객체 생성
-grid_search = GridSearchCV(RandomForestRegressor(), param_grid, cv=5, scoring='neg_mean_squared_error', verbose=2)
+grid_search = GridSearchCV(RandomForestRegressor(), param_grid, cv=5, scoring='neg_mean_absolute_error', verbose=2)
 
 # 그리드 탐색 실행
-grid_search.fit(X_train, y_train)
+grid_search.fit(X, y)
 
 # 최적의 하이퍼파라미터와 최적의 성능 출력
 print("Best Parameters:", grid_search.best_params_)
-print("Best MSE:", -grid_search.best_score_)  # negative mean squared error 사용
+print("Best MAE:", -grid_search.best_score_)  # negative mean absolute error 사용
