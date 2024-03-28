@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class CommInfraGraphService {
     private final CommAptRepository commAptRepository;
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, Object> redisTemplate;
-    private static final Integer YEAR = 2023;
+    private static final Integer YEAR = LocalDate.now().getYear()-1;
     private static final Integer QUARTER = 3;
 
     @Autowired

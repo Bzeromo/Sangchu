@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sc.sangchu.dto.consumer.CommFloatingPopulationDTO;
 import com.sc.sangchu.dto.sales.*;
 import com.sc.sangchu.postgresql.entity.CommEstimatedSalesEntity;
 import com.sc.sangchu.postgresql.repository.CommEstimatedSalesRepository;
@@ -26,7 +25,7 @@ public class CommSalesGraphService {
     private final CommEstimatedSalesRepository commEstimatedSalesRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
-    private final LocalDate localDate = LocalDate.now();
+    private final Integer YEAR = LocalDate.now().getYear();
 
     @Autowired
     public CommSalesGraphService(CommEstimatedSalesRepository commEstimatedSalesRepository,
@@ -42,7 +41,7 @@ public class CommSalesGraphService {
             //매출 계산 로직 좀 더 고민해 봐야함.
             //월 매출, 주중/주말 매출 계산
             List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
-                localDate.getYear() - 1, commCode, "외식업");
+                YEAR - 1, commCode, "외식업");
 
             return calcSalesAvg(salesList);
         } catch (Exception e) {
@@ -69,11 +68,11 @@ public class CommSalesGraphService {
             //특정 상권 코드의 22~23년도 주중/주말 매출 조회
             List<CommQuarterlyGraphDTO> salesList = commEstimatedSalesRepository.findByQuarterlyData(
                 commCode,
-                "외식업", new int[]{localDate.getYear() - 2, localDate.getYear() - 1});
+                "외식업", new int[]{YEAR - 2, YEAR - 1});
 
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "stackbar");
-            chartData.put("year", (localDate.getYear() - 1) + "~" + (localDate.getYear() - 2));
+            chartData.put("year", (YEAR - 1) + "~" + (YEAR - 2));
 
             ObjectNode data = objectMapper.createObjectNode();
             ArrayNode categories = objectMapper.createArrayNode();
@@ -121,7 +120,7 @@ public class CommSalesGraphService {
             }
 
             List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
-                localDate.getYear() - 1, commCode, "외식업");
+                YEAR - 1, commCode, "외식업");
             String[] category = {"월", "화", "수", "목", "금", "토", "일"};
             String type = "day";
             if (salesList.isEmpty()) {
@@ -150,7 +149,7 @@ public class CommSalesGraphService {
             }
 
             List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
-                localDate.getYear() - 1, commCode, "외식업");
+                YEAR - 1, commCode, "외식업");
             String[] category = {"00~06시", "06~11시", "11~14시", "14~17시", "17~21시", "21~24시"};
             String type = "time";
             if (salesList.isEmpty()) {
@@ -179,7 +178,7 @@ public class CommSalesGraphService {
             }
 
             List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
-                localDate.getYear() - 1, commCode, "외식업");
+                YEAR - 1, commCode, "외식업");
 
             String[] category = {"10대", "20대", "30대", "40대", "50대", "60대이상"};
             String type = "age";
@@ -210,11 +209,11 @@ public class CommSalesGraphService {
             }
 
             List<CommEstimatedSalesEntity> salesList = commEstimatedSalesRepository.findByYearCodeAndCommercialDistrictCodeAndMajorCategoryName(
-                localDate.getYear() - 1, commCode, "외식업");
+                YEAR - 1, commCode, "외식업");
 
             ObjectNode chartData = objectMapper.createObjectNode();
             chartData.put("chartType", "donut");
-            chartData.put("year", localDate.getYear() - 1);
+            chartData.put("year", YEAR - 1);
             chartData.put("commDistrictName",
                 salesList.isEmpty() ? "" : salesList.get(0).getCommercialDistrictName());
 
@@ -293,6 +292,10 @@ public class CommSalesGraphService {
 
             }
         }
+        for(int i = 0; i < dailySales.length; i++){
+            dailySales[i] /= 30;
+            dailyCnt[i] /= 30;
+        }
 
         return CommSalesGraphDTO.builder()
             .year(salesList.get(0).getYearCode())
@@ -338,6 +341,11 @@ public class CommSalesGraphService {
             }
         }
 
+        for(int i = 0; i < timeSales.length; i++){
+            timeSales[i] /= 30;
+            timeCnt[i] /= 30;
+        }
+
         return CommSalesGraphDTO.builder()
             .year(salesList.get(0).getYearCode())
             .commDistrictName(salesList.get(0).getCommercialDistrictName())
@@ -375,6 +383,11 @@ public class CommSalesGraphService {
                 ageSales[5] += (entity.getAgeOver60Sales() != null ? entity.getAgeOver60Sales()
                     : 0L);
             }
+        }
+
+        for(int i = 0; i < ageSales.length; i++){
+            ageSales[i] /= 30;
+            ageCnt[i] /= 30;
         }
 
         return CommSalesGraphDTO.builder()

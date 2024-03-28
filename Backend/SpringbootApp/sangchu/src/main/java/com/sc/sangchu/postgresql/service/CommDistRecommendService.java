@@ -13,7 +13,9 @@ import com.sc.sangchu.postgresql.entity.CommFloatingPopulationEntity;
 import com.sc.sangchu.postgresql.entity.CommResidentPopulationEntity;
 import com.sc.sangchu.postgresql.repository.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class CommDistRecommendService {
     private final CommFloatingPopulationRepository commFloatingPopulationRepository;
     private final CommResidentPopulationRepository commResidentPopulationRepository;
     private final CommStoreRepository commStoreRepository;
-    private static final Integer YEAR = 2023;
+    private static final Integer YEAR = LocalDate.now().getYear()-1;
     private static final Integer QUARTER = 3;
     private static final Integer RANK_LIMIT = 10;
 
@@ -74,7 +76,6 @@ public class CommDistRecommendService {
     public List <CommDistDTO> getAllCommDist() {
         try {
             List <CommDistEntity> commDistEntities = commDistRepository.findAll();
-            if(commDistEntities.isEmpty()) return null;
 
             return setCommDistDtoList(commDistEntities);
         } catch (Exception e) {
@@ -88,7 +89,6 @@ public class CommDistRecommendService {
     public List<CommDistDTO> getCommDistByGuCode(Long guCode) {
         try {
             List <CommDistEntity> commDistEntities = commDistRepository.findByGuCode(guCode);
-            if(commDistEntities.isEmpty()) return null;
 
             return setCommDistDtoList(commDistEntities);
         } catch (Exception e) {
@@ -105,7 +105,7 @@ public class CommDistRecommendService {
                     .sorted(Comparator.comparing(CommDistEntity::getCommercialDistrictScore).reversed())
                     .limit(RANK_LIMIT)
                     .toList();
-            if(sortedEntities.isEmpty()) return null;
+            if(sortedEntities.isEmpty()) return Collections.emptyList();
 
             return setCommDistDtoList(sortedEntities);
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class CommDistRecommendService {
                     .sorted(Comparator.comparing(CommDistEntity::getCommercialDistrictScore).reversed())
                     .limit(RANK_LIMIT)
                     .toList();
-            if(sortedEntities.isEmpty()) return null;
+            if(sortedEntities.isEmpty()) return Collections.emptyList();
 
             return setCommDistDtoList(sortedEntities);
 
@@ -136,9 +136,12 @@ public class CommDistRecommendService {
     public CommDistServiceScoreDTO getServiceCommDist(Long commCode, String serviceCode) {
         try {
             CommDistEntity commDistEntity = commDistRepository.findByCommercialDistrictCode(commCode);
+            if(commDistEntity == null) return CommDistServiceScoreDTO.builder().build();
+
             CommEstimatedSalesEntity commEstimatedSalesEntity =
                     commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(
                         YEAR, QUARTER, commCode, serviceCode);
+            if(commEstimatedSalesEntity == null) return CommDistServiceScoreDTO.builder().build();
 
             return CommDistServiceScoreDTO.builder()
                     .commercialDistrictName(commDistEntity.getCommercialDistrictName())
@@ -171,6 +174,7 @@ public class CommDistRecommendService {
     public List <CommDistServiceScoreDTO> getGuServiceCommDist(Long guCode, String serviceCode) {
         try {
             List <CommDistEntity> commDistEntities = commDistRepository.findByGuCode(guCode);
+            if(commDistEntities.isEmpty()) return Collections.emptyList();
             List <CommDistServiceScoreDTO> commDistServiceScoreDTOS = new ArrayList<>();
 
             for(CommDistEntity entity : commDistEntities) {
@@ -220,7 +224,7 @@ public class CommDistRecommendService {
         try{
             // 자치구에 해당하는 상권 리스트 -> 상권 정보 및 점수
             List<CommDistEntity>  commDistEntities = commDistRepository.findByGuCode(guCode);
-            if(commDistEntities.isEmpty()) return null;
+            if(commDistEntities.isEmpty()) return Collections.emptyList();
 
             List<CommDistDTO> commList = setCommDistDtoList(commDistEntities);
 

@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class CommInfraService {
     private final CommIndicatorChangeRepository commIndicatorChangeRepository;
     private final CommAptRepository commAptRepository;
     private final CommFacilitiesRepository commFacilitiesRepository;
-    private static final Integer YEAR = 2023;
+    private static final Integer YEAR = LocalDate.now().getYear()-1;
     private static final Integer QUARTER = 3;
 
     @Autowired

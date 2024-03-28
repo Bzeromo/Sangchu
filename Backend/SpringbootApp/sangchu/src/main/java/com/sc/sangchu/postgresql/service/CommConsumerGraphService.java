@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 
@@ -28,8 +29,8 @@ public class CommConsumerGraphService {
     private final CommWorkingPopulationRepository commWorkingPopulationRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
-    private static final Integer YEAR_LIMIT = 2022;
-    private static final Integer YEAR = 2023;
+    private static final Integer YEAR_LIMIT = LocalDate.now().getYear()-2;
+    private static final Integer YEAR = LocalDate.now().getYear()-1;
     private static final Integer QUARTER = 3;
 
     public CommConsumerGraphService(CommFloatingPopulationRepository commFloatingPopulationRepository,
