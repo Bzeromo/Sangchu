@@ -2,32 +2,33 @@ import pandas as pd
 from modules.majorAndMiddleCategoryPreProcessing import \
     categorization_into_major_and_medium_categories_by_service_industry_code_name
 from modules.calc_RDI import calc_RDI
-from modules.commercialDistrictCodePreProcessing import check_do_not_have_commercial_district_code
+from modules.commercial_district_code_preprocessing import clean_commercial_district_codes
 from modules.calc_scores import calc_scores, calc_sales_score, calc_total_score
 from pyproj import Transformer
 from sqlalchemy import create_engine, types
 import json
 
 # 영역-상권 전처리
-area_with_commercial_district_df = pd.read_csv(
-    'files/api/area_with_commercial_district.csv', encoding='utf-8')
-store_with_commercial_district_df = pd.read_csv('files/api/store_with_commercial_district.csv', encoding='utf-8')
-store_with_seoul_df = pd.read_csv('files/api/store_with_seoul.csv', encoding='utf-8')
-sales_commercial_district_df = pd.read_csv('files/api/sales_commercial_district.csv', encoding='utf-8')
-income_consumption_with_commercial_district_df = pd.read_csv(
-    'files/api/income_consumption_with_commercial_district.csv', encoding='utf-8')
-commercial_district_change_indicator_with_commercial_district_df = pd.read_csv(
-    'files/api/commercial_district_change_indicator_with_commercial_district.csv', encoding='utf-8')
-foot_traffic_with_commercial_district_df = pd.read_csv(
-    'files/api/foot_traffic_with_commercial_district.csv', encoding='utf-8')
-resident_population_with_commercial_district_df = pd.read_csv(
-    'files/api/resident_population_with_commercial_district.csv', encoding='utf-8')
-apartment_with_commercial_district_df = pd.read_csv(
-    'files/api/apartment_with_commercial_district.csv', encoding='utf-8')
-facilities_with_commercial_district_df = pd.read_csv(
-    'files/api/facilities_with_commercial_district.csv', encoding='utf-8')
-working_population_with_commercial_district_df = pd.read_csv(
-    'files/api/working_population_with_commercial_district.csv', encoding='utf-8')
+dfs = {
+    'area_with_commercial_district': pd.read_csv('files/api/area_with_commercial_district.csv', encoding='utf-8'),
+    'store_with_commercial_district': pd.read_csv('files/api/store_with_commercial_district.csv', encoding='utf-8'),
+    'store_with_seoul': pd.read_csv('files/api/store_with_seoul.csv', encoding='utf-8'),
+    'sales_commercial_district': pd.read_csv('files/api/sales_commercial_district.csv', encoding='utf-8'),
+    'income_consumption_with_commercial_district': pd.read_csv(
+        'files/api/income_consumption_with_commercial_district.csv', encoding='utf-8'),
+    'commercial_district_change_indicator_with_commercial_district': pd.read_csv(
+        'files/api/commercial_district_change_indicator_with_commercial_district.csv', encoding='utf-8'),
+    'foot_traffic_with_commercial_district': pd.read_csv('files/api/foot_traffic_with_commercial_district.csv',
+                                                         encoding='utf-8'),
+    'resident_population_with_commercial_district': pd.read_csv(
+        'files/api/resident_population_with_commercial_district.csv', encoding='utf-8'),
+    'apartment_with_commercial_district': pd.read_csv('files/api/apartment_with_commercial_district.csv',
+                                                      encoding='utf-8'),
+    'facilities_with_commercial_district': pd.read_csv('files/api/facilities_with_commercial_district.csv',
+                                                       encoding='utf-8'),
+    'working_population_with_commercial_district': pd.read_csv(
+        'files/api/working_population_with_commercial_district.csv', encoding='utf-8'),
+}
 
 
 # 데이터 로딩 및 전처리를 위한 일반화된 함수
@@ -80,8 +81,8 @@ def transform_coords(row):
 
 
 # 영역-상권 데이터 로딩 및 전처리
-area_with_commercial_district_df = load_and_preprocess(
-    area_with_commercial_district_df,
+dfs['area_with_commercial_district'] = load_and_preprocess(
+    dfs['area_with_commercial_district'],
     filters=["TRDAR_SE_CD == 'A'"],
     rename_cols={'TRDAR_CD': 'commercial_district_code',
                  'TRDAR_CD_NM': 'commercial_district_name',
@@ -94,11 +95,12 @@ area_with_commercial_district_df = load_and_preprocess(
                  'RELM_AR': 'area_size'},
     drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM']
 )
-area_with_commercial_district_df[['latitude', 'longitude']] = area_with_commercial_district_df.apply(transform_coords,
-                                                                                                     axis=1)
+dfs['area_with_commercial_district'][['latitude', 'longitude']] = dfs['area_with_commercial_district'].apply(
+    transform_coords,
+    axis=1)
 # 점포-상권 데이터 로딩 및 전처리
-store_with_commercial_district_df = load_and_preprocess(
-    store_with_commercial_district_df,
+dfs['store_with_commercial_district'] = load_and_preprocess(
+    dfs['store_with_commercial_district'],
     filters=["TRDAR_SE_CD == 'A'"],
     rename_cols={
         'STDR_YYQU_CD': 'year_quarter_code',
@@ -115,8 +117,8 @@ store_with_commercial_district_df = load_and_preprocess(
 )
 
 # 점포-서울시 데이터 로딩 및 전처리
-store_with_seoul_df = load_and_preprocess(
-    store_with_seoul_df,
+dfs['store_with_seoul'] = load_and_preprocess(
+    dfs['store_with_seoul'],
     rename_cols={
         'STDR_YYQU_CD': 'year_quarter_code',
         'SVC_INDUTY_CD': 'service_code',
@@ -130,8 +132,8 @@ store_with_seoul_df = load_and_preprocess(
 )
 
 # 매출-상권 데이터 로딩 및 전처리
-sales_commercial_district_df = load_and_preprocess(
-    sales_commercial_district_df,
+dfs['sales_commercial_district'] = load_and_preprocess(
+    dfs['sales_commercial_district'],
     filters=["TRDAR_SE_CD == 'A'", "middle_category_code == 'C0101'"],
     rename_cols={
         'STDR_YYQU_CD': 'year_quarter_code',
@@ -193,8 +195,8 @@ sales_commercial_district_df = load_and_preprocess(
 )
 
 # 소득-상권 데이터 로딩 및 전처리
-income_consumption_with_commercial_district_df = load_and_preprocess(
-    income_consumption_with_commercial_district_df,
+dfs['income_consumption_with_commercial_district'] = load_and_preprocess(
+    dfs['income_consumption_with_commercial_district'],
     filters=["TRDAR_SE_CD == 'A'"],
     rename_cols={
         'STDR_YYQU_CD': 'year_quarter_code',
@@ -210,8 +212,8 @@ income_consumption_with_commercial_district_df = load_and_preprocess(
 )
 
 # 상권변화지표-상권 데이터 로딩 및 전처리
-commercial_district_change_indicator_with_commercial_district_df = load_and_preprocess(
-    commercial_district_change_indicator_with_commercial_district_df,
+dfs['commercial_district_change_indicator_with_commercial_district'] = load_and_preprocess(
+    dfs['commercial_district_change_indicator_with_commercial_district'],
     filters=["TRDAR_SE_CD == 'A'"],
     rename_cols={
         'STDR_YYQU_CD': 'year_quarter_code',
@@ -225,14 +227,15 @@ commercial_district_change_indicator_with_commercial_district_df = load_and_prep
 )
 
 # RDI 값 계산
-commercial_district_change_indicator_with_commercial_district_df = calc_RDI(store_with_seoul_df,
-                                                                            store_with_commercial_district_df,
-                                                                            area_with_commercial_district_df,
-                                                                            commercial_district_change_indicator_with_commercial_district_df)
+dfs['commercial_district_change_indicator_with_commercial_district'] = calc_RDI(dfs['store_with_seoul'],
+                                                                                dfs['store_with_commercial_district'],
+                                                                                dfs['area_with_commercial_district'],
+                                                                                dfs[
+                                                                                    'commercial_district_change_indicator_with_commercial_district'])
 
 # 길단위인구-상권 데이터 로딩 및 전처리
-foot_traffic_with_commercial_district_df = load_and_preprocess(
-    foot_traffic_with_commercial_district_df,
+dfs['foot_traffic_with_commercial_district'] = load_and_preprocess(
+    dfs['foot_traffic_with_commercial_district'],
     filters=["TRDAR_SE_CD == 'A'"],
     rename_cols={
         'STDR_YYQU_CD': 'year_quarter_code',
@@ -265,8 +268,8 @@ foot_traffic_with_commercial_district_df = load_and_preprocess(
 )
 
 # 상주인구-상권 데이터 로딩 및 전처리
-resident_population_with_commercial_district_df = load_and_preprocess(
-    resident_population_with_commercial_district_df,
+dfs['resident_population_with_commercial_district'] = load_and_preprocess(
+    dfs['resident_population_with_commercial_district'],
     filters=["TRDAR_SE_CD == 'A'"],
     rename_cols={
         'STDR_YYQU_CD': 'year_quarter_code',
@@ -293,8 +296,8 @@ resident_population_with_commercial_district_df = load_and_preprocess(
 )
 
 # 아파트-상권 데이터 로딩 및 전처리
-apartment_with_commercial_district_df = load_and_preprocess(
-    apartment_with_commercial_district_df,
+dfs['apartment_with_commercial_district'] = load_and_preprocess(
+    dfs['apartment_with_commercial_district'],
     filters=["TRDAR_SE_CD == 'A'"],
     rename_cols={
         'STDR_YYQU_CD': 'year_quarter_code',
@@ -321,8 +324,8 @@ apartment_with_commercial_district_df = load_and_preprocess(
 )
 
 # 집객시설-상권 데이터 로딩 및 전처리
-facilities_with_commercial_district_df = load_and_preprocess(
-    facilities_with_commercial_district_df,
+dfs['facilities_with_commercial_district'] = load_and_preprocess(
+    dfs['facilities_with_commercial_district'],
     filters=["TRDAR_SE_CD == 'A'"],
     rename_cols={
         'STDR_YYQU_CD': 'year_quarter_code',
@@ -342,8 +345,8 @@ facilities_with_commercial_district_df = load_and_preprocess(
 )
 
 # 직장인구-상권 데이터 로딩 및 전처리
-working_population_with_commercial_district_df = load_and_preprocess(
-    working_population_with_commercial_district_df,
+dfs['working_population_with_commercial_district'] = load_and_preprocess(
+    dfs['working_population_with_commercial_district'],
     filters=["TRDAR_SE_CD == 'A'"],
     rename_cols={
         'STDR_YYQU_CD': 'year_quarter_code',
@@ -370,7 +373,6 @@ working_population_with_commercial_district_df = load_and_preprocess(
         'AGRDE_40_WRC_POPLTN_CO': 'age_40_working_population',
         'AGRDE_50_WRC_POPLTN_CO': 'age_50_working_population',
         'AGRDE_60_ABOVE_WRC_POPLTN_CO': 'age_over_60_working_population'
-
     },
     drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM']
 )
