@@ -79,7 +79,7 @@ struct CardView: View {
     func formattedSelectedValue() -> String {
         switch selectedFilter {
         case "종합순":
-                return "서울시 내 \(districtData.totalScore.value)점"
+                return "서울시 내 상권 중 \(districtData.totalScore.value)등"
         case "매출순":
                 return "\(districtData.sales.value)원"
         case "유동인구순":
@@ -116,7 +116,7 @@ struct CardView: View {
                 if let districtInfo = districtInfo {
                     // districtInfo가 존재한다면, NavigationLink를 통해 상세 정보 뷰(BDMapView)로 이동합니다.
                     // 이동할 때, districtInfo의 정보(위도, 경도, 상권 코드, 상권 이름)를 BDMapView에 전달합니다.
-                    NavigationLink(destination: BDMapView(cameraLatitude: districtInfo.latitude, cameraLongitude: districtInfo.longitude, selectedCDCode: String(districtInfo.commercialDistrictCode), selectedCDName: districtInfo.commercialDistrictName)) {
+                    NavigationLink(destination: BDMapView(cameraLatitude: districtInfo.longitude, cameraLongitude: districtInfo.latitude, selectedCDCode: String(districtInfo.commercialDistrictCode), selectedCDName: districtInfo.commercialDistrictName)) {
                         ZStack {
                             // 등수, 상권 이름 등을 표시하는 UI 구성
                             VStack {
@@ -140,19 +140,22 @@ struct CardView: View {
                                         .font(.title)
                                         .fontWeight(.bold)
                                         .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
-                                        .opacity(0.7)
+//                                        .opacity(0.7)
                                         .lineLimit(1)
-                                    Text("정보 보러가기 >")
-                                        .font(.caption2)
-                                        .foregroundColor(Color(hex: "767676"))
+                                    // 여기
+                                    Text(formattedSelectedValue())
+                                        .font(.headline)
+                                        .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
+                                        .padding(.top, 2)
+
+                                    Text("\(String(format: "%.0f", selectedScore())) 점")
+                                        .font(.largeTitle)
+                                        .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
                                 }
                                 .frame(maxWidth: UIScreen.main.bounds.width * 0.6)
                                 Spacer()
                             }
                         }
-                    }
-                    .scrollTransition { content, phase in
-                        content.opacity(phase.isIdentity ? 1.0 : 0.5)
                     }
                     .frame(width: UIScreen.main.bounds.width * 0.8, height: 180)
                     .padding()
@@ -209,6 +212,7 @@ struct DistrictRankingView: View {
     
     var body: some View {
         VStack {
+            Spacer().frame(height: 40)
             // 필터링 버튼 추가
             Menu {
                 ForEach(filters, id: \.self) { filter in
@@ -225,12 +229,13 @@ struct DistrictRankingView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, 20)
             }
-            .padding(.vertical, 10)
             if isLoading {
-                Spacer().frame(height: 120)
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
-                    .scaleEffect(5)
+                VStack {
+                    Spacer().frame(height: 120)
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
+                        .scaleEffect(5)
+                }
             }
             else {
                 TabView {
@@ -239,8 +244,8 @@ struct DistrictRankingView: View {
                             .frame(width: UIScreen.main.bounds.width * 0.8)
                     }
                 }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always)) // 원형 인디케이터를 항상 표시합니다.
-                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width) // TabView의 크기를 지정합니다.
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never)) // 원형 인디케이터를 항상 표시합니다.
+                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.35) // TabView의 크기를 지정합니다.
                 .onAppear {
                     if !hasFetchedData {
                         Task {

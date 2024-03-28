@@ -117,6 +117,7 @@ struct BoroughTop10: View {
                     }
                 }
             }
+//            .scrollTargetLayout()
             .scrollIndicators(.hidden)
             
             // 자치구별 Top상권
@@ -131,10 +132,14 @@ struct BoroughTop10: View {
                     }
                 }
             }
+            .scrollTargetLayout()
+            .scrollIndicators(.hidden)
+            .scrollTargetBehavior(.paging)
         }
         .onAppear {
             // 뷰가 나타날 때 디폴트 값(강남구)으로 데이터 불러오기
             self.fetchTopCD(guCode: self.selectedGuCode)
         }
+        
     }
 }
