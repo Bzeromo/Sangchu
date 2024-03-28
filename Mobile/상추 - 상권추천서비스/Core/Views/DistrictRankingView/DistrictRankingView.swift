@@ -151,6 +151,7 @@ struct CardView: View {
                                     Text("\(String(format: "%.0f", selectedScore())) 점")
                                         .font(.largeTitle)
                                         .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
+                                    Text("정보 보러가기 >").font(.caption2).foregroundColor(Color(hex: "767676"))
                                 }
                                 .frame(maxWidth: UIScreen.main.bounds.width * 0.6)
                                 Spacer()
@@ -259,13 +260,24 @@ struct DistrictRankingView: View {
             VStack {
                 Spacer().frame(height: 40)
                 // 필터링 버튼 추가
-                Menu {
-                    ForEach(filters, id: \.self) { filter in
-                        Button(filter) {
-                            selectedFilter = filter
+                
+//                VStack{
+//                    if isLoading{
+//                        Text("분석중").font(.title).fontWeight(.semibold).padding(.top , 40)
+//                    }else{
+//                        Text("분석 결과").font(.title).fontWeight(.semibold).padding(.top , 40)
+//                    }
+//                }
+               
+                
+                HStack{
+                    Menu {
+                        ForEach(filters, id: \.self) { filter in
+                            Button(filter) {
+                                selectedFilter = filter
+                            }
                         }
                     }
-                }
                 label: {
                     HStack {
                         Text(selectedFilter)
@@ -274,15 +286,20 @@ struct DistrictRankingView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 20)
                 }
+                    Spacer()
+                }
+                
                 if isLoading {
                     VStack {
-                        Spacer().frame(height: 120)
+                        Spacer().frame(height: 90)
+                        Text("분석중").font(.title).fontWeight(.semibold)
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
                             .scaleEffect(5)
                     }
                 }
                 else {
+                    Text("분석 결과").font(.title).fontWeight(.semibold)
                     TabView {
                         ForEach(currentFilteredData.indices, id: \.self) { index in
                             CardView(districtData: currentFilteredData[index], index: index, selectedFilter: selectedFilter)

@@ -22,54 +22,30 @@ struct CommercialDistrictCardView: View {
             ZStack {
                 // 등수 관련 UI
                 VStack{
-                    Text("\(index + 1)").foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D")).fontWeight(.bold).font(.system(size: 130))
-                }
-                .frame(width : 190 , height: 190)
-                .background(
-                    index < 3 ?
-                    LinearGradient(colors: [numberTop[index % 3] ,numberBottom[index % 3]], startPoint: .top, endPoint: .bottom) : LinearGradient(colors: [numberTop[3] ,numberBottom[3]], startPoint: .top, endPoint: .bottom)
-                )
-                .cornerRadius(60)
-                .rotationEffect(.degrees(-28)).offset(x:120,y:-30)
-                
-                // 텍스트
-                HStack{
-                    VStack(alignment: .leading){
-                        HStack{
-                            Text("\(Int(district.commercialDistrictScore))점").font(.title).foregroundColor(index < 3 ? Color.white : Color.black).fontWeight(.bold)
-                            Spacer()
-                        }
-                        HStack{
-                            VStack(alignment: .leading){
-                                Text("매출점수").font(.caption)
-                                Text("상주인구점수").font(.caption)
-                                Text("유동인구점수").font(.caption)
-                                Text("다양성").font(.caption)
-                            }.hidden()
-                            VStack(alignment: .leading){
-                                Text("\(Int(district.salesScore))").font(.caption)
-                                Text("\(Int(district.residentPopulationScore))").font(.caption)
-                                Text("\(Int(district.floatingPopulationScore))").font(.caption)
-                                Text("\(Int(district.rdiScore))").font(.caption)
-                            }.hidden()
-                        }
-                        VStack(alignment: .leading){
-                            Text(district.commercialDistrictName).font(.title).fontWeight(.bold).foregroundColor(index < 3 ? .white.opacity(0.9) : Color(hex: "3D3D3D")).lineLimit(1)
-                            Text("정보 보러가기 >").font(.caption2).foregroundColor(Color(hex: "767676"))
-                        }
-                    }.frame(maxWidth: UIScreen.main.bounds.width * 0.6)
+                    HStack{
+                        Text("\(index + 1)").foregroundColor(Color.black).fontWeight(.bold).font(.title2)
+                        Spacer()
+                        Text(">").font(.title2).foregroundColor(Color.gray.opacity(0.5)).font(.title)
+                    }
                     Spacer()
+                    Text(district.commercialDistrictName).font(.title2).fontWeight(.bold).foregroundColor(Color.black).lineLimit(1)
                 }
+                
+                VStack{
+                    Text("\(Int(district.commercialDistrictScore))점").foregroundColor(Color.white.opacity(0.8)).font(.system(size:28))
+                }.frame(width:UIScreen.main.bounds.width * 0.25, height: UIScreen.main.bounds.width * 0.25)
+                    .background(LinearGradient(colors: [Color(hex:"87CC6C") ,Color(hex:"4CA32A")], startPoint: .top, endPoint: .bottom)).clipShape(Circle())
+                
                 
             }
         }.scrollTransition{ content, phase in
             content
                 .opacity(phase.isIdentity ? 1.0 : 0.5)
         }
-        .frame(width: UIScreen.main.bounds.width * 0.8, height : 180)
+        .frame(width: UIScreen.main.bounds.width * 0.4, height : 180)
         .padding()
-        .background( index < 3 ? topColors[index % 3] : Color.white)
-        .foregroundColor(.white)
+        .background(Color.white)
+        .foregroundColor(.black)
         .cornerRadius(10)
         // end of Navi
     }
@@ -111,8 +87,10 @@ struct BoroughTop10: View {
                         }
                         .frame(width: 78, height: 37)
                         .background(self.selectedGuCode == borough.value ? Color.sangchu : Color.white)
-                        .foregroundColor(self.selectedGuCode == borough.value ? Color.white : Color.black)
-                        .cornerRadius(5)
+//                        .foregroundColor(self.selectedGuCode == borough.value ? Color.white : Color.black)
+                        .foregroundColor(Color.black)
+                        .cornerRadius(10)
+                        .shadow(radius: 1 ,x : 1, y : 1)
                     }
                 }
             }
@@ -128,12 +106,14 @@ struct BoroughTop10: View {
                                 CommercialDistrictCardView(district: district, index: index, topColors: AppColors.topColors, numberTop: AppColors.numberTop, numberBottom: AppColors.numberBottom)
                             }
                         }
+//                        .scrollTargetLayout()
                     }.scrollIndicators(.hidden)
+//                    .scrollTargetBehavior(.viewAligned)
                 }
             }
-            .scrollTargetLayout()
+//            .scrollTargetLayout()
             .scrollIndicators(.hidden)
-            .scrollTargetBehavior(.paging)
+//            .scrollTargetBehavior(.viewAligned)
         }
         .onAppear {
             // 뷰가 나타날 때 디폴트 값(강남구)으로 데이터 불러오기
