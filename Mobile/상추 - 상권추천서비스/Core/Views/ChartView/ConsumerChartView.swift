@@ -11,7 +11,7 @@ import Charts
 // 사용자 인터페이스를 정의하는 ContentView.swift 파일입니다.
 // 애플리케이션의 뷰를 구성하고 네트워크 요청을 통해 차트 데이터를 로드합니다.
 
-enum Endpoints: String, CaseIterable, Identifiable {
+enum ConsumerEndpoints: String, CaseIterable, Identifiable {
     var id: String { self.rawValue }
     
     case 분기별유동인구 = "floatingDataByQuarter"
@@ -166,7 +166,7 @@ struct GenderAgeWorkingChartView: View {
 struct ConsumerChartView: View {
     @State private var isLoading = true
     // 차트 데이터들이 들어가 있는 배열 상태값
-    @State private var chartDataSets: [[ConsumerModel.ChartData]] = Array(repeating: [], count: Endpoints.allCases.count)
+    @State private var chartDataSets: [[ConsumerModel.ChartData]] = Array(repeating: [], count: ConsumerEndpoints.allCases.count)
     @State var cdCode: String = ""
     
     var body: some View {
@@ -252,25 +252,11 @@ struct ConsumerChartView: View {
         
     } // end of body
     
-//    func loadAllData() {
-//        print(cdCode + "로 요청 시작")
-//        isLoading = true
-//        loadFloatingData(endpoint: .분기별유동인구, index: 0)
-//        loadFloatingData(endpoint: .요일별유동인구, index: 1)
-//        loadFloatingData(endpoint: .시간대별유동인구, index: 2)
-//        loadFloatingData(endpoint: .연령별유동인구, index: 3)
-//        loadResidentOrWorkingData(endpoint: .분기별상주인구, index: 4)
-//        loadResidentOrWorkingData(endpoint: .성연령별상주인구, index: 5)
-//        loadResidentOrWorkingData(endpoint: .분기별직장인구, index: 6)
-//        loadResidentOrWorkingData(endpoint: .성연령별직장인구, index: 7)
-//        print(cdCode + "로 요청 끝!")
-//    }
-    
     func loadAllData() {
         isLoading = true
         let group = DispatchGroup()
 
-        for (index, endpoint) in Endpoints.allCases.enumerated() {
+        for (index, endpoint) in ConsumerEndpoints.allCases.enumerated() {
             group.enter() // 그룹에 작업 추가 시작
             print("\(index)번째 요청 그룹에 들어옴")
             if endpoint.englishEndpoint.contains("floating") {
@@ -287,7 +273,7 @@ struct ConsumerChartView: View {
         }
     }
 
-    private func loadResidentOrWorkingData(endpoint: Endpoints, index: Int, group: DispatchGroup) {
+    private func loadResidentOrWorkingData(endpoint: ConsumerEndpoints, index: Int, group: DispatchGroup) {
         ConsumerNetworkManager.shared.fetch(endpoint: endpoint.englishEndpoint , commercialDistrictCode: cdCode) { result in
             DispatchQueue.main.async {
                 switch result {
@@ -339,7 +325,7 @@ struct ConsumerChartView: View {
         }
     } // end of loadData
     
-    private func loadFloatingData(endpoint: Endpoints, index: Int, group: DispatchGroup) {
+    private func loadFloatingData(endpoint: ConsumerEndpoints, index: Int, group: DispatchGroup) {
         ConsumerNetworkManager.shared.fetch(endpoint: endpoint.englishEndpoint , commercialDistrictCode: cdCode) { result in
             DispatchQueue.main.async {
                 switch result {

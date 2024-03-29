@@ -1,21 +1,20 @@
 //
-//  ConsumerNetworkManager.swift
+//  SalesNetworkManager.swift
 //  상추 - 상권추천서비스
 //
-//  Created by 안상준 on 3/25/24.
+//  Created by 안상준 on 3/29/24.
 //
 
 import Foundation
 import Alamofire
 
-class ConsumerNetworkManager {
-    static let shared = ConsumerNetworkManager()
-    private let BASE_URL = "http://3.36.91.181:8084/api"
+class SalesNetworkManager {
+    static let shared = SalesNetworkManager()
+    private let BASE_URL = "http://3.36.91.181:8084/api/sales"
 
     func fetch(endpoint: String?, commercialDistrictCode: String, completion: @escaping (Result<Data, Error>) -> Void) {
         if let endpoint {
             let urlString = "\(BASE_URL)\(endpoint)?commercialDistrictCode=\(commercialDistrictCode)"
-            print(urlString)
             AF
                 .request(urlString)
                 .validate()

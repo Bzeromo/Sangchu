@@ -50,6 +50,7 @@
 		DA7C64A02BA1FF3000BE74DD /* BDMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */; };
 		DA7C64A22BA2062800BE74DD /* NMapsGeometry.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7C64A12BA2062800BE74DD /* NMapsGeometry.xcframework */; };
 		DA7C64A42BA2062800BE74DD /* NMapsMap.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7C64A32BA2062800BE74DD /* NMapsMap.xcframework */; };
+		DA830A062BB685100053A088 /* SalesNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA830A052BB685100053A088 /* SalesNetworkManager.swift */; };
 		DA9C59372B9FE9DA007C4C8D /* SangChuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA9C59362B9FE9DA007C4C8D /* SangChuApp.swift */; };
 		DA9C593C2BA00037007C4C8D /* SingleDay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA9C593B2BA00037007C4C8D /* SingleDay-Regular.ttf */; };
 		DA9C593F2BA0037A007C4C8D /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA9C593E2BA0037A007C4C8D /* Font.swift */; };
@@ -138,6 +139,7 @@
 		DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDMapView.swift; sourceTree = "<group>"; };
 		DA7C64A12BA2062800BE74DD /* NMapsGeometry.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NMapsGeometry.xcframework; path = Pods/NMapsGeometry/framework/NMapsGeometry.xcframework; sourceTree = "<group>"; };
 		DA7C64A32BA2062800BE74DD /* NMapsMap.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NMapsMap.xcframework; path = Pods/NMapsMap/framework/NMapsMap.xcframework; sourceTree = "<group>"; };
+		DA830A052BB685100053A088 /* SalesNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesNetworkManager.swift; sourceTree = "<group>"; };
 		DA9C59362B9FE9DA007C4C8D /* SangChuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SangChuApp.swift; sourceTree = "<group>"; };
 		DA9C593B2BA00037007C4C8D /* SingleDay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SingleDay-Regular.ttf"; sourceTree = "<group>"; };
 		DA9C593D2BA002D0007C4C8D /* --------------------------Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "--------------------------Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -252,11 +254,11 @@
 		6577BB182B9EB6F60071A3EA /* Extenstion */ = {
 			isa = PBXGroup;
 			children = (
-				65D720D42BAA604B00AB353F /* SeoulBoroughOutline.geojson */,
 				DA9C593A2B9FFFD5007C4C8D /* Fonts */,
+				65D720D42BAA604B00AB353F /* SeoulBoroughOutline.geojson */,
+				DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */,
 				6577BB3A2B9ECBC30071A3EA /* RecommendBoroughCard.swift */,
 				6577BB3B2B9ECBC30071A3EA /* RoundedRectangleButtonStyle.swift */,
-				DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */,
 				6577BB382B9ECBA40071A3EA /* Color.swift */,
 				DA73BC6D2BB3FABB00CFA087 /* VariableMapping.swift */,
 			);
@@ -284,12 +286,13 @@
 			isa = PBXGroup;
 			children = (
 				DAD0921F2BA8A77B00A6DF92 /* LocationService.swift */,
+				DAA418892BB07BDF006B48B5 /* ConsumerNetworkManager.swift */,
+				DA830A052BB685100053A088 /* SalesNetworkManager.swift */,
+				65FB38CF2BB07ADC0097FD2D /* InfraNetworkManager.swift */,
 				6577BB1F2B9EB7E40071A3EA /* Header.h */,
 				65A66B332BA7B79D00E4E3D0 /* HashTagJSONDecoder.swift */,
 				DAD092232BA92A1300A6DF92 /* GeoJSONLoader.swift */,
 				65A66B782BA97AC000E4E3D0 /* CameraService.swift */,
-				DAA418892BB07BDF006B48B5 /* ConsumerNetworkManager.swift */,
-				65FB38CF2BB07ADC0097FD2D /* InfraNetworkManager.swift */,
 				65FB38D62BB15FF00097FD2D /* HomeNetworkManager.swift */,
 				65B69AF22BB3F85800AABE50 /* BookMarkNetworkManager.swift */,
 			);
@@ -729,6 +732,7 @@
 				659A1FA52BA294DA00B6FDAB /* UpdateBookMark.swift in Sources */,
 				65B69AF32BB3F85800AABE50 /* BookMarkNetworkManager.swift in Sources */,
 				650D1ED32BA19B3A0055B3BA /* BookMarkList.swift in Sources */,
+				DA830A062BB685100053A088 /* SalesNetworkManager.swift in Sources */,
 				65FB38D52BB085730097FD2D /* SalesModel.swift in Sources */,
 				DAD092242BA92A1300A6DF92 /* GeoJSONLoader.swift in Sources */,
 				659A1FA72BA2C70000B6FDAB /* HashTagItem.swift in Sources */,
@@ -905,7 +909,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = X83LNW6267;
+				DEVELOPMENT_TEAM = 438C43K8SQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
@@ -939,7 +943,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = X83LNW6267;
+				DEVELOPMENT_TEAM = 438C43K8SQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
