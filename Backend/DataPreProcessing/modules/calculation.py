@@ -217,9 +217,7 @@ def calc_RDI(seoul_df, store_df, area_df, result_df):
 
 
 def calc_sales_divide_store_count(sales_commercial_district_df, store_with_commercial_district_df):
-    # 가장 최근 년분기 코드 찾기
     # sales 데이터셋의 모든 컬럼과 store 데이터셋과 병합
-    print(len(sales_commercial_district_df),len(store_with_commercial_district_df))
     merged_df = pd.merge(sales_commercial_district_df,
                          store_with_commercial_district_df[
                              ['year_quarter_code', 'commercial_district_code', 'service_code', 'store_count']],
