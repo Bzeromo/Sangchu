@@ -6,6 +6,7 @@ import os
 folder_path = 'files/chart/score'
 os.makedirs(folder_path, exist_ok=True)
 
+
 def draw_boxplot(target, title_name):
     # 박스플롯 그리기
     plt.figure(figsize=(8, 6))
@@ -15,6 +16,7 @@ def draw_boxplot(target, title_name):
     # 파일로 저장
     plt.savefig(os.path.join(folder_path, title_name + '_boxplot'))
     plt.close()
+
 
 def draw_hist(target, xlabel, title_name):
     # 히스토그램 그리기
@@ -26,6 +28,7 @@ def draw_hist(target, xlabel, title_name):
     # 파일로 저장
     plt.savefig(os.path.join(folder_path, title_name + '_boxplot'))
     plt.close()
+
 
 def calc_scores(df_list, result_df, target_column_list):
     # 점수지표 뽑아야 하는 데이터 프레임, 타겟 컬럼 리스트로 받음
@@ -75,6 +78,7 @@ def calc_scores(df_list, result_df, target_column_list):
 
     return result_df
 
+
 # 이상치 찾기 및 대체
 def replace_outliers(group):
     Q1 = group['monthly_sales'].quantile(0.25)
@@ -97,6 +101,7 @@ def replace_outliers(group):
 
     return group
 
+
 def calc_sales_score(sales_commercial_district_df, store_with_commercial_district_df, area_with_commercial_district_df):
     # 가장 최근 년분기 코드 찾기
     max_year_quarter_code = sales_commercial_district_df['year_quarter_code'].max()
@@ -111,11 +116,6 @@ def calc_sales_score(sales_commercial_district_df, store_with_commercial_distric
                          filtered_store_with_commercial_district_df[
                              ['year_quarter_code', 'commercial_district_code', 'service_code', 'store_count']],
                          on=['year_quarter_code', 'commercial_district_code', 'service_code'], how='left')
-
-    # 점포당 평균 월 매출 계산 작업
-    merged_df["monthly_sales"] = merged_df.apply(
-        lambda row: row["monthly_sales"] / row['store_count'] / 3 if row['store_count'] != 0 else row["monthly_sales"],
-        axis=1)
 
     # 서비스업종코드별로 이상치 찾기 및 대체
     merged_df = merged_df.groupby('service_code', as_index=False).apply(replace_outliers)
@@ -150,9 +150,11 @@ def calc_sales_score(sales_commercial_district_df, store_with_commercial_distric
         'commercial_district_code', 'monthly_sales_mean_score']],
                                                 on=['commercial_district_code'], how='left')
     # commercial_district_code 중복값 제거
-    area_with_commercial_district_df = area_with_commercial_district_df.drop_duplicates(subset=['commercial_district_code'])
+    area_with_commercial_district_df = area_with_commercial_district_df.drop_duplicates(
+        subset=['commercial_district_code'])
 
     return sales_commercial_district_df, area_with_commercial_district_df
+
 
 # 각 상권의 총 점수 계산하는 함수
 def calc_total_score(area_with_commercial_district_df):
@@ -164,6 +166,7 @@ def calc_total_score(area_with_commercial_district_df):
                                                                               'total_foot_traffic_score'] + \
                                                                           area_with_commercial_district_df['rdi_score']
     return area_with_commercial_district_df
+
 
 def calc_RDI(seoul_df, store_df, area_df, result_df):
     # 서울 년분기별 총 점포수
@@ -211,3 +214,29 @@ def calc_RDI(seoul_df, store_df, area_df, result_df):
     result_df = result_df.drop(columns=['store_count', 'area_size'])
 
     return result_df
+
+
+def calc_sales_divide_store_count(sales_commercial_district_df, store_with_commercial_district_df):
+    # 가장 최근 년분기 코드 찾기
+    # sales 데이터셋의 모든 컬럼과 store 데이터셋과 병합
+    print(len(sales_commercial_district_df),len(store_with_commercial_district_df))
+    merged_df = pd.merge(sales_commercial_district_df,
+                         store_with_commercial_district_df[
+                             ['year_quarter_code', 'commercial_district_code', 'service_code', 'store_count']],
+                         on=['year_quarter_code', 'commercial_district_code', 'service_code'], how='left')
+
+    # 점포 수로 나누는 작업
+    sales_columns = sales_commercial_district_df.columns.difference(
+        ['year_quarter_code', 'commercial_district_code', 'commercial_district_name', 'service_code', 'service_name',
+         'major_category_code', 'major_category_code_name', 'middle_category_code', 'middle_category_code_name'])
+
+    for column in sales_columns:
+        merged_df[column] = merged_df.apply(
+            lambda x: x[column] / x['store_count'] / 3 if x['store_count'] > 0 else x[column], axis=1)
+
+    # sales 데이터만 분리
+    calc_sales_df = merged_df[
+        list(sales_columns) + ['year_quarter_code', 'commercial_district_code', 'commercial_district_name',
+                               'service_code', 'service_name', 'major_category_code', 'major_category_code_name',
+                               'middle_category_code', 'middle_category_code_name']]
+    return calc_sales_df
