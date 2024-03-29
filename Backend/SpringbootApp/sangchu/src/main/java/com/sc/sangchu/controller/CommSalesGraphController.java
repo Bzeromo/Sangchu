@@ -81,7 +81,7 @@ public class CommSalesGraphController {
         }
     }
     @GetMapping("/graph/age")
-    @Operation(summary = "특정 상권 시간대별 매출 금액 조회", description = "시간대별 매출 그래프 (23년) 조회")
+    @Operation(summary = "특정 상권 연령별 매출 금액 조회", description = "시간대별 매출 그래프 (23년) 조회")
     public ResponseEntity<?> getAgeGraph(
             @RequestParam(value = "commercialDistrictCode") Long commercialDistrictCode){
         try {
