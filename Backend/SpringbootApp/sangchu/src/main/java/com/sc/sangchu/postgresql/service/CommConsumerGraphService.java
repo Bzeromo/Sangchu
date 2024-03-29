@@ -179,7 +179,7 @@ public class CommConsumerGraphService {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
                 return CommFloatingPopulationDTO.builder()
-                        .time(cachedData)
+                        .day(cachedData)
                         .build();
             }
 
@@ -244,7 +244,7 @@ public class CommConsumerGraphService {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
                 return CommFloatingPopulationDTO.builder()
-                        .time(cachedData)
+                        .quarterlyTrends(cachedData)
                         .build();
             }
 
@@ -386,7 +386,7 @@ public class CommConsumerGraphService {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
                 return CommResidentPopulationDTO.builder()
-                        .genderAge(cachedData)
+                        .quarterlyTrends(cachedData)
                         .build();
             }
 
@@ -528,7 +528,7 @@ public class CommConsumerGraphService {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode cachedData = mapper.convertValue(dataFromRedis, JsonNode.class);
                 return CommWorkingPopulationDTO.builder()
-                        .genderAge(cachedData)
+                        .quarterlyTrends(cachedData)
                         .build();
             }
 
