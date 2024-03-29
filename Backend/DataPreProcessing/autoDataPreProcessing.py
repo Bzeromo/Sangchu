@@ -1,9 +1,8 @@
 import pandas as pd
 from modules.majorAndMiddleCategoryPreProcessing import \
     categorization_into_major_and_medium_categories_by_service_industry_code_name
-from modules.calc_RDI import calc_RDI
 from modules.commercial_district_code_preprocessing import clean_commercial_district_codes
-from modules.calc_scores import calc_scores, calc_sales_score, calc_total_score
+from modules.calculation import calc_scores, calc_sales_score, calc_total_score, calc_RDI, calc_sales_divide_store_count
 from pyproj import Transformer
 from sqlalchemy import create_engine, types
 import json
@@ -30,7 +29,6 @@ dfs = {
         'files/api/working_population_with_commercial_district.csv', encoding='utf-8'),
 }
 
-
 # 데이터 로딩 및 전처리를 위한 일반화된 함수
 def load_and_preprocess(df, filters=None, rename_cols=None, drop_cols=None, is_categorization=False,
                         is_null_to_zero=False, change_facility=False):
@@ -55,7 +53,6 @@ def load_and_preprocess(df, filters=None, rename_cols=None, drop_cols=None, is_c
         df = df.fillna(0)
     return df
 
-
 # 결측치 확인을 위한 함수 재사용
 def check_null(df, message="결측치가 있습니다:"):
     missing_values = df.isna().sum()
@@ -63,17 +60,14 @@ def check_null(df, message="결측치가 있습니다:"):
         print(f"{message}")
         print(missing_values)
 
-
 # 연도와 분기를 분리하는 일반화된 함수
 def split_year_quarter(df):
     df['year_code'] = df['year_quarter_code'].str[:4].astype(int)
     df['quarter_code'] = df['year_quarter_code'].str[-1].astype(int)
     return df.drop(columns=['year_quarter_code'])
 
-
 # Transformer 인스턴스 생성
 transformer = Transformer.from_crs("epsg:5181", "epsg:4326", always_xy=True)
-
 
 def transform_coords(row):
     x_4326, y_4326 = transformer.transform(row['latitude'], row['longitude'])
@@ -134,7 +128,7 @@ dfs['store_with_seoul'] = load_and_preprocess(
 # 매출-상권 데이터 로딩 및 전처리
 dfs['sales_commercial_district'] = load_and_preprocess(
     dfs['sales_commercial_district'],
-    filters=["TRDAR_SE_CD == 'A'", "middle_category_code == 'C0101'"],
+    filters=["TRDAR_SE_CD == 'A'"],
     rename_cols={
         'STDR_YYQU_CD': 'year_quarter_code',
         'TRDAR_CD': 'commercial_district_code',
@@ -193,6 +187,9 @@ dfs['sales_commercial_district'] = load_and_preprocess(
     drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM'],
     is_categorization=True
 )
+
+dfs['sales_commercial_district'] = calc_sales_divide_store_count(dfs['sales_commercial_district'],
+                                                                 dfs['store_with_commercial_district'])
 
 # 소득-상권 데이터 로딩 및 전처리
 dfs['income_consumption_with_commercial_district'] = load_and_preprocess(
