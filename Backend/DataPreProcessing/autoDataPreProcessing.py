@@ -1,10 +1,11 @@
+import time
 import pandas as pd
 from modules.majorAndMiddleCategoryPreProcessing import \
     categorization_into_major_and_medium_categories_by_service_industry_code_name
 from modules.commercial_district_code_preprocessing import clean_commercial_district_codes
 from modules.calculation import calc_scores, calc_sales_score, calc_total_score, calc_RDI, calc_sales_divide_store_count
 from pyproj import Transformer
-from sqlalchemy import create_engine, types
+from sqlalchemy import create_engine
 import json
 
 # 영역-상권 전처리
@@ -28,6 +29,31 @@ dfs = {
     'working_population_with_commercial_district': pd.read_csv(
         'files/api/working_population_with_commercial_district.csv', encoding='utf-8'),
 }
+
+# 설정 파일 불러오기
+with open('config.json', 'r') as f:
+    config = json.load(f)
+
+# PostgreSQL 연결 정보
+db_config = config['postgresql']
+engine = create_engine('postgresql://{user}:{password}@{host}:{port}/{database}'.format(**db_config))
+
+
+# 데이터프레임을 SQL 테이블로 저장하고, 필요한 경우 기본 키를 설정하거나 ID 컬럼 추가
+def save_df_to_sql(df, table_name, primary_key=None, add_id_column=False):
+    # 데이터프레임을 SQL로 저장
+    df.to_sql(table_name, engine, if_exists='replace', index=False)
+
+    # 데이터베이스 연결
+    with engine.connect() as con:
+        # 기본 키 설정
+        if primary_key:
+            con.execute(f'ALTER TABLE {table_name} ADD PRIMARY KEY ({primary_key});')
+
+        # 새로운 ID 컬럼 추가 및 auto-increment 설정
+        if add_id_column:
+            con.execute(f'ALTER TABLE {table_name} ADD COLUMN id SERIAL PRIMARY KEY;')
+
 
 # 데이터 로딩 및 전처리를 위한 일반화된 함수
 def load_and_preprocess(df, filters=None, rename_cols=None, drop_cols=None, is_categorization=False,
@@ -53,6 +79,7 @@ def load_and_preprocess(df, filters=None, rename_cols=None, drop_cols=None, is_c
         df = df.fillna(0)
     return df
 
+
 # 결측치 확인을 위한 함수 재사용
 def check_null(df, message="결측치가 있습니다:"):
     missing_values = df.isna().sum()
@@ -60,19 +87,37 @@ def check_null(df, message="결측치가 있습니다:"):
         print(f"{message}")
         print(missing_values)
 
+
 # 연도와 분기를 분리하는 일반화된 함수
 def split_year_quarter(df):
-    df['year_code'] = df['year_quarter_code'].str[:4].astype(int)
-    df['quarter_code'] = df['year_quarter_code'].str[-1].astype(int)
+    # year_quarter_code 컬럼을 문자열로 변환하여 임시 컬럼에 저장
+    df['year_quarter_code'] = df['year_quarter_code'].astype(str)
+
+    # 연도와 분기 코드 추출
+    year_code = df['year_quarter_code'].str[:4].astype(int)
+    quarter_code = df['year_quarter_code'].str[-1].astype(int)
+
+    # year_quarter_code 컬럼의 위치 찾기
+    position = df.columns.get_loc('year_quarter_code') + 1
+
+    # year_code와 quarter_code 컬럼 위치에 삽입
+    df.insert(position, 'year_code', year_code)
+    df.insert(position + 1, 'quarter_code', quarter_code)
+
+    # 임시로 생성한 문자열 컬럼 및 원래 컬럼 삭제
     return df.drop(columns=['year_quarter_code'])
+
 
 # Transformer 인스턴스 생성
 transformer = Transformer.from_crs("epsg:5181", "epsg:4326", always_xy=True)
+
 
 def transform_coords(row):
     x_4326, y_4326 = transformer.transform(row['latitude'], row['longitude'])
     return pd.Series({'latitude': x_4326, 'longitude': y_4326})
 
+
+start = time.time()
 
 # 영역-상권 데이터 로딩 및 전처리
 dfs['area_with_commercial_district'] = load_and_preprocess(
@@ -373,3 +418,55 @@ dfs['working_population_with_commercial_district'] = load_and_preprocess(
     },
     drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM']
 )
+
+# 기준 1090개 상권코드와 비일치한 데이터셋의 상권코드 합집합을 구해 모든 데이터셋에서 해당 상권코드들에 관련된 내용 제거
+dfs = clean_commercial_district_codes(dfs)
+
+# 점수지표 추출
+dfs['area_with_commercial_district'] = calc_scores(
+    [dfs['resident_population_with_commercial_district'], dfs['foot_traffic_with_commercial_district'],
+     dfs['commercial_district_change_indicator_with_commercial_district']],
+    dfs['area_with_commercial_district'],
+    ['total_resident_population', 'total_foot_traffic', 'rdi'])
+
+# 업종별 매출 점수지표 추출
+dfs['sales_commercial_district'], dfs['area_with_commercial_district'] = calc_sales_score(
+    dfs['sales_commercial_district'], dfs['store_with_commercial_district'],
+    dfs['area_with_commercial_district'])
+
+# 총점수 추출
+dfs['area_with_commercial_district'] = calc_total_score(dfs['area_with_commercial_district'])
+
+# 년분기 코드 -> 년 코드, 분기 코드로 분리
+for df_name in [
+    "store_with_commercial_district",
+    "sales_commercial_district",
+    "income_consumption_with_commercial_district",
+    "commercial_district_change_indicator_with_commercial_district",
+    "foot_traffic_with_commercial_district",
+    "resident_population_with_commercial_district",
+    "facilities_with_commercial_district",
+    "apartment_with_commercial_district",
+    "working_population_with_commercial_district"]:
+    dfs[df_name] = split_year_quarter(dfs[df_name])
+
+# 각 데이터프레임과 테이블 이름을 반복하여 함수 호출
+tables_info = {
+    'area_with_commercial_district': ('commercial_district_tb', 'commercial_district_code', False),
+    'store_with_commercial_district': ('comm_store_tb', None, True),
+    'sales_commercial_district': ('comm_estimated_sales_tb', None, True),
+    'income_consumption_with_commercial_district': ('comm_income_tb', None, True),
+    'commercial_district_change_indicator_with_commercial_district': ('comm_indicator_change_tb', None, True),
+    'foot_traffic_with_commercial_district': ('comm_floating_population_tb', None, True),
+    'resident_population_with_commercial_district': ('comm_resident_population_tb', None, True),
+    'facilities_with_commercial_district': ('comm_facilities_tb', None, True),
+    'apartment_with_commercial_district': ('comm_apartment_tb', None, True),
+    'working_population_with_commercial_district': ('comm_working_population_tb', None, True)
+}
+
+for df_name, info in tables_info.items():
+    save_df_to_sql(dfs[df_name], *info)
+
+end = time.time()
+
+print(f"{end - start:.5f} sec")
