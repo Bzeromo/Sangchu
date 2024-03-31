@@ -7,8 +7,9 @@ from modules.calculation import calc_scores, calc_sales_score, calc_total_score,
 from pyproj import Transformer
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
-import json
 import redis
+from dotenv import load_dotenv
+import os
 
 # 영역-상권 전처리
 dfs = {
@@ -32,23 +33,16 @@ dfs = {
         'files/api/working_population_with_commercial_district.csv', encoding='utf-8'),
 }
 
-# 설정 파일 불러오기
-with open('config.json', 'r') as f:
-    config = json.load(f)
+# .env 파일에서 환경 변수 로드
+load_dotenv()
 
-# PostgreSQL 연결 정보
-db_config = config['postgresql']
-engine = create_engine('postgresql://{user}:{password}@{host}:{port}/{database}'.format(**db_config))
+# PostgreSQL 연결
+engine = create_engine(
+    f'postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}')
 
-# redis 연결 정보
-redis_config = config['redis']
-r = redis.Redis(
-    host=redis_config['host'],
-    port=redis_config['port'],
-    password=redis_config['password'],
-    decode_responses=True
-)
-
+# Redis 연결
+r = redis.Redis(host=os.getenv('REDIS_HOST'), port=os.getenv('REDIS_PORT'), password=os.getenv('REDIS_PASSWORD'),
+                decode_responses=True)
 
 # 데이터프레임을 SQL 테이블로 저장하고, 필요한 경우 기본 키를 설정하거나 ID 컬럼 추가
 def save_df_to_sql(engine, dfs, tables_info, redis_client):
