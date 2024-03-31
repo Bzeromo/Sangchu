@@ -5,8 +5,10 @@ from modules.majorAndMiddleCategoryPreProcessing import \
 from modules.commercial_district_code_preprocessing import clean_commercial_district_codes
 from modules.calculation import calc_scores, calc_sales_score, calc_total_score, calc_RDI, calc_sales_divide_store_count
 from pyproj import Transformer
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
+from sqlalchemy.exc import SQLAlchemyError
 import json
+import redis
 
 # 영역-상권 전처리
 dfs = {
@@ -38,21 +40,53 @@ with open('config.json', 'r') as f:
 db_config = config['postgresql']
 engine = create_engine('postgresql://{user}:{password}@{host}:{port}/{database}'.format(**db_config))
 
+# redis 연결 정보
+redis_config = config['redis']
+r = redis.Redis(
+    host=redis_config['host'],
+    port=redis_config['port'],
+    password=redis_config['password'],
+    decode_responses=True
+)
+
 
 # 데이터프레임을 SQL 테이블로 저장하고, 필요한 경우 기본 키를 설정하거나 ID 컬럼 추가
-def save_df_to_sql(df, table_name, primary_key=None, add_id_column=False):
-    # 데이터프레임을 SQL로 저장
-    df.to_sql(table_name, engine, if_exists='replace', index=False)
+def save_df_to_sql(engine, dfs, tables_info, redis_client):
+    # 연결을 시작합니다.
+    connection = engine.connect()
+    # 트랜잭션 시작
+    transaction = connection.begin()
 
-    # 데이터베이스 연결
-    with engine.connect() as con:
-        # 기본 키 설정
-        if primary_key:
-            con.execute(f'ALTER TABLE {table_name} ADD PRIMARY KEY ({primary_key});')
+    try:
+        for df_name, info in tables_info.items():
+            table_name, primary_key, add_id_column = info
+            df = dfs[df_name]
 
-        # 새로운 ID 컬럼 추가 및 auto-increment 설정
-        if add_id_column:
-            con.execute(f'ALTER TABLE {table_name} ADD COLUMN id SERIAL PRIMARY KEY;')
+            # 데이터프레임을 SQL로 저장
+            df.to_sql(table_name, engine, if_exists='replace', index=False, con=connection)
+
+            # 기본 키 설정
+            if primary_key:
+                connection.execute(text(f'ALTER TABLE {table_name} ADD PRIMARY KEY ({primary_key});'))
+
+            # 새로운 ID 컬럼 추가 및 auto-increment 설정
+            if add_id_column:
+                connection.execute(text(f'ALTER TABLE {table_name} ADD COLUMN id SERIAL PRIMARY KEY;'))
+
+        # 모든 변경 성공시 사항 커밋
+        transaction.commit()
+
+        # Redis에 저장된 모든 데이터 초기화
+        redis_client.flushdb()
+
+        print("Transaction success")
+    except SQLAlchemyError as e:
+        # 오류 발생 시 롤백
+        transaction.rollback()
+        print(f"Transaction failed and rolled back: {e}")
+    finally:
+        # 연결을 닫기
+        connection.close()
 
 
 # 데이터 로딩 및 전처리를 위한 일반화된 함수
@@ -134,9 +168,11 @@ dfs['area_with_commercial_district'] = load_and_preprocess(
                  'RELM_AR': 'area_size'},
     drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM']
 )
+
 dfs['area_with_commercial_district'][['latitude', 'longitude']] = dfs['area_with_commercial_district'].apply(
     transform_coords,
     axis=1)
+
 # 점포-상권 데이터 로딩 및 전처리
 dfs['store_with_commercial_district'] = load_and_preprocess(
     dfs['store_with_commercial_district'],
@@ -148,9 +184,10 @@ dfs['store_with_commercial_district'] = load_and_preprocess(
         'SVC_INDUTY_CD': 'service_code',
         'SVC_INDUTY_CD_NM': 'service_name',
         'STOR_CO': 'store_count',
+        'SIMILR_INDUTY_STOR_CO': 'similar_store_count',
         'FRC_STOR_CO': 'franchise_store_count'
     },
-    drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM', 'SIMILR_INDUTY_STOR_CO', 'OPBIZ_RT', 'OPBIZ_STOR_CO', 'CLSBIZ_RT',
+    drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM', 'OPBIZ_RT', 'OPBIZ_STOR_CO', 'CLSBIZ_RT',
                'CLSBIZ_STOR_CO'],
     is_categorization=True
 )
@@ -447,7 +484,8 @@ for df_name in [
     "resident_population_with_commercial_district",
     "facilities_with_commercial_district",
     "apartment_with_commercial_district",
-    "working_population_with_commercial_district"]:
+    "working_population_with_commercial_district"
+]:
     dfs[df_name] = split_year_quarter(dfs[df_name])
 
 # 각 데이터프레임과 테이블 이름을 반복하여 함수 호출
@@ -464,8 +502,9 @@ tables_info = {
     'working_population_with_commercial_district': ('comm_working_population_tb', None, True)
 }
 
-for df_name, info in tables_info.items():
-    save_df_to_sql(dfs[df_name], *info)
+# save_df_to_sql(engine, dfs, tables_info, r)
+
+dfs['sales_commercial_district'].to_csv('files/api/추정매출-상권.csv', encoding='CP949', index=False)
 
 end = time.time()
 
