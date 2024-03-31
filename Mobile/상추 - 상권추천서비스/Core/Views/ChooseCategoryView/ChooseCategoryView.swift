@@ -40,6 +40,10 @@ struct ChooseCategoryView: View {
             path.addLine(to: CGPoint(x: 0 , y: universalSize.height))
         }
     }
+    
+    
+    let MainColors: [Color] = [Color(hex: "50B792"),Color(hex: "3B7777")]
+    
 
     var body: some View {
         ZStack{
@@ -70,61 +74,58 @@ struct ChooseCategoryView: View {
                 // 고른 자치구
 //                Text("\(borough)를 고르셨습니다!")
                 
-                HStack {
-                    Text("지역")
-                        .font(.title2)
-                        .foregroundColor(Color("customgray"))
-                        .padding(15)
-                    Text("업종")
-                        .font(.title)
-                        .foregroundColor(Color.sangchu)
-                        .padding(15)
-                        .minimumScaleFactor(0.5)
-                }.hidden() // end of HStack
-                
-                Spacer()
-                
-                Text(" \"업종\"")
-                    .font(.system(size: 30)).hidden()
-                
-                Spacer()
+                Spacer().frame(height: UIScreen.main.bounds.height * 0.12)
+                HStack{
+                    Spacer()
+                    Text("요식업 업종별 선택").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).foregroundStyle(Color.black).fontWeight(.semibold)
+                    Spacer()
+                }
                 
                 VStack {
-                    GeometryReader { geometry in
                         LazyVGrid(columns: columns, alignment: .center) {
                             ForEach(Category.allCases) { category in
-                                Button(action: {
-                                    self.selectedCategory = category
-                                    // print("\(category.rawValue.replacingOccurrences(of: "_", with: "-")) 선택됨")
-                                }) {
-                                    GeometryReader { buttonGeometry in
-                                        VStack (alignment: .center) {
-                                            Image(category.rawValue.replacingOccurrences(of: "_", with: "-")) // 언더바를 하이픈으로 변경
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: buttonGeometry.size.width * 0.5, height: buttonGeometry.size.width * 0.5)
-                                            
-                                            Text(category.rawValue)
-                                                .font(.system(size: buttonGeometry.size.width * 0.17))
-                                                .foregroundColor(Color.black)
-                                                .padding(3)
-                                                .lineLimit(nil)
-                                        }.frame(maxWidth: .infinity, alignment: .center)
+                                VStack(alignment: .center, spacing: 2){
+                                    Button(action: {
+                                        self.selectedCategory = category
+                                        // print("\(category.rawValue.replacingOccurrences(of: "_", with: "-")) 선택됨")
+                                    }) {
+                                       
+                                            VStack (alignment: .center) {
+                                                Image(category.rawValue.replacingOccurrences(of: "_", with: "-")) // 언더바를 하이픈으로 변경
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: UIScreen.main.bounds.width * 0.12, height: UIScreen.main.bounds.width * 0.12)
+                                                
+                                                
+                                            }.frame(maxWidth: .infinity, alignment: .center)
+                                        
                                     }
+                                    .padding()
+                                    .frame(width: UIScreen.main.bounds.width * 0.25, height: UIScreen.main.bounds.width * 0.25) // GeometryReader를 사용하여 크기 동적 조절
+//                                    .background(
+//                                        Circle().backgroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
+//                                    )
+//                                    .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
+                                    .background(
+                                        Circle().fill(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
+                                        )
+                                    .overlay(
+                                        Circle()
+                                            .stroke(selectedCategory == category ? Color.sangchu : Color.black, lineWidth: selectedCategory == category ? 3 : 0) // 선택된 카테고리에 따라 stroke 색상 변경
+                                            .shadow(color: .gray, radius: 2, x: 1, y: 1)
+                                        
+                                    )
+                                    Text(category.rawValue)
+                                        .font(.system(size: 14))
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
+                                        .padding(3)
+                                        .lineLimit(nil)
                                 }
-                                .padding()
-                                .frame(width: geometry.size.width / 3.2, height: geometry.size.width / 3.2) // GeometryReader를 사용하여 크기 동적 조절
-                                .background(Color.clear) // 버튼의 배경을 투명하게 설정
-                                .cornerRadius(15)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 15)
-                                        .stroke(selectedCategory == category ? Color.sangchu : Color.black, lineWidth: selectedCategory == category ? 3 : 1) // 선택된 카테고리에 따라 stroke 색상 변경
-                                        .shadow(color: .gray, radius: 3, x: 2, y: 2)
-                                        .padding(5)
-                                )
+                                
                             } // end of ForEach
                         }
-                    } // end of VGrid
+                    // end of VGrid
                 }.padding(15) // end of VStack
                 
                 Spacer()
@@ -132,19 +133,42 @@ struct ChooseCategoryView: View {
                 
                 
                 HStack {
-                    NavigationLink(self.selectedCategory == nil ? "업종 선택" : "선택 완료", destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue ?? ""))
-                        .disabled(selectedCategory == nil) // Picker가 조작되지 않았다면 버튼 비활성화
-                        .foregroundColor(.black)
-                        .buttonStyle(RoundedRectangleButtonStyle(
-                            bgColor: self.selectedCategory == nil ? Color(hex: "c6c6c6") : Color.sangchu,
-                            textColor: .black,
-                            width: UIScreen.main.bounds.width * 0.8,
-                            hasStroke: false,
-                            shadowRadius: 2,
-                            shadowColor: Color.black.opacity(0.1),
-                            shadowOffset: CGSize(width: 0, height: 4)))
-                        .padding([.trailing, .bottom])
-                }.padding(.bottom, UIScreen.main.bounds.height * 0.07) // end of 이전/다음 버튼 HStack
+                    NavigationLink(destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue ?? "")){
+                        selectedCategory == nil ?
+                        Text("업종 선택").font(.title3).fontWeight(.semibold).foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)) : Text("선택 완료").font(.title3).fontWeight(.semibold).foregroundStyle(Color.white)
+                    }
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.07)
+                    .background(self.selectedCategory == nil ?
+                                AnyView(Color(hex: "c6c6c6")) : AnyView(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)))
+                    .cornerRadius(20)
+                    .disabled(selectedCategory == nil) // Picker가 조작되지 않았다면 버튼 비활성화
+//                        .foregroundColor(.black)
+//                        .buttonStyle(RoundedRectangleButtonStyle(
+//                            bgColor: !isPickerTouched ? Color(hex: "c6c6c6") : Color.sangchu,
+//                            textColor: .black,
+//                            width: UIScreen.main.bounds.width * 0.8,
+//                            hasStroke: false,
+//                            shadowRadius: 2,
+//                            shadowColor: Color.black.opacity(0.1),
+//                            shadowOffset: CGSize(width: 0, height: 4)))
+                  
+                        
+                }.padding(.bottom,10)
+                
+//                HStack {
+//                    NavigationLink(self.selectedCategory == nil ? "업종 선택" : "선택 완료", destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue ?? ""))
+//                        .disabled(selectedCategory == nil) // Picker가 조작되지 않았다면 버튼 비활성화
+//                        .foregroundColor(.black)
+//                        .buttonStyle(RoundedRectangleButtonStyle(
+//                            bgColor: self.selectedCategory == nil ? Color(hex: "c6c6c6") : Color.sangchu,
+//                            textColor: .black,
+//                            width: UIScreen.main.bounds.width * 0.8,
+//                            hasStroke: false,
+//                            shadowRadius: 2,
+//                            shadowColor: Color.black.opacity(0.1),
+//                            shadowOffset: CGSize(width: 0, height: 4)))
+//                        .padding([.trailing, .bottom])
+//                }.padding(.bottom, UIScreen.main.bounds.height * 0.07) // end of 이전/다음 버튼 HStack
                 
             } // end of Total VStack
         }

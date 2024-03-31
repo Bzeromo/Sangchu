@@ -1,6 +1,6 @@
 //
 //  UpdateBookMark.swift
-//  상추 - 상권추천서비스
+//  상추 - 상권추천서비스
 //
 //  Created by 양희태 on 3/14/24.
 //
@@ -104,9 +104,6 @@ struct UpdateBookMarkView: View {
                             .frame(minHeight: 300, maxHeight: .infinity)
                             .padding(.leading , 20).padding(.trailing, 20)
                             .focused($isTextEditorFocused)
-                            
-                
-            
         }
         .navigationTitle("메모")
         .toolbar {
@@ -162,5 +159,8 @@ struct UpdateBookMarkView: View {
         .onAppear(perform: {
             selectedHashtag = item.hashtag
         })
+        .onDisappear {
+            item.hashtag = selectedHashtag
+        }
     }
 }

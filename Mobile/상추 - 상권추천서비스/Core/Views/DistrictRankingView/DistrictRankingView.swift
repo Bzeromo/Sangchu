@@ -42,146 +42,170 @@ struct CommercialDistrictInfo: Codable {
     var rdiScore: Double
 }
 
-//// 위도, 경도 표시
-//struct DistrictDetailView: View {
-//    var latitude: Double
-//    var longitude: Double
-//    
-//    var body: some View {
-//        VStack {
-//            Text("위도: \(latitude)")
-//            Text("경도: \(longitude)")
-//        }
-//    }
-//}
-
-// ScrollView 내부의 카드 하나
 struct CardView: View {
     var districtData: DistrictData // 상권 정보
     var index: Int // 해당 카드의 인덱스
-    var selectedFilter: String // 필터링 기준
-    
     @State private var districtInfo: CommercialDistrictInfo? = nil
     
-    func fetchCommercialDistrictInfo(for cdCode: String) async throws {
+    func fetchCommercialDistrictInfo(for cdCode: Int) async throws {
         let urlString = "http://3.36.91.181:8084/api/commdist/commercial?commercialDistrictCode=\(cdCode)"
         guard let url = URL(string: urlString) else {
             throw URLError(.badURL)
         }
         
         let (data, _) = try await URLSession.shared.data(from: url)
-        let districtInfo = try JSONDecoder().decode(CommercialDistrictInfo.self, from: data)
+        let info = try JSONDecoder().decode(CommercialDistrictInfo.self, from: data)
         
-        self.districtInfo = districtInfo
-    }
-    
-    // 필터링에 따라 카드에 보여질 내용 만드는 함수
-    func formattedSelectedValue() -> String {
-        switch selectedFilter {
-        case "종합순":
-                return "서울시 내 상권 중 \(districtData.totalScore.value)등"
-        case "매출순":
-                return "\(districtData.sales.value)원"
-        case "유동인구순":
-            return "\(districtData.footTraffic.value)명"
-        case "상주인구순":
-            return "\(districtData.residentialPopulation.value)명"
-        case "업종다양성순":
-            return "\(districtData.businessDiversity.value) 업종"
-        default:
-            return "정보 없음"
+        DispatchQueue.main.async {
+            self.districtInfo = info
         }
     }
     
-    func selectedScore() -> Double {
-           switch selectedFilter {
-           case "종합순":
-                   return districtData.totalScore.score
-           case "매출순":
-               return districtData.sales.score
-           case "유동인구순":
-               return districtData.footTraffic.score
-           case "상주인구순":
-               return districtData.residentialPopulation.score
-           case "업종다양성순":
-               return districtData.businessDiversity.score
-           default:
-               return 0 // 기본값 혹은 해당하는 필터링이 없을 경우
-           }
-       }
-
     var body: some View {
-            VStack {
-                // districtInfo 상태 변수가 nil이 아닐 경우에만 NavigationLink를 표시합니다.
-                if let districtInfo = districtInfo {
-                    // districtInfo가 존재한다면, NavigationLink를 통해 상세 정보 뷰(BDMapView)로 이동합니다.
-                    // 이동할 때, districtInfo의 정보(위도, 경도, 상권 코드, 상권 이름)를 BDMapView에 전달합니다.
-                    NavigationLink(destination: BDMapView(cameraLatitude: districtInfo.longitude, cameraLongitude: districtInfo.latitude, selectedCDCode: String(districtInfo.commercialDistrictCode), selectedCDName: districtInfo.commercialDistrictName)) {
-                        ZStack {
-                            // 등수, 상권 이름 등을 표시하는 UI 구성
-                            VStack {
-                                Text("\(index + 1)")
-                                    .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
-                                    .fontWeight(.bold)
-                                    .font(.system(size: 130))
-                            }
-                            .frame(width: 190, height: 190)
-                            .background(
-                                LinearGradient(colors: [AppColors.numberTop[index % 3], AppColors.numberBottom[index % 3]], startPoint: .top, endPoint: .bottom)
-                            )
-                            .cornerRadius(60)
-                            .rotationEffect(.degrees(-28))
-                            .offset(x: 120, y: -30)
-                            
-                            // 상권 이름 및 추가 정보를 표시하는 영역
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(districtInfo.commercialDistrictName)
-                                        .font(.title)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
-//                                        .opacity(0.7)
-                                        .lineLimit(1)
-                                    // 여기
-                                    Text(formattedSelectedValue())
-                                        .font(.headline)
-                                        .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
-                                        .padding(.top, 2)
-
-                                    Text("\(String(format: "%.0f", selectedScore())) 점")
-                                        .font(.largeTitle)
-                                        .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
-                                    Text("정보 보러가기 >").font(.caption2).foregroundColor(Color(hex: "767676"))
-                                }
-                                .frame(maxWidth: UIScreen.main.bounds.width * 0.6)
-                                Spacer()
-                            }
+        VStack {
+            if let districtInfo = districtInfo {
+                NavigationLink(destination: BDMapView(cameraLatitude: districtInfo.latitude, cameraLongitude: districtInfo.longitude, selectedCDCode: String(districtInfo.commercialDistrictCode), selectedCDName: districtInfo.commercialDistrictName)) {
+                    ZStack(alignment: .top) {
+                        VStack {
+                            Text("\(index + 1)")
+                                .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
+                                .fontWeight(.bold)
+                                .font(.system(size: 100))
                         }
+                        .frame(width: 150, height: 150)
+                        .background(LinearGradient(colors: [AppColors.numberTop[index % 3], AppColors.numberBottom[index % 3]], startPoint: .top, endPoint: .bottom))
+                        .cornerRadius(50)
+                        .rotationEffect(.degrees(-28))
+                        .offset(x: 130, y: -100)
+                        
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text(districtInfo.commercialDistrictName)
+                                .font(.largeTitle)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .fontWeight(.bold)
+                                .foregroundColor(index < 3 ? .white : Color(hex: "3D3D3D"))
+                                .padding(.bottom, 5)
+                            
+                            Spacer()
+                            
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(.defaultbg)
+                                .frame(height: UIScreen.main.bounds.height * 0.4)
+                                .overlay(
+                                    VStack(alignment: .leading, spacing: 5) {
+                                        Text("총점: ")
+                                            .foregroundColor(.defaultfont)
+                                            .font(.title2)
+                                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/) +
+                                        Text("\(districtData.totalScore.value)점")
+                                            .foregroundColor(.defaultfont)
+                                            .font(.title2)
+                                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                        
+                                        Text("서울 내 상권 중")
+                                            .foregroundColor(.defaultfont)
+                                            .font(.title3) +
+                                        Text(" \(String(format: "%.0f", districtData.totalScore.score))등")
+                                            .foregroundColor(.sangchu)
+                                            .font(.title3)
+                                        
+                                        Divider().background(Color.defaultfont)
+                                        
+                                        Text("매출: ")
+                                            .foregroundColor(.defaultfont)
+                                            .font(.title2)
+                                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/) +
+                                        Text("\(String(format: "%.0f", districtData.sales.score))점")
+                                            .foregroundColor(.defaultfont)
+                                            .font(.title2)
+                                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                        Text("\(districtData.sales.value)원")
+                                            .foregroundColor(.customgray)
+                                            .font(.body)
+                                        
+                                        Divider().background(Color.defaultfont)
+                                        
+                                        Text("유동인구: ")
+                                            .foregroundColor(.defaultfont)
+                                            .font(.title2)
+                                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/) +
+                                        Text("\(String(format: "%.0f", districtData.footTraffic.score))점")
+                                            .foregroundColor(.defaultfont)
+                                            .font(.title2)
+                                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                        Text("\(districtData.footTraffic.value)명")
+                                            .foregroundColor(.customgray)
+                                            .font(.body)
+                                        
+                                        Divider().background(Color.defaultfont)
+                                        
+                                        Text("상주인구: ")
+                                            .foregroundColor(.defaultfont)
+                                            .font(.title2)
+                                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/) +
+                                        Text("\(String(format: "%.0f", districtData.residentialPopulation.score))점")
+                                            .foregroundColor(.defaultfont)
+                                            .font(.title2)
+                                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                        Text("\(districtData.residentialPopulation.value)명")
+                                            .foregroundColor(.customgray)
+                                            .font(.body)
+                                        
+                                        Divider().background(Color.defaultfont)
+                                        
+                                        Text("업종다양성: ")
+                                            .foregroundColor(.defaultfont)
+                                            .font(.title2)
+                                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/) +
+                                        Text("\(String(format: "%.0f", districtData.businessDiversity.score))점")
+                                            .foregroundColor(.defaultfont)
+                                            .font(.title2)
+                                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                        Text("\(districtData.businessDiversity.value)업종")
+                                            .foregroundColor(.customgray)
+                                            .font(.body)
+                                    }
+                                    .padding()
+                                    .padding(.vertical)
+                                )
+
+                            Spacer()
+                            
+                            Text("정보 보러가기 >")
+                                .font(.caption)
+                                .foregroundColor(Color(hex: "767676"))
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
+                        .padding(.horizontal)
+                        .frame(width: UIScreen.main.bounds.width * 0.8, height: 300)
                     }
-                    .frame(width: UIScreen.main.bounds.width * 0.8, height: 180)
-                    .padding()
-                    .background(index < 3 ? AppColors.topColors[index % 3] : Color.white)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                } else {
-                    // districtInfo가 nil일 경우, 로딩 표시
-                    Spacer().frame(height: 120)
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
-                        .scaleEffect(3)
                 }
+                .frame(width: UIScreen.main.bounds.width * 0.8, height: UIScreen.main.bounds.height * 0.75)
+                .padding()
+                .background(index < 3 ? AppColors.topColors[index % 3] : Color.white)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+            } else {
+                Spacer().frame(height: 120)
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                    .scaleEffect(3)
             }
-            .onAppear {
-                Task {
-                    do {
-                        try await fetchCommercialDistrictInfo(for: String(districtData.cdCode))
-                    } catch {
-                        print("Error fetching district info: \(error)")
-                    }
+        }
+        .onAppear {
+            Task {
+                do {
+                    try await fetchCommercialDistrictInfo(for: districtData.cdCode)
+                } catch {
+                    print("Error fetching district info: \(error)")
                 }
             }
         }
-} // end of CardView
+    }
+}
+
+
 
 struct DistrictRankingView: View {
     @State private var isLoading = false
@@ -258,17 +282,7 @@ struct DistrictRankingView: View {
             
             
             VStack {
-                Spacer().frame(height: 40)
-                // 필터링 버튼 추가
-                
-//                VStack{
-//                    if isLoading{
-//                        Text("분석중").font(.title).fontWeight(.semibold).padding(.top , 40)
-//                    }else{
-//                        Text("분석 결과").font(.title).fontWeight(.semibold).padding(.top , 40)
-//                    }
-//                }
-               
+                Spacer().frame(height: 100)
                 
                 HStack{
                     Menu {
@@ -292,7 +306,7 @@ struct DistrictRankingView: View {
                 if isLoading {
                     VStack {
                         Spacer().frame(height: 90)
-                        Text("분석중").font(.title).fontWeight(.semibold)
+                        Text("분석중").font(.title).fontWeight(.semibold).padding(.bottom, 50).foregroundColor(.sangchu)
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
                             .scaleEffect(5)
@@ -302,12 +316,12 @@ struct DistrictRankingView: View {
                     Text("분석 결과").font(.title).fontWeight(.semibold)
                     TabView {
                         ForEach(currentFilteredData.indices, id: \.self) { index in
-                            CardView(districtData: currentFilteredData[index], index: index, selectedFilter: selectedFilter)
+                            CardView(districtData: currentFilteredData[index], index: index)
                                 .frame(width: UIScreen.main.bounds.width * 0.8)
                         }
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never)) // 원형 인디케이터를 항상 표시합니다.
-                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.35) // TabView의 크기를 지정합니다.
+                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.60)
                     .onAppear {
                         if !hasFetchedData {
                             Task {

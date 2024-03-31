@@ -1,12 +1,3 @@
-//
-//  SwiftUIView.swift
-//  상추 - 상권추천서비스
-//
-//  Created by 안상준 on 3/27/24.
-//
-
-//CommercialDistrictInfo
-
 import SwiftUI
 import Alamofire
 
@@ -16,37 +7,32 @@ struct CommercialDistrictCardView: View {
     var topColors: [Color]
     var numberTop: [Color]
     var numberBottom: [Color]
+    let MainColors: [Color] = [Color(hex: "50B792"),Color(hex: "3B7777")]
 
     var body: some View {
         NavigationLink(destination: BDMapView(cameraLatitude: district.longitude, cameraLongitude: district.latitude, selectedCDCode: String(district.commercialDistrictCode) , selectedCDName: district.commercialDistrictName)) {
-            ZStack {
                 // 등수 관련 UI
                 VStack{
                     HStack{
-                        Text("\(index + 1)").foregroundColor(Color.black).fontWeight(.bold).font(.title2)
+                        Text("\(index + 1)위").foregroundColor(Color.black).fontWeight(.semibold).font(.title).padding(.leading, 20).padding(.top,20)
                         Spacer()
-                        Text(">").font(.title2).foregroundColor(Color.gray.opacity(0.5)).font(.title)
                     }
                     Spacer()
-                    Text(district.commercialDistrictName).font(.title2).fontWeight(.bold).foregroundColor(Color.black).lineLimit(1)
+                    Text("\(Int(district.commercialDistrictScore))").foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)).font(.system(size:38)).fontWeight(.bold)
+                    Spacer()
+                    Text(district.commercialDistrictName).font(.system(size: 16)).fontWeight(.bold).foregroundColor(Color.black).lineLimit(1)
+                    Spacer().frame(height: 30)
                 }
-                
-                VStack{
-                    Text("\(Int(district.commercialDistrictScore))점").foregroundColor(Color.white.opacity(0.8)).font(.system(size:28))
-                }.frame(width:UIScreen.main.bounds.width * 0.25, height: UIScreen.main.bounds.width * 0.25)
-                    .background(LinearGradient(colors: [Color(hex:"87CC6C") ,Color(hex:"4CA32A")], startPoint: .top, endPoint: .bottom)).clipShape(Circle())
-                
-                
+                .frame(width: 196, height: 230)
+                .background(Color.white)
+                .cornerRadius(35)
+                .shadow(color: Color(hex:"50B792"), radius: 4, x: 0, y: 0)
             }
-        }.scrollTransition{ content, phase in
-            content
-                .opacity(phase.isIdentity ? 1.0 : 0.5)
-        }
-        .frame(width: UIScreen.main.bounds.width * 0.4, height : 180)
-        .padding()
-        .background(Color.white)
-        .foregroundColor(.black)
-        .cornerRadius(10)
+        .frame(width: 204, height: 238)
+        .padding(.trailing,15).padding(.top,10)
+           
+            
+           
         // end of Navi
     }
 }
@@ -58,7 +44,7 @@ struct BoroughTop10: View {
     let boroughsArray: [(key: String, value: Int)] = VariableMapping.boroughsToGuCode.sorted(by: { $0.key < $1.key })
     
     @State private var selectedGuCode: Int = VariableMapping.boroughsToGuCode["강남구"] ?? 11680
-    
+    let MainColors: [Color] = [Color(hex: "50B792"),Color(hex: "3B7777")]
     func fetchTopCD(guCode: Int) {
         let urlString = "http://3.36.91.181:8084/api/commdist/gu/top?guCode=\(guCode)"
         AF.request(urlString).responseDecodable(of: [CommercialDistrictInfo].self) { response in
@@ -73,7 +59,7 @@ struct BoroughTop10: View {
     }
     
     var body: some View {
-        VStack {
+//        VStack {
             ScrollView(.horizontal) {
                 LazyHStack {
                     ForEach(boroughsArray, id: \.self.key) { borough in
@@ -86,35 +72,35 @@ struct BoroughTop10: View {
                             Text(borough.key).font(.system(size: 16)).fontWeight(.medium)
                         }
                         .frame(width: 78, height: 37)
-                        .background(self.selectedGuCode == borough.value ? Color.sangchu : Color.white)
-//                        .foregroundColor(self.selectedGuCode == borough.value ? Color.white : Color.black)
-                        .foregroundColor(Color.black)
-                        .cornerRadius(10)
-                        .shadow(radius: 1 ,x : 1, y : 1)
+                        .background(self.selectedGuCode == borough.value ?
+                                    AnyView(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)) :
+                                                   AnyView(Color.white))
+                        .foregroundStyle(self.selectedGuCode == borough.value ? LinearGradient(colors: [Color.white , Color.white], startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
+                                .cornerRadius(50)
+                                .shadow(color: Color(hex:"50B792"), radius: self.selectedGuCode == borough.value ? 0 : 2, x: 0, y: 0)
+                           
+                        
                     }
-                }
+                }.frame(height:40)
             }
+            .padding(.leading,20)
 //            .scrollTargetLayout()
             .scrollIndicators(.hidden)
             
             // 자치구별 Top상권
-            ScrollView (.horizontal) {
-                HStack {
-                    ScrollView(.horizontal) {
-                        HStack {
-                            ForEach(Array(zip(commercialDistricts.indices, commercialDistricts)), id: \.0) { index, district in
-                                CommercialDistrictCardView(district: district, index: index, topColors: AppColors.topColors, numberTop: AppColors.numberTop, numberBottom: AppColors.numberBottom)
-                            }
-                        }
-//                        .scrollTargetLayout()
-                    }.scrollIndicators(.hidden)
-//                    .scrollTargetBehavior(.viewAligned)
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: 0) { // 여기에서 spacing 값을 조정합니다.
+                    ForEach(Array(zip(commercialDistricts.indices, commercialDistricts)), id: \.0) { index, district in
+                        CommercialDistrictCardView(district: district, index: index, topColors: AppColors.topColors, numberTop: AppColors.numberTop, numberBottom: AppColors.numberBottom)
+                    }
                 }
+//                .padding(.horizontal) // 필요에 따라 추가적인 패딩을 조정할 수 있습니다.
             }
 //            .scrollTargetLayout()
+            .padding(.leading,20)
             .scrollIndicators(.hidden)
 //            .scrollTargetBehavior(.viewAligned)
-        }
+//        }
         .onAppear {
             // 뷰가 나타날 때 디폴트 값(강남구)으로 데이터 불러오기
             self.fetchTopCD(guCode: self.selectedGuCode)

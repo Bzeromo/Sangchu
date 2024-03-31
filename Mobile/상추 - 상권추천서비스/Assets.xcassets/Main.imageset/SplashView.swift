@@ -1,6 +1,6 @@
 //
 //  SplashView.swift
-//  상추 - 상권추천서비스
+//  상추 - 상권추천서비스
 //
 //  Created by 양희태 on 3/28/24.
 //
@@ -9,15 +9,14 @@ import SwiftUI
 
 struct SplashView: View {
     @State private var startAnimation: Bool = false
-    
+    let MainColors: [Color] = [Color(hex: "3B7777"),Color(hex: "50B792")]
     var body: some View {
         ZStack {
             
             //Color(hex: "FF8080"),
             LinearGradient(
-                           colors: [
-                            Color(hex: "#283c86"),
-                            Color(hex: "#45a247")],
+                           colors:
+                            MainColors,
                            startPoint: startAnimation ? .topLeading : .bottomLeading,
                            endPoint: startAnimation ? .bottomTrailing : .topTrailing
                        ).onAppear {

@@ -20,9 +20,9 @@ class SalesModel {
     // /
     // 특정 상권 매출 금액 조회
     struct RecentSalesData : Codable {
+        let monthlySales : Int
         let weekDaySales : Int
         let weekendSales : Int
-        let monthlySales : Int
     }
     
     //--------------------------------------------------------------------//
@@ -59,22 +59,16 @@ class SalesModel {
     struct QuarterlyGraph: Codable {
         let chartType: String
         let year: String
-        let data: QuarterlyhData
+        let data: QuarterlyData
     }
-    struct QuarterlyhData: Codable {
+    struct QuarterlyData: Codable {
         let categories: [String]
         let series: [QuarterlySeries]
     }
     struct QuarterlySeries: Codable {
-        let yearQuarter: String
-        let weekDaySales: String
-        let weekendSales: String
-
-//        enum CodingKeys: String, CodingKey {
-//            case yearQuarter = "YearQuarter"
-//            case weekDaySales = "WeekDaySales"
-//            case weekendSales = "WeekendSales"
-//        }
+        let YearQuarter: String
+        let WeekDaySales: String
+        let WeekendSales: String
     }
     
     //--------------------------------------------------------------------//
@@ -96,8 +90,8 @@ class SalesModel {
         let series: DaySeries
     }
     struct DaySeries: Codable {
-        let daySalesCount: [Int]
-        let daySales: [Int]
+        let daySalesCount: [Double]
+        let daySales: [Double]
     }
     
     //--------------------------------------------------------------------//
@@ -121,8 +115,8 @@ class SalesModel {
         let series: TimeSeries
     }
     struct TimeSeries: Codable {
-        let timeSalesCount: [Int]
-        let timeSales: [Int]
+        let timeSalesCount: [Double]
+        let timeSales: [Double]
     }
         
     //--------------------------------------------------------------------//
@@ -145,15 +139,31 @@ class SalesModel {
         let series: AgeSeries
     }
     struct AgeSeries: Codable {
-        let ageSalesCount: [Int]
-        let ageSales: [Int]
+        let ageSalesCount: [Double]
+        let ageSales: [Double]
     }
     
     // About Chart
     // 차트로 만들 수 있게해주는 구조체
-    struct ChartData: Identifiable, Hashable {
+    struct IndustryRatioChartData: Identifiable, Hashable {
         let id = UUID()
         var label: String
-        var value: Double
+        var valueRatio: Double
+    }
+    
+    // 분기별 스택바 그리기 위해서 value를 2개로 나눠야 함!
+    struct QuarterlyChartData: Identifiable, Hashable {
+        let id = UUID()
+        var label: String
+        var valueWeekDay: Double
+        var valueWeekend: Double
+    }
+
+    // 요일/시간대/연령대
+    struct CountAndAmountChartData: Identifiable, Hashable {
+        let id = UUID()
+        var label: String
+        var count: Double  // 매출 건수
+        var amount: Double  // 매출 금액
     }
 }
