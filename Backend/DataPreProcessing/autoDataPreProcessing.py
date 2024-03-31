@@ -46,7 +46,7 @@ r = redis.Redis(host=os.getenv('REDIS_HOST'), port=os.getenv('REDIS_PORT'), pass
 
 # 데이터프레임을 SQL 테이블로 저장하고, 필요한 경우 기본 키를 설정하거나 ID 컬럼 추가
 def save_df_to_sql(engine, dfs, tables_info, redis_client):
-    # 연결을 시작합니다.
+    # 연결을 시작
     connection = engine.connect()
     # 트랜잭션 시작
     transaction = connection.begin()
@@ -57,7 +57,7 @@ def save_df_to_sql(engine, dfs, tables_info, redis_client):
             df = dfs[df_name]
 
             # 데이터프레임을 SQL로 저장
-            df.to_sql(table_name, engine, if_exists='replace', index=False, con=connection)
+            df.to_sql(table_name, con=connection, if_exists='replace', index=False)
 
             # 기본 키 설정
             if primary_key:
