@@ -1,6 +1,9 @@
 import asyncio
 import aiohttp
 import pandas as pd
+from dotenv import load_dotenv
+import os
+from autoDataPreProcessing import auto_data_pre_processing
 
 # 데이터프레임으로 만들어야 할 데이터셋 코드 매핑
 dataset_codes_dict = {
@@ -14,8 +17,11 @@ dataset_codes_dict = {
     'VwsmMegaStorW': 'store_with_seoul', 'VwsmTrdarSelngQq': 'sales_commercial_district'
 }
 
-SERVICEKEY = ""  # service key -> Todo: env로 빼기
-DATATYPE = "json"  # datatype
+# .env 파일에서 환경 변수 로드
+load_dotenv()
+
+SERVICEKEY = os.getenv('OPENAPI_SERVICE_KEY')  # service key
+DATATYPE = os.getenv('OPENAPI_DATATYPE')  # datatype
 
 
 async def fetch_all_indexes(dataset_code, max_range=1000):
@@ -60,4 +66,4 @@ async def make_dataset_dfs():
 
 
 if __name__ == "__main__":
-    asyncio.run(make_dataset_dfs())
+    auto_data_pre_processing(asyncio.run(make_dataset_dfs()))
