@@ -1,5 +1,6 @@
 import SwiftUI
 import Alamofire
+import Lottie
 
 struct CommercialDistrictCardView: View {
     var district: CommercialDistrictInfo
@@ -11,18 +12,27 @@ struct CommercialDistrictCardView: View {
 
     var body: some View {
         NavigationLink(destination: BDMapView(cameraLatitude: district.longitude, cameraLongitude: district.latitude, selectedCDCode: String(district.commercialDistrictCode) , selectedCDName: district.commercialDistrictName)) {
-                // 등수 관련 UI
+            
+            ZStack{
+                
+                LottieView(animation: .named("Circlecheck.json"))
+                                            .playbackMode(.playing(.toProgress(1,loopMode: .loop)))
+                                            .frame(width: 220,height: 220)
                 VStack{
                     HStack{
-                        Text("\(index + 1)위").foregroundColor(Color.black).fontWeight(.semibold).font(.title).padding(.leading, 20).padding(.top,20)
+                        Text("\(index + 1)위").foregroundColor(Color.black).fontWeight(.semibold).font(.title).padding(.leading, 25).padding(.top,20)
                         Spacer()
                     }
                     Spacer()
-                    Text("\(Int(district.commercialDistrictScore))").foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)).font(.system(size:38)).fontWeight(.bold)
+                        
+                        Text("\(Int(district.commercialDistrictScore))").foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)).font(.system(size:38)).fontWeight(.bold)
+                   
                     Spacer()
                     Text(district.commercialDistrictName).font(.system(size: 16)).fontWeight(.bold).foregroundColor(Color.black).lineLimit(1)
                     Spacer().frame(height: 30)
                 }
+               
+            }
                 .frame(width: 196, height: 230)
                 .background(Color.white)
                 .cornerRadius(35)
@@ -31,9 +41,6 @@ struct CommercialDistrictCardView: View {
         .frame(width: 204, height: 238)
         .padding(.trailing,15).padding(.top,10)
            
-            
-           
-        // end of Navi
     }
 }
 

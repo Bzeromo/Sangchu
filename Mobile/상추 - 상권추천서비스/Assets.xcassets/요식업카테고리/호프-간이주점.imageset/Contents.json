@@ -1,11 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "hof.png",
+      "filename" : "bar.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "bar2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

@@ -1,11 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "chinese.png",
+      "filename" : "Chinese.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "chinese2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

@@ -46,24 +46,22 @@ class InfraModel {
 
     // 절취선
     // 특정 상권 점포 그래프 조회
+    struct InfraStoreCountApiResponse : Codable {
+        var storeGraph : InfraGraphStoreCount
+    }
+    
     struct InfraGraphStoreCount : Codable {
         let chartType: String
-        let data: StoreCountData
+        let data: StoreGraph
     }
-    struct StoreCountData: Codable {
+    struct StoreGraph: Codable {
         let categories: [String]
         let series: [StoreCountSeries]
     }
     struct StoreCountSeries: Codable {
-        let serviceCode: String
-        let serviceName: String
-        let storeCount: Int
-        let franchiseStoreCount: Int
-
-        enum CodingKeys: String, CodingKey {
-            case serviceCode = "ServiceCode"
-            case serviceName, storeCount, franchiseStoreCount
-        }
+        let name: String
+        let storeCount: [Int]
+        let franchiseStoreCount: [Int]
     }
     
     // 절취선
@@ -108,7 +106,6 @@ class InfraModel {
         let name: String
         let data: [Int]
     }
-    
     
     
     struct ChartData: Identifiable {

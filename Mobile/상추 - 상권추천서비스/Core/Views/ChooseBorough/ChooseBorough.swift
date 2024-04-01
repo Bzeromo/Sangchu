@@ -174,18 +174,6 @@ struct ChooseBorough: View {
             // 절취선
             VStack {
                 Spacer().frame(height: UIScreen.main.bounds.height * 0.12)
-                // 자치구 선택 Picker
-//                Picker("자치구", selection: $selectedBorough) {
-//                    ForEach(Borough.allCases) {
-//                        borough in Text(borough.rawValue)
-//                    }
-//                }
-//                .pickerStyle(WheelPickerStyle())
-//                .onChange(of: selectedBorough) {
-//                    isPickerTouched = true
-//                }
-                
-//                ScrollView {
                 
                 HStack{
                     Spacer()
@@ -224,8 +212,8 @@ struct ChooseBorough: View {
                 
   
                 // 이전/다음 버튼
-                HStack {
-                    NavigationLink(destination: ChooseCategoryView(borough: selectedBorough.rawValue)){
+                NavigationLink(destination: ChooseCategoryView(borough: selectedBorough.rawValue)) {
+                    HStack {
                         self.isPickerTouched == true ?
                         Text("선택 완료").font(.title3).fontWeight(.semibold).foregroundStyle(Color.white) : Text("지역 선택").font(.title3).fontWeight(.semibold).foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
                     }
@@ -233,16 +221,7 @@ struct ChooseBorough: View {
                     .background(!isPickerTouched ?
                                 AnyView(Color(hex: "c6c6c6")) : AnyView(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)))
                     .cornerRadius(20)
-                    .disabled(!isPickerTouched) // Picker가 조작되지 않았다면 버튼 비활성화
-//                        .foregroundColor(.black)
-//                        .buttonStyle(RoundedRectangleButtonStyle(
-//                            bgColor: !isPickerTouched ? Color(hex: "c6c6c6") : Color.sangchu,
-//                            textColor: .black,
-//                            width: UIScreen.main.bounds.width * 0.8,
-//                            hasStroke: false,
-//                            shadowRadius: 2,
-//                            shadowColor: Color.black.opacity(0.1),
-//                            shadowOffset: CGSize(width: 0, height: 4)))
+                    .disabled(!isPickerTouched)
                   
                         
                 }.padding(.bottom,20) // end of 이전/다음 버튼 HStack

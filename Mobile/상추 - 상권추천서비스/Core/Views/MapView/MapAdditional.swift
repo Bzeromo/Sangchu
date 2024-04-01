@@ -1,6 +1,6 @@
 //
 //  MapAdditional.swift
-//  상추 - 상권추천서비스
+//  상추 - 상권추천서비스
 //
 //  Created by 안상준 on 3/27/24.
 //
@@ -16,7 +16,7 @@ struct MapAdditional: View {
     // 뷰를 제어하기 위함 // 이전버튼에 활용
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
-    
+    let MainColors: [Color] = [Color(hex: "50B792"),Color(hex: "3B7777")]
     var body: some View {
         
         VStack{
@@ -34,20 +34,20 @@ struct MapAdditional: View {
                             self.isPickerTouched = true
                         }) {
                             Text(borough.rawValue)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(self.selectedBorough == borough ? Color.sangchu.opacity(0.9) : Color.white.opacity(0.9))
-                                .foregroundColor(.black)
-                                .fontWeight(self.selectedBorough == borough ? .semibold : .regular)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .overlay(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .stroke(Color.black.opacity(0.7), lineWidth: 0.2)
-                                        )
-                        }
+                                .font(.system(size: 18))
+                                
+                               
+                        }.frame(width: UIScreen.main.bounds.width * 0.25, height: UIScreen.main.bounds.width * 0.1).background(self.selectedBorough == borough ? LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color.white,Color.white], startPoint: .leading, endPoint: .trailing))
+                            .foregroundStyle(self.selectedBorough == borough ? LinearGradient(colors: [Color.white,Color.white], startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
+                            .fontWeight(self.selectedBorough == borough ? .semibold : .regular)
+                            .clipShape(RoundedRectangle(cornerRadius: 35))
+                            .overlay(
+                                        RoundedRectangle(cornerRadius: 35)
+                                            .stroke(Color.black.opacity(0.7), lineWidth: 0.2)
+                                    )
                         
                     }
-                }
+                }.padding()
             }.frame(height : UIScreen.main.bounds.height * 0.55).clipped()
             Button(!isPickerTouched ? "이동할 지역 선택" : "이동하기") {
                 // 여기에 BDMapView를 해당 자치구의 위도 경도로 이동시키면서 viewModel.showBoroughSheet를 false로 바꿔주고 고른 자치구도 초기화 시켜줘야 함!

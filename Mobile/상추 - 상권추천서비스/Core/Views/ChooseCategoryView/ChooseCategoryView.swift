@@ -101,11 +101,8 @@ struct ChooseCategoryView: View {
                                         
                                     }
                                     .padding()
-                                    .frame(width: UIScreen.main.bounds.width * 0.25, height: UIScreen.main.bounds.width * 0.25) // GeometryReader를 사용하여 크기 동적 조절
-//                                    .background(
-//                                        Circle().backgroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
-//                                    )
-//                                    .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
+                                    .frame(width: UIScreen.main.bounds.width * 0.25, height: UIScreen.main.bounds.width * 0.25)
+
                                     .background(
                                         Circle().fill(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
                                         )
@@ -132,8 +129,8 @@ struct ChooseCategoryView: View {
                
                 
                 
-                HStack {
-                    NavigationLink(destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue ?? "")){
+                NavigationLink(destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue ?? "")) {
+                    HStack {
                         selectedCategory == nil ?
                         Text("업종 선택").font(.title3).fontWeight(.semibold).foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)) : Text("선택 완료").font(.title3).fontWeight(.semibold).foregroundStyle(Color.white)
                     }
@@ -141,34 +138,10 @@ struct ChooseCategoryView: View {
                     .background(self.selectedCategory == nil ?
                                 AnyView(Color(hex: "c6c6c6")) : AnyView(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)))
                     .cornerRadius(20)
-                    .disabled(selectedCategory == nil) // Picker가 조작되지 않았다면 버튼 비활성화
-//                        .foregroundColor(.black)
-//                        .buttonStyle(RoundedRectangleButtonStyle(
-//                            bgColor: !isPickerTouched ? Color(hex: "c6c6c6") : Color.sangchu,
-//                            textColor: .black,
-//                            width: UIScreen.main.bounds.width * 0.8,
-//                            hasStroke: false,
-//                            shadowRadius: 2,
-//                            shadowColor: Color.black.opacity(0.1),
-//                            shadowOffset: CGSize(width: 0, height: 4)))
+                    .disabled(selectedCategory == nil)
                   
                         
                 }.padding(.bottom,10)
-                
-//                HStack {
-//                    NavigationLink(self.selectedCategory == nil ? "업종 선택" : "선택 완료", destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue ?? ""))
-//                        .disabled(selectedCategory == nil) // Picker가 조작되지 않았다면 버튼 비활성화
-//                        .foregroundColor(.black)
-//                        .buttonStyle(RoundedRectangleButtonStyle(
-//                            bgColor: self.selectedCategory == nil ? Color(hex: "c6c6c6") : Color.sangchu,
-//                            textColor: .black,
-//                            width: UIScreen.main.bounds.width * 0.8,
-//                            hasStroke: false,
-//                            shadowRadius: 2,
-//                            shadowColor: Color.black.opacity(0.1),
-//                            shadowOffset: CGSize(width: 0, height: 4)))
-//                        .padding([.trailing, .bottom])
-//                }.padding(.bottom, UIScreen.main.bounds.height * 0.07) // end of 이전/다음 버튼 HStack
                 
             } // end of Total VStack
         }

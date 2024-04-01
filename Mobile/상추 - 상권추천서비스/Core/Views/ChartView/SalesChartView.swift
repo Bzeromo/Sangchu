@@ -66,7 +66,8 @@ struct IndustryRatioGraphView: View {
             VStack {
                 Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
                 Text("업종별 매출 비율")
-                    .font(.largeTitle)
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
             }
             .frame(width: UIScreen.main.bounds.width, alignment: .center)
             Chart(chartData, id: \.label) { dataItem in
@@ -99,7 +100,8 @@ struct QuarterlyGraphView: View {
             VStack {
                 Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
                 Text("분기별 월매출")
-                    .font(.largeTitle)
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                 Text("(단위 : 백만원)")
                     .frame(width: UIScreen.main.bounds.width, alignment:.trailing)
                     .font(.caption2)
@@ -155,7 +157,8 @@ struct DayGraphView: View {
             VStack {
                 Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
                 Text("요일별 매출")
-                    .font(.largeTitle)
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                 Text("(단위 : 만원)")
                     .frame(width: UIScreen.main.bounds.width, alignment:.trailing)
                     .font(.caption2)
@@ -232,7 +235,8 @@ struct TimeGraphView: View {
     var body: some View {
         VStack {
             Text("시간대별 월매출")
-                .font(.largeTitle)
+                .font(.title2).bold()
+                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
             
             Text("(단위 : 만원)")
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -309,7 +313,8 @@ struct AgeGraphView: View {
     var body: some View {
         VStack {
             Text("연령대별 월매출")
-                .font(.largeTitle)
+                .font(.title2).bold()
+                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
             
             Text("(단위 : 만원)")
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -398,61 +403,6 @@ struct SalesChartView: View {
                     Text("데이터 로딩 중")
                         .padding(.top)
                 } else {
-                    // 직전분기 매출 관련 VStack
-                    VStack (alignment: .leading, spacing: 10) {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.defaultbg)
-                            .frame(height: UIScreen.main.bounds.height * 0.2)
-                            .overlay(
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text("매출")
-                                        .font(.largeTitle.bold())
-                                        .padding(.bottom, 20)
-                                    HStack {
-                                        Group {
-                                            Text(recentQuarter)
-                                                .foregroundColor(.defaultfont)
-                                                .font(.title2)
-                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                                            if let monthlySales = textDataSets?.monthlySales {
-                                                Text("\(monthlySales)원")
-                                            } else {
-                                                Text("데이터 없음")
-                                            }
-                                        }
-                                    }
-                                    Divider()
-                                    HStack {
-                                        Group {
-                                            Text("주중 매출")
-                                                .foregroundColor(.defaultfont)
-                                                .font(.title2)
-                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                                            if let weekDaySales = textDataSets?.weekDaySales {
-                                                Text("\(weekDaySales)원")
-                                            } else {
-                                                Text("데이터 없음")
-                                            }
-                                        }
-                                    }
-                                    Divider()
-                                    HStack {
-                                        Group {
-                                            Text("주말 매출")
-                                                .foregroundColor(.defaultfont)
-                                                .font(.title2)
-                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                                            if let weekendSales = textDataSets?.weekendSales {
-                                                Text("\(weekendSales)원")
-                                            } else {
-                                                Text("데이터 없음")
-                                            }
-                                        }
-                                    }
-                                }
-                        )
-                    }
-                    .padding(.horizontal)
                     // 각종 차트 데이터들
                     TabView {
                         if isLoading {
@@ -493,6 +443,61 @@ struct SalesChartView: View {
                     .frame(height: 450)
                     .tabViewStyle(.page(indexDisplayMode: .never))
                     .padding(.vertical, 20)
+                    // 직전분기 매출 관련 VStack
+                    VStack (alignment: .leading, spacing: 10) {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.defaultbg)
+                            .frame(height: UIScreen.main.bounds.height * 0.2)
+                            .overlay(
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text("매출 요약")
+                                        .font(.largeTitle.bold())
+                                        .padding(.bottom, 10)
+                                    HStack {
+                                        Group {
+                                            Text(recentQuarter)
+                                                .foregroundColor(.defaultfont)
+                                                .font(.title2)
+                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                            if let monthlySales = textDataSets?.monthlySales {
+                                                Text("\(monthlySales)원")
+                                            } else {
+                                                Text("데이터 없음")
+                                            }
+                                        }
+                                    }
+                                    Divider()
+                                    HStack {
+                                        Group {
+                                            Text("주중")
+                                                .foregroundColor(.blue)
+                                                .font(.title2)
+                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                            if let weekDaySales = textDataSets?.weekDaySales {
+                                                Text("\(weekDaySales)원")
+                                            } else {
+                                                Text("데이터 없음")
+                                            }
+                                        }
+                                    }
+                                    Divider()
+                                    HStack {
+                                        Group {
+                                            Text("주말")
+                                                .foregroundColor(.red)
+                                                .font(.title2)
+                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                            if let weekendSales = textDataSets?.weekendSales {
+                                                Text("\(weekendSales)원")
+                                            } else {
+                                                Text("데이터 없음")
+                                            }
+                                        }
+                                    }
+                                }
+                        )
+                    }
+                    .padding(.horizontal)
                 } // end of else
             } // end of outer VStack
             .onAppear() {

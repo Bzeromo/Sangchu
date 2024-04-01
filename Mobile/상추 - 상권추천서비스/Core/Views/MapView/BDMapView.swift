@@ -1,6 +1,6 @@
 //
 //  MapView.swift
-//  상추 - 상권추천서비스
+//  상추 - 상권추천서비스
 //
 //  Created by 안상준 on 3/14/24.
 //
@@ -39,6 +39,7 @@ struct MapView: UIViewRepresentable {
     @Binding var tappedLocation: NMGLatLng // 지도 상의 탭한 좌표
     @Binding var tappedSymbolCaption: String // 지도 상의 탭한 심볼의 이름
     @Binding var cameraLatLng: NMGLatLng?
+    
     var viewModel: MapViewModel
     
     // GeoJson 파일을 로드해서 Polygon 그리기
@@ -323,7 +324,7 @@ struct MapView: UIViewRepresentable {
             let cameraUpdate = NMFCameraUpdate(scrollTo: cameraPosition)
             cameraUpdate.animation = .easeIn
             cameraUpdate.animationDuration = 0.3
-            uiView.mapView.moveCamera(cameraUpdate) {_ in 
+            uiView.mapView.moveCamera(cameraUpdate) {_ in
                 DispatchQueue.main.async {
                     // UI 관련 업데이트이므로 메인스레드에서 메인 스레드
                     if (self.viewModel.selectedCDCode != "" && self.viewModel.selectedCDName != "") {
@@ -337,7 +338,7 @@ struct MapView: UIViewRepresentable {
         if let boroughLocation = viewModel.selectedBoroughLocation {
             let cameraUpdate = NMFCameraUpdate(scrollTo: boroughLocation)
             cameraUpdate.animation = .easeIn
-            uiView.mapView.moveCamera(cameraUpdate) {_ in 
+            uiView.mapView.moveCamera(cameraUpdate) {_ in
                 uiView.mapView.zoomLevel = 11
             }
             
@@ -359,7 +360,7 @@ struct BDMapView: View {
     @State private var cameraLatLng: NMGLatLng?
     @StateObject private var viewModel = MapViewModel()
     
-    
+    let MainColors: [Color] = [Color(hex: "50B792"),Color(hex: "3B7777")]
     var body: some View {
         NavigationView {
             ZStack {
@@ -441,10 +442,10 @@ struct BDMapView: View {
                     Button(action: {
                         viewModel.showBottomSheet = true
                     }) {
-                        Label("상권 정보 보기", systemImage: "info.bubble.fill").foregroundColor(.black)
+                        Label("상권 정보 보기", systemImage: "info.bubble.fill").foregroundColor(.white)
                     }
                     .frame(width: UIScreen.main.bounds.width * 0.5, height: UIScreen.main.bounds.height * 0.05)
-                    .background(Color.white)
+                    .background(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
                     .cornerRadius(20)
 //                    .overlay(
 //                                RoundedRectangle(cornerRadius: 20)
@@ -460,7 +461,7 @@ struct BDMapView: View {
                    
             }.ignoresSafeArea() // end of ZStack
             
-        } 
+        }
         .navigationBarTitle("지도", displayMode: .inline)
         // end of NavigationView
     } // end of bodyView

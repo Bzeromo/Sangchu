@@ -63,6 +63,8 @@
 		DAA4188C2BB07D4A006B48B5 /* SalesChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA4188B2BB07D4A006B48B5 /* SalesChartView.swift */; };
 		DAA4188E2BB07D58006B48B5 /* InfraChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA4188D2BB07D58006B48B5 /* InfraChartView.swift */; };
 		DAAB02DF2BBA749E0036718A /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = DAAB02DE2BBA749E0036718A /* Lottie */; };
+		DAAB02E22BBAA4B50036718A /* Circlecheck.json in Resources */ = {isa = PBXBuildFile; fileRef = DAAB02E02BBAA4B50036718A /* Circlecheck.json */; };
+		DAAB02E32BBAA4B50036718A /* Cal.json in Resources */ = {isa = PBXBuildFile; fileRef = DAAB02E12BBAA4B50036718A /* Cal.json */; };
 		DAD092202BA8A77B00A6DF92 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD0921F2BA8A77B00A6DF92 /* LocationService.swift */; };
 		DAD092222BA922C100A6DF92 /* GeoJSONModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD092212BA922C100A6DF92 /* GeoJSONModels.swift */; };
 		DAD092242BA92A1300A6DF92 /* GeoJSONLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD092232BA92A1300A6DF92 /* GeoJSONLoader.swift */; };
@@ -154,6 +156,8 @@
 		DAA418892BB07BDF006B48B5 /* ConsumerNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumerNetworkManager.swift; sourceTree = "<group>"; };
 		DAA4188B2BB07D4A006B48B5 /* SalesChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesChartView.swift; sourceTree = "<group>"; };
 		DAA4188D2BB07D58006B48B5 /* InfraChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfraChartView.swift; sourceTree = "<group>"; };
+		DAAB02E02BBAA4B50036718A /* Circlecheck.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Circlecheck.json; sourceTree = "<group>"; };
+		DAAB02E12BBAA4B50036718A /* Cal.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Cal.json; sourceTree = "<group>"; };
 		DAD0921F2BA8A77B00A6DF92 /* LocationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		DAD092212BA922C100A6DF92 /* GeoJSONModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoJSONModels.swift; sourceTree = "<group>"; };
 		DAD092232BA92A1300A6DF92 /* GeoJSONLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoJSONLoader.swift; sourceTree = "<group>"; };
@@ -216,6 +220,8 @@
 		6577BAEB2B9EB65A0071A3EA /* 상추 - 상권추천서비스 */ = {
 			isa = PBXGroup;
 			children = (
+				DAAB02E12BBAA4B50036718A /* Cal.json */,
+				DAAB02E02BBAA4B50036718A /* Circlecheck.json */,
 				DA9C593D2BA002D0007C4C8D /* --------------------------Info.plist */,
 				6577BB212B9EB8EE0071A3EA /* Core */,
 				6577BB1D2B9EB7B60071A3EA /* Model */,
@@ -577,10 +583,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAAB02E32BBAA4B50036718A /* Cal.json in Resources */,
 				6577BAF62B9EB65C0071A3EA /* Preview Assets.xcassets in Resources */,
 				65D720D52BAA604B00AB353F /* SeoulBoroughOutline.geojson in Resources */,
 				6577BAF32B9EB65C0071A3EA /* Assets.xcassets in Resources */,
 				DA9C593C2BA00037007C4C8D /* SingleDay-Regular.ttf in Resources */,
+				DAAB02E22BBAA4B50036718A /* Circlecheck.json in Resources */,
 				DA2162192BA9EC2E009750B6 /* CommercialDistrictOutline.geojson in Resources */,
 				65A66B322BA7B70200E4E3D0 /* HashTagDefaults in Resources */,
 			);
@@ -936,6 +944,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sangchu.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -970,6 +981,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sangchu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

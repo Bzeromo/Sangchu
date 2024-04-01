@@ -126,6 +126,7 @@ struct QuarterlyFloatingChartView: View {
                     x: .value("Category", dataPoint.label),
                     y: .value("Value", animate ? dataPoint.value / 10000 : 0) // 여기서 애니메이션 적용
                 )
+                .cornerRadius(5)
                 .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                 .annotation(position: .top) {
                     Text("\(dataPoint.value / 10000, specifier: "%.0f")")
@@ -160,32 +161,6 @@ struct QuarterlyFloatingChartView: View {
     }
 }
 
-// 널뛰기
-//struct QuarterlyFloatingChartView: View {
-//    var chartData: [ConsumerModel.ChartData]
-//    @State private var animatedValues: [Double] = []
-//
-//    var body: some View {
-//        Chart {
-//            ForEach(chartData.indices, id: \.self) { index in
-//                BarMark(
-//                    x: .value("Category", chartData[index].label),
-//                    y: .value("Value", animatedValues.indices.contains(index) ? animatedValues[index] : 0)
-//                )
-//                .foregroundStyle(LinearGradient(gradient: Gradient(colors: [.green, .sangchu]), startPoint: .top, endPoint: .bottom))
-//            }
-//        }
-//        .onAppear {
-//            animatedValues = Array(repeating: 0, count: chartData.count)
-//            for index in chartData.indices {
-//                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8).delay(Double(index) * 0.05)) {
-//                    animatedValues[index] = chartData[index].value
-//                }
-//            }
-//        }
-//    }
-//}
-
 // 요일별 유동인구 차트 뷰
 struct DayFloatingChartView: View {
     var chartData: [ConsumerModel.ChartData]
@@ -193,13 +168,30 @@ struct DayFloatingChartView: View {
     @State private var animate: Bool = false
 
     var body: some View {
+        HStack {
+            Spacer()
+            Text("(단위 : 명)")
+                .font(.caption2)
+                .foregroundStyle(Color.customgray)
+                .padding(.trailing)
+        }
+        .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
         Chart {
             ForEach(presentedData) { dataPoint in
                 BarMark(
                     x: .value("Category", dataPoint.label),
-                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                    y: .value("Value", animate ? dataPoint.value / 10000  : 0)
                 )
+                .cornerRadius(5)
                 .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                .annotation(position: .top, alignment: .center) {
+                    Text("\(dataPoint.value, specifier: "%.0f")")
+                        .font(.caption2)
+                        .foregroundColor(Color.black)
+                        .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, 4)
+                }
             }
         }
         .chartXAxis {
@@ -236,13 +228,29 @@ struct TimeFloatingChartView: View {
     @State private var animate: Bool = false
 
     var body: some View {
+        HStack {
+            Spacer()
+            Text("(단위 : 명)")
+                .font(.caption2)
+                .foregroundStyle(Color.customgray)
+                .padding(.trailing)
+        }
+        .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
         Chart {
             ForEach(presentedData) { dataPoint in
                 BarMark(
                     x: .value("Category", dataPoint.label),
                     y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
                 )
+                .cornerRadius(5)
                 .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                .annotation(position: .top, alignment: .center) {
+                    Text("\(dataPoint.value, specifier: "%.0f")")
+                        .font(.caption2)
+                        .foregroundColor(Color.black)
+                        .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
         .chartXAxis {
@@ -279,13 +287,30 @@ struct AgeFloatingChartView: View {
     @State private var animate: Bool = false
 
     var body: some View {
+        HStack {
+            Spacer()
+            Text("(단위 : 명)")
+                .font(.caption2)
+                .foregroundStyle(Color.customgray)
+                .padding(.trailing)
+        }
+        .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
         Chart {
             ForEach(presentedData) { dataPoint in
                 BarMark(
                     x: .value("Category", dataPoint.label),
                     y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
                 )
+                .cornerRadius(5)
                 .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                .annotation(position: .top, alignment: .center) {
+                    Text("\(dataPoint.value, specifier: "%.0f")")
+                        .font(.caption2)
+                        .foregroundColor(Color.black)
+                        .fontWidth(.compressed)
+                        .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
         .chartXAxis {
@@ -322,13 +347,29 @@ struct QuarterlyResidentChartView: View {
     @State private var animate: Bool = false
 
     var body: some View {
+        HStack {
+            Spacer()
+            Text("(단위 : 명)")
+                .font(.caption2)
+                .foregroundStyle(Color.customgray)
+                .padding(.trailing)
+        }
+        .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
         Chart {
             ForEach(presentedData) { dataPoint in
                 BarMark(
                     x: .value("Category", dataPoint.label),
                     y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
                 )
+                .cornerRadius(5)
                 .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                .annotation(position: .top, alignment: .center) {
+                    Text("\(dataPoint.value, specifier: "%.0f")")
+                        .font(.caption2)
+                        .foregroundColor(Color.black)
+                        .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
         .chartXAxis {
@@ -363,26 +404,54 @@ struct GenderAgeResidentChartView: View {
     var chartData: [ConsumerModel.ChartData]
     @State private var presentedData: [ConsumerModel.ChartData] = []
     @State private var animate: Bool = false
+    @State private var selectedGender: String = "남성" // 성별 선택을 위한 상태
 
     var body: some View {
-        Chart {
-            ForEach(presentedData) { dataPoint in
-                BarMark(
-                    x: .value("Category", dataPoint.label),
-                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
-                )
-                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+        VStack {
+            // 성별 선택을 위한 Picker
+            Picker("성별", selection: $selectedGender) {
+                Text("남성").tag("남성")
+                Text("여성").tag("여성")
             }
-        }
-        .chartXAxis {
-            AxisMarks(preset: .aligned, position: .bottom) { value in
-                if let category = value.as(String.self) {
-                    AxisValueLabel(category, centered: true)
-                        .font(.caption2.width(.compressed))
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+
+            Chart {
+                ForEach(presentedData.filter { $0.label.contains(selectedGender) }) { dataPoint in
+                    BarMark(
+                        x: .value("Category", dataPoint.label),
+                        y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                    )
+                    .cornerRadius(5)
+                    .foregroundStyle(selectedGender == "남성" ? Color.blue : Color.red)
+                    .annotation(position: .top, alignment: .center) {
+                        Text("\(dataPoint.value, specifier: "%.0f")")
+                            .font(.caption2)
+                            .foregroundColor(Color.black)
+                            .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            .chartXAxis {
+                AxisMarks(preset: .aligned, position: .bottom) { value in
+                    if let category = value.as(String.self) {
+                        AxisValueLabel(category, centered: true)
+                            .font(.caption2.width(.compressed))
+                    }
+                }
+            }
+            .frame(height: 250)
+            .onChange(of: selectedGender) { _ in
+                // 성별이 변경될 때마다 차트를 업데이트합니다.
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = false // 애니메이션 초기화
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        animate = true // 애니메이션 재시작
+                    }
                 }
             }
         }
-        .frame(height: 300)
         .onAppear {
             presentedData = chartData // 모든 데이터를 presentedData에 할당
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -394,12 +463,13 @@ struct GenderAgeResidentChartView: View {
         .onDisappear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
-                    animate = false // 애니메이션 시작
+                    animate = false // 애니메이션 종료
                 }
             }
         }
     }
 }
+
 
 // 분기별 직장인구 차트 뷰
 struct QuarterlyWorkingChartView: View {
@@ -414,7 +484,15 @@ struct QuarterlyWorkingChartView: View {
                     x: .value("Category", dataPoint.label),
                     y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
                 )
+                .cornerRadius(5)
                 .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                .annotation(position: .top, alignment: .center) {
+                    Text("\(dataPoint.value, specifier: "%.0f")")
+                        .font(.caption2)
+                        .foregroundColor(Color.black)
+                        .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
         .chartXAxis {
@@ -449,26 +527,54 @@ struct GenderAgeWorkingChartView: View {
     var chartData: [ConsumerModel.ChartData]
     @State private var presentedData: [ConsumerModel.ChartData] = []
     @State private var animate: Bool = false
+    @State private var selectedGender: String = "남성" // 성별 선택을 위한 상태
 
     var body: some View {
-        Chart {
-            ForEach(presentedData) { dataPoint in
-                BarMark(
-                    x: .value("Category", dataPoint.label),
-                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
-                )
-                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+        VStack {
+            // 성별 선택을 위한 Picker
+            Picker("성별", selection: $selectedGender) {
+                Text("남성").tag("남성")
+                Text("여성").tag("여성")
             }
-        }
-        .chartXAxis {
-            AxisMarks(preset: .aligned, position: .bottom) { value in
-                if let category = value.as(String.self) {
-                    AxisValueLabel(category, centered: true)
-                        .font(.caption2.width(.compressed))
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+
+            Chart {
+                ForEach(presentedData.filter { $0.label.contains(selectedGender) }) { dataPoint in
+                    BarMark(
+                        x: .value("Category", dataPoint.label),
+                        y: .value("Value", animate ? dataPoint.value : 0)
+                    )
+                    .cornerRadius(5)
+                    .foregroundStyle(selectedGender == "남성" ? Color.blue : Color.red)
+                    .annotation(position: .top, alignment: .center) {
+                        Text("\(dataPoint.value, specifier: "%.0f")")
+                            .font(.caption2)
+                            .foregroundColor(Color.black)
+                            .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            .chartXAxis {
+                AxisMarks(preset: .aligned, position: .bottom) { value in
+                    if let category = value.as(String.self) {
+                        AxisValueLabel(category, centered: true)
+                            .font(.caption2.width(.compressed))
+                    }
+                }
+            }
+            .frame(height: 250)
+            .onChange(of: selectedGender) { newValue in
+                // 성별이 변경될 때마다 차트를 업데이트합니다.
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = false // 애니메이션 초기화
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        animate = true // 애니메이션 재시작
+                    }
                 }
             }
         }
-        .frame(height: 300)
         .onAppear {
             presentedData = chartData // 모든 데이터를 presentedData에 할당
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -480,7 +586,7 @@ struct GenderAgeWorkingChartView: View {
         .onDisappear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
-                    animate = false // 애니메이션 시작
+                    animate = false // 애니메이션 종료
                 }
             }
         }
@@ -510,6 +616,7 @@ struct ConsumerChartView: View {
                                     if !chartDataSets[0].isEmpty {
                                         Text("분기별 유동인구")
                                             .font(.title2).bold()
+                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         QuarterlyFloatingChartView(chartData: chartDataSets[0])
                                     }
                                 }
@@ -518,6 +625,7 @@ struct ConsumerChartView: View {
                                     if !chartDataSets[1].isEmpty {
                                         Text("요일별 유동인구")
                                             .font(.title2).bold()
+                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         DayFloatingChartView(chartData: chartDataSets[1])
                                     }
                                 }
@@ -526,6 +634,7 @@ struct ConsumerChartView: View {
                                     if !chartDataSets[2].isEmpty {
                                         Text("시간대별 유동인구")
                                             .font(.title2).bold()
+                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         TimeFloatingChartView(chartData: chartDataSets[2])
                                     }
                                 }
@@ -534,6 +643,7 @@ struct ConsumerChartView: View {
                                     if !chartDataSets[3].isEmpty {
                                         Text("연령별 유동인구")
                                             .font(.title2).bold()
+                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         AgeFloatingChartView(chartData: chartDataSets[3])
                                     }
                                 }
@@ -542,6 +652,7 @@ struct ConsumerChartView: View {
                                     if !chartDataSets[4].isEmpty {
                                         Text("분기별 상주인구")
                                             .font(.title2).bold()
+                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         QuarterlyResidentChartView(chartData: chartDataSets[4])
                                     }
                                 }
@@ -550,6 +661,7 @@ struct ConsumerChartView: View {
                                     if !chartDataSets[5].isEmpty {
                                         Text("성/연령별 상주인구")
                                             .font(.title2).bold()
+                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         GenderAgeResidentChartView(chartData: chartDataSets[5])
                                     }
                                 }
@@ -558,6 +670,7 @@ struct ConsumerChartView: View {
                                     if !chartDataSets[6].isEmpty {
                                         Text("분기별 직장인구")
                                             .font(.title2).bold()
+                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         QuarterlyWorkingChartView(chartData: chartDataSets[6])
                                     }
                                 }
@@ -566,6 +679,7 @@ struct ConsumerChartView: View {
                                     if !chartDataSets[7].isEmpty {
                                         Text("성/연령별 직장인구")
                                             .font(.title2).bold()
+                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         GenderAgeWorkingChartView(chartData: chartDataSets[7])
                                     }
                                 }
@@ -573,7 +687,7 @@ struct ConsumerChartView: View {
                         }
                     }
                     .frame(height: 400) // end of VStack
-                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .tabViewStyle(.page(indexDisplayMode: .never))
                     .scrollIndicatorsFlash(onAppear: true)
                     .padding()
                     .onAppear {

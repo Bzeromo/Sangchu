@@ -1,5 +1,6 @@
 import SwiftUI
 import Alamofire
+import Lottie
 
 struct FilteredDistrictsData : Codable {
     var totalScoreSorted: [DistrictData] = []
@@ -64,7 +65,7 @@ struct CardView: View {
     var body: some View {
         VStack {
             if let districtInfo = districtInfo {
-                NavigationLink(destination: BDMapView(cameraLatitude: districtInfo.latitude, cameraLongitude: districtInfo.longitude, selectedCDCode: String(districtInfo.commercialDistrictCode), selectedCDName: districtInfo.commercialDistrictName)) {
+                NavigationLink(destination: BDMapView(cameraLatitude: districtInfo.longitude, cameraLongitude: districtInfo.latitude, selectedCDCode: String(districtInfo.commercialDistrictCode), selectedCDName: districtInfo.commercialDistrictName)) {
                     ZStack(alignment: .top) {
                         VStack {
                             Text("\(index + 1)")
@@ -305,11 +306,11 @@ struct DistrictRankingView: View {
                 
                 if isLoading {
                     VStack {
-                        Spacer().frame(height: 90)
-                        Text("분석중").font(.title).fontWeight(.semibold).padding(.bottom, 50).foregroundColor(.sangchu)
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .sangchu))
-                            .scaleEffect(5)
+                        Text("분석중..").font(.title).fontWeight(.semibold).foregroundColor(.sangchu)
+                        LottieView(animation: .named("Cal.json"))
+                            .playbackMode(.playing(.toProgress(1,loopMode: .loop)))
+                            .padding(.bottom, UIScreen.main.bounds.height * 0.35)
+                        
                     }
                 }
                 else {
