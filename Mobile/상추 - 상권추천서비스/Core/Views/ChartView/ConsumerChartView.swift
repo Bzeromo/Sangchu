@@ -11,6 +11,8 @@ import Charts
 // 사용자 인터페이스를 정의하는 ContentView.swift 파일입니다.
 // 애플리케이션의 뷰를 구성하고 네트워크 요청을 통해 차트 데이터를 로드합니다.
 
+let MainColors: [Color] = [Color(hex: "50B792"),Color(hex: "3B7777")]
+
 enum ConsumerEndpoints: String, CaseIterable, Identifiable {
     var id: String { self.rawValue }
     
@@ -67,99 +69,421 @@ enum ConsumerEndpoints: String, CaseIterable, Identifiable {
     
 }
 
-// 분기별 유동인구 차트 뷰
+// 왼쪽에서 오른쪽
+//struct QuarterlyFloatingChartView: View {
+//    var chartData: [ConsumerModel.ChartData]
+//    @State private var presentedData: [ConsumerModel.ChartData] = []
+//
+//    var body: some View {
+//        Chart {
+//            ForEach(presentedData) { dataPoint in
+//                BarMark(
+//                    x: .value("Category", dataPoint.label),
+//                    y: .value("Value", dataPoint.value)
+//                )
+//                .foregroundStyle(LinearGradient(gradient: Gradient(colors: [.green, .blue]), startPoint: .top, endPoint: .bottom))
+//                .opacity(dataPoint.animate ? 1 : 0) // 각 데이터 항목의 animate 속성에 따라 투명도 적용
+//            }
+//        }
+//        .chartYScale(domain: 0...(chartData.max(by: { $0.value < $1.value })?.value ?? 0 + 5000))
+//        .frame(height: 250)
+//        .onAppear {
+//            animateGraph()
+//        }
+//    }
+//    
+//    func animateGraph() {
+//        presentedData = chartData.map { var data = $0; data.animate = false; return data }
+//
+//        for (index, dataPoint) in presentedData.enumerated() {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05) {
+//                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+//                    presentedData[index].animate = true
+//                }
+//            }
+//        }
+//    }
+//}
+
+// 아래에서 위 // 분기별 유동인구
 struct QuarterlyFloatingChartView: View {
     var chartData: [ConsumerModel.ChartData]
+    @State private var presentedData: [ConsumerModel.ChartData] = []
+    @State private var animate: Bool = false
 
     var body: some View {
-        Chart(chartData) { item in
-            BarMark(x: .value("Category", item.label), y: .value("Value", item.value))
+        HStack {
+            Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
+            Text("(단위 : 만명)")
+                .font(.caption2)
+                .foregroundStyle(Color.customgray)
+                .padding(.trailing) // 오른쪽 끝에서 약간 떨어지도록 패딩 추가
         }
-        // 추가 차트 설정
+        .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
+        Chart {
+            ForEach(presentedData) { dataPoint in
+                BarMark(
+                    x: .value("Category", dataPoint.label),
+                    y: .value("Value", animate ? dataPoint.value / 10000 : 0) // 여기서 애니메이션 적용
+                )
+                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                .annotation(position: .top) {
+                    Text("\(dataPoint.value / 10000, specifier: "%.0f")")
+                        .font(.caption2.bold())
+                }
+            }
+        }
+        .frame(height: 300)
+        .chartXAxis {
+            AxisMarks(preset: .aligned, position: .bottom) { value in
+                if let category = value.as(String.self) {
+                    AxisValueLabel(category, centered: true)
+                        .font(.caption2.width(.compressed))
+                }
+            }
+        }
+        .onAppear {
+            presentedData = chartData // 모든 데이터를 presentedData에 할당
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = true // 애니메이션 시작
+                }
+            }
+        }
+        .onDisappear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = false // 애니메이션 시작
+                }
+            }
+        }
     }
 }
+
+// 널뛰기
+//struct QuarterlyFloatingChartView: View {
+//    var chartData: [ConsumerModel.ChartData]
+//    @State private var animatedValues: [Double] = []
+//
+//    var body: some View {
+//        Chart {
+//            ForEach(chartData.indices, id: \.self) { index in
+//                BarMark(
+//                    x: .value("Category", chartData[index].label),
+//                    y: .value("Value", animatedValues.indices.contains(index) ? animatedValues[index] : 0)
+//                )
+//                .foregroundStyle(LinearGradient(gradient: Gradient(colors: [.green, .sangchu]), startPoint: .top, endPoint: .bottom))
+//            }
+//        }
+//        .onAppear {
+//            animatedValues = Array(repeating: 0, count: chartData.count)
+//            for index in chartData.indices {
+//                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8).delay(Double(index) * 0.05)) {
+//                    animatedValues[index] = chartData[index].value
+//                }
+//            }
+//        }
+//    }
+//}
 
 // 요일별 유동인구 차트 뷰
 struct DayFloatingChartView: View {
     var chartData: [ConsumerModel.ChartData]
+    @State private var presentedData: [ConsumerModel.ChartData] = []
+    @State private var animate: Bool = false
 
     var body: some View {
-        Chart(chartData) { item in
-            BarMark(x: .value("Category", item.label), y: .value("Value", item.value))
+        Chart {
+            ForEach(presentedData) { dataPoint in
+                BarMark(
+                    x: .value("Category", dataPoint.label),
+                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                )
+                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+            }
         }
-        // 추가 차트 설정
+        .chartXAxis {
+            AxisMarks(preset: .aligned, position: .bottom) { value in
+                if let category = value.as(String.self) {
+                    AxisValueLabel(category, centered: true)
+                        .font(.caption2.width(.compressed))
+                }
+            }
+        }
+        .frame(height: 300)
+        .onAppear {
+            presentedData = chartData // 모든 데이터를 presentedData에 할당
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = true // 애니메이션 시작
+                }
+            }
+        }
+        .onDisappear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = false // 애니메이션 시작
+                }
+            }
+        }
     }
 }
 
 // 시간대별 유동인구 차트 뷰
 struct TimeFloatingChartView: View {
     var chartData: [ConsumerModel.ChartData]
+    @State private var presentedData: [ConsumerModel.ChartData] = []
+    @State private var animate: Bool = false
 
     var body: some View {
-        Chart(chartData) { item in
-            BarMark(x: .value("Category", item.label), y: .value("Value", item.value))
+        Chart {
+            ForEach(presentedData) { dataPoint in
+                BarMark(
+                    x: .value("Category", dataPoint.label),
+                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                )
+                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+            }
         }
-        // 추가 차트 설정
+        .chartXAxis {
+            AxisMarks(preset: .aligned, position: .bottom) { value in
+                if let category = value.as(String.self) {
+                    AxisValueLabel(category, centered: true)
+                        .font(.caption2.width(.compressed))
+                }
+            }
+        }
+        .frame(height: 300)
+        .onAppear {
+            presentedData = chartData // 모든 데이터를 presentedData에 할당
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = true // 애니메이션 시작
+                }
+            }
+        }
+        .onDisappear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = false // 애니메이션 시작
+                }
+            }
+        }
     }
 }
 
 // 연령별 유동인구 차트 뷰
 struct AgeFloatingChartView: View {
     var chartData: [ConsumerModel.ChartData]
+    @State private var presentedData: [ConsumerModel.ChartData] = []
+    @State private var animate: Bool = false
 
     var body: some View {
-        Chart(chartData) { item in
-            BarMark(x: .value("Category", item.label), y: .value("Value", item.value))
+        Chart {
+            ForEach(presentedData) { dataPoint in
+                BarMark(
+                    x: .value("Category", dataPoint.label),
+                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                )
+                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+            }
         }
-        // 추가 차트 설정
+        .chartXAxis {
+            AxisMarks(preset: .aligned, position: .bottom) { value in
+                if let category = value.as(String.self) {
+                    AxisValueLabel(category, centered: true)
+                        .font(.caption2.width(.compressed))
+                }
+            }
+        }
+        .frame(height: 300)
+        .onAppear {
+            presentedData = chartData // 모든 데이터를 presentedData에 할당
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = true // 애니메이션 시작
+                }
+            }
+        }
+        .onDisappear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = false // 애니메이션 시작
+                }
+            }
+        }
     }
 }
 
 // 분기별 상주인구 차트 뷰
 struct QuarterlyResidentChartView: View {
     var chartData: [ConsumerModel.ChartData]
+    @State private var presentedData: [ConsumerModel.ChartData] = []
+    @State private var animate: Bool = false
 
     var body: some View {
-        Chart(chartData) { item in
-            BarMark(x: .value("Category", item.label), y: .value("Value", item.value))
+        Chart {
+            ForEach(presentedData) { dataPoint in
+                BarMark(
+                    x: .value("Category", dataPoint.label),
+                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                )
+                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+            }
         }
-        // 추가 차트 설정
+        .chartXAxis {
+            AxisMarks(preset: .aligned, position: .bottom) { value in
+                if let category = value.as(String.self) {
+                    AxisValueLabel(category, centered: true)
+                        .font(.caption2.width(.compressed))
+                }
+            }
+        }
+        .frame(height: 300)
+        .onAppear {
+            presentedData = chartData // 모든 데이터를 presentedData에 할당
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = true // 애니메이션 시작
+                }
+            }
+        }
+        .onDisappear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = false // 애니메이션 시작
+                }
+            }
+        }
     }
 }
 
 // 성/연령별 상주인구 차트 뷰
 struct GenderAgeResidentChartView: View {
     var chartData: [ConsumerModel.ChartData]
+    @State private var presentedData: [ConsumerModel.ChartData] = []
+    @State private var animate: Bool = false
 
     var body: some View {
-        Chart(chartData) { item in
-            BarMark(x: .value("Category", item.label), y: .value("Value", item.value))
+        Chart {
+            ForEach(presentedData) { dataPoint in
+                BarMark(
+                    x: .value("Category", dataPoint.label),
+                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                )
+                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+            }
         }
-        // 추가 차트 설정
+        .chartXAxis {
+            AxisMarks(preset: .aligned, position: .bottom) { value in
+                if let category = value.as(String.self) {
+                    AxisValueLabel(category, centered: true)
+                        .font(.caption2.width(.compressed))
+                }
+            }
+        }
+        .frame(height: 300)
+        .onAppear {
+            presentedData = chartData // 모든 데이터를 presentedData에 할당
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = true // 애니메이션 시작
+                }
+            }
+        }
+        .onDisappear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = false // 애니메이션 시작
+                }
+            }
+        }
     }
 }
 
 // 분기별 직장인구 차트 뷰
 struct QuarterlyWorkingChartView: View {
     var chartData: [ConsumerModel.ChartData]
+    @State private var presentedData: [ConsumerModel.ChartData] = []
+    @State private var animate: Bool = false
 
     var body: some View {
-        Chart(chartData) { item in
-            BarMark(x: .value("Category", item.label), y: .value("Value", item.value))
+        Chart {
+            ForEach(presentedData) { dataPoint in
+                BarMark(
+                    x: .value("Category", dataPoint.label),
+                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                )
+                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+            }
         }
-        // 추가 차트 설정
+        .chartXAxis {
+            AxisMarks(preset: .aligned, position: .bottom) { value in
+                if let category = value.as(String.self) {
+                    AxisValueLabel(category, centered: true)
+                        .font(.caption2.width(.compressed))
+                }
+            }
+        }
+        .frame(height: 300)
+        .onAppear {
+            presentedData = chartData // 모든 데이터를 presentedData에 할당
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = true // 애니메이션 시작
+                }
+            }
+        }
+        .onDisappear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = false // 애니메이션 시작
+                }
+            }
+        }
     }
 }
 
 // 성/연령별 직장인구 차트 뷰
 struct GenderAgeWorkingChartView: View {
     var chartData: [ConsumerModel.ChartData]
+    @State private var presentedData: [ConsumerModel.ChartData] = []
+    @State private var animate: Bool = false
 
     var body: some View {
-        Chart(chartData) { item in
-            BarMark(x: .value("Category", item.label), y: .value("Value", item.value))
+        Chart {
+            ForEach(presentedData) { dataPoint in
+                BarMark(
+                    x: .value("Category", dataPoint.label),
+                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                )
+                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+            }
         }
-        // 추가 차트 설정
+        .chartXAxis {
+            AxisMarks(preset: .aligned, position: .bottom) { value in
+                if let category = value.as(String.self) {
+                    AxisValueLabel(category, centered: true)
+                        .font(.caption2.width(.compressed))
+                }
+            }
+        }
+        .frame(height: 300)
+        .onAppear {
+            presentedData = chartData // 모든 데이터를 presentedData에 할당
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = true // 애니메이션 시작
+                }
+            }
+        }
+        .onDisappear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                    animate = false // 애니메이션 시작
+                }
+            }
+        }
     }
 }
 
@@ -185,6 +509,7 @@ struct ConsumerChartView: View {
                                 VStack {
                                     if !chartDataSets[0].isEmpty {
                                         Text("분기별 유동인구")
+                                            .font(.title2).bold()
                                         QuarterlyFloatingChartView(chartData: chartDataSets[0])
                                     }
                                 }
@@ -192,6 +517,7 @@ struct ConsumerChartView: View {
                                 VStack {
                                     if !chartDataSets[1].isEmpty {
                                         Text("요일별 유동인구")
+                                            .font(.title2).bold()
                                         DayFloatingChartView(chartData: chartDataSets[1])
                                     }
                                 }
@@ -199,6 +525,7 @@ struct ConsumerChartView: View {
                                 VStack {
                                     if !chartDataSets[2].isEmpty {
                                         Text("시간대별 유동인구")
+                                            .font(.title2).bold()
                                         TimeFloatingChartView(chartData: chartDataSets[2])
                                     }
                                 }
@@ -206,6 +533,7 @@ struct ConsumerChartView: View {
                                 VStack {
                                     if !chartDataSets[3].isEmpty {
                                         Text("연령별 유동인구")
+                                            .font(.title2).bold()
                                         AgeFloatingChartView(chartData: chartDataSets[3])
                                     }
                                 }
@@ -213,6 +541,7 @@ struct ConsumerChartView: View {
                                 VStack {
                                     if !chartDataSets[4].isEmpty {
                                         Text("분기별 상주인구")
+                                            .font(.title2).bold()
                                         QuarterlyResidentChartView(chartData: chartDataSets[4])
                                     }
                                 }
@@ -220,6 +549,7 @@ struct ConsumerChartView: View {
                                 VStack {
                                     if !chartDataSets[5].isEmpty {
                                         Text("성/연령별 상주인구")
+                                            .font(.title2).bold()
                                         GenderAgeResidentChartView(chartData: chartDataSets[5])
                                     }
                                 }
@@ -227,6 +557,7 @@ struct ConsumerChartView: View {
                                 VStack {
                                     if !chartDataSets[6].isEmpty {
                                         Text("분기별 직장인구")
+                                            .font(.title2).bold()
                                         QuarterlyWorkingChartView(chartData: chartDataSets[6])
                                     }
                                 }
@@ -234,13 +565,14 @@ struct ConsumerChartView: View {
                                 VStack {
                                     if !chartDataSets[7].isEmpty {
                                         Text("성/연령별 직장인구")
+                                            .font(.title2).bold()
                                         GenderAgeWorkingChartView(chartData: chartDataSets[7])
                                     }
                                 }
                             }
                         }
                     }
-                    .frame(height: 300) // end of VStack
+                    .frame(height: 400) // end of VStack
                     .tabViewStyle(.page(indexDisplayMode: .always))
                     .scrollIndicatorsFlash(onAppear: true)
                     .padding()

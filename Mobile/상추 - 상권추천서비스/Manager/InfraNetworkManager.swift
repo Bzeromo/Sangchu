@@ -10,7 +10,7 @@ import Alamofire
 
 class InfraNetworkManager {
     static let shared = InfraNetworkManager()
-    private let BASE_URL = "http://3.36.91.181:8084/api"
+    private let BASE_URL = "https://j10b206.p.ssafy.io/api"
     
     // 분기별 직장인구
     func fetch(endpoint: String?, commercialDistrictCode: String, completion: @escaping (Result<Data, Error>) -> Void) {

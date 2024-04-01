@@ -10,7 +10,7 @@ import Alamofire
 
 class ConsumerNetworkManager {
     static let shared = ConsumerNetworkManager()
-    private let BASE_URL = "http://3.36.91.181:8084/api"
+    private let BASE_URL = "https://j10b206.p.ssafy.io/api"
 
     func fetch(endpoint: String?, commercialDistrictCode: String, completion: @escaping (Result<Data, Error>) -> Void) {
         if let endpoint {

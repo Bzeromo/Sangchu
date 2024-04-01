@@ -10,7 +10,7 @@ import Alamofire
 
 class BookMarkNetworkManager {
     static let shared = BookMarkNetworkManager()
-    private let BASE_URL = "http://3.36.91.181:8084/api/commdist/commercial?commercialDistrictCode="
+    private let BASE_URL = "https://j10b206.p.ssafy.io/api/commdist/commercial?commercialDistrictCode="
 //http://3.36.91.181:8084/api/commdist/commercial?commercialDistrictCode=3111006
     
     func fetch(endpoint: String?, completion: @escaping (Result<Data, Error>) -> Void) {

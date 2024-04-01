@@ -63,8 +63,12 @@ struct IndustryRatioGraphView: View {
 
     var body: some View {
         VStack {
-            Text("업종별 매출 비율")
-                .font(.headline)
+            VStack {
+                Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
+                Text("업종별 매출 비율")
+                    .font(.largeTitle)
+            }
+            .frame(width: UIScreen.main.bounds.width, alignment: .center)
             Chart(chartData, id: \.label) { dataItem in
                 SectorMark(
                     angle: .value("매출 비율", dataItem.valueRatio),
@@ -74,69 +78,146 @@ struct IndustryRatioGraphView: View {
                 .cornerRadius(5)
                 .opacity(dataItem.label == maxSalesCategory ? 1 : 0.5) // 가장 높은 매출 비율을 가진 업종을 강조
                 .foregroundStyle(by: .value("업종", dataItem.label))
+                .annotation(position: .overlay) {
+                     Text("\(dataItem.valueRatio, specifier: "%.1f")%")
+                        .font(.caption.bold())
+                 }
             }
-            .frame(height: 200)
+            .frame(width: UIScreen.main.bounds.width * 0.8, height: 350)
         }
     }
 }
+
 //
 struct QuarterlyGraphView: View {
     var chartData: [SalesModel.QuarterlyChartData]
+    @State private var presentedData: [SalesModel.QuarterlyChartData] = []
+    @State private var animate: Bool = false
 
     var body: some View {
         VStack {
-            Text("분기별 매출")
-                .font(.headline)
-            Chart(chartData, id: \.id) { dataItem in
+            VStack {
+                Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
+                Text("분기별 월매출")
+                    .font(.largeTitle)
+                Text("(단위 : 백만원)")
+                    .frame(width: UIScreen.main.bounds.width, alignment:.trailing)
+                    .font(.caption2)
+                    .foregroundStyle(Color.customgray)
+                    .padding(.trailing)
+            }
+            .frame(width: UIScreen.main.bounds.width, alignment: .center)
+            Chart(presentedData, id: \.id) { dataItem in
                 BarMark(
                     x: .value("Quarter", dataItem.label),
-                    y: .value("Sales", dataItem.valueWeekDay )
+                    y: .value("Sales", animate ? dataItem.valueWeekDay / 1000000 : 0 )
                 )
                 .foregroundStyle(.red)
                 BarMark(
                     x: .value("Quarter", dataItem.label),
-                    y: .value("Sales", dataItem.valueWeekend )
+                    y: .value("Sales", animate ? dataItem.valueWeekend / 1000000 : 0 )
                 )
                 .foregroundStyle(.blue)
+                .annotation(position: .automatic) {
+                    Text("\((dataItem.valueWeekend + dataItem.valueWeekDay) / 1000000, specifier: "%.0f")")
+                }
             }
             .chartLegend(.visible)
             .frame(height: 300)
+            .onAppear {
+                presentedData = chartData // 모든 데이터를 presentedData에 할당
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                        animate = true // 애니메이션 시작
+                    }
+                }
+            }
+            .onDisappear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.5, blendDuration: 0.5)) {
+                        animate = false // 애니메이션 시작
+                    }
+                }
+            }
         }
     }
 }
+
 //
 struct DayGraphView: View {
     var chartData: [SalesModel.CountAndAmountChartData]
+    @State private var presentedData: [SalesModel.CountAndAmountChartData] = []
+    @State private var animate: Bool = false
+    @State private var selectedMetric: String = "매출 건수"
 
     var body: some View {
         VStack {
-            Text("요일별 매출")
-                .font(.headline)
-            Chart {
-                ForEach(chartData) { dataItem in
+            VStack {
+                Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
+                Text("요일별 매출")
+                    .font(.largeTitle)
+                Text("(단위 : 만원)")
+                    .frame(width: UIScreen.main.bounds.width, alignment:.trailing)
+                    .font(.caption2)
+                    .foregroundStyle(Color.customgray)
+                    .padding(.trailing)
+            }
+            
+            Picker("매출 데이터", selection: $selectedMetric) {
+                Text("매출 건수").tag("매출 건수")
+                Text("매출 금액").tag("매출 금액")
+            }
+            .pickerStyle(.segmented)
+            .padding()
+            
+            Chart(chartData) { data in
+                if selectedMetric == "매출 건수" {
                     BarMark(
-                        x: .value("요일", dataItem.label),
-                        y: .value("매출건수", dataItem.count)
+                        x: .value("요일", data.label),
+                        y: .value("매출 건수", animate ? data.count : 0)
                     )
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                     .annotation(position: .top, alignment: .center) {
-                        Text("\(Int(dataItem.count))")
+                        Text("\(data.count, specifier: "%.0f")건")
                             .font(.caption)
                     }
-                    
+                } else {
                     BarMark(
-                        x: .value("요일", dataItem.label),
-                        y: .value("매출금액", dataItem.amount)
+                        x: .value("요일", data.label),
+                        y: .value("매출 금액", animate ?  data.amount / 10000 : 0)
                     )
-                    .foregroundStyle(.red)
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                     .annotation(position: .top, alignment: .center) {
-                        Text(String(format: "%.0f", dataItem.amount))
+                        Text("\(data.amount / 10000, specifier: "%.0f")")
                             .font(.caption)
                     }
                 }
             }
             .chartLegend(.visible)
             .frame(height: 300)
+            .onAppear {
+                presentedData = chartData // 모든 데이터를 presentedData에 할당
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                        animate = true // 애니메이션 시작
+                    }
+                }
+            }
+            .onChange(of: selectedMetric) { newValue in
+                animate = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                        animate = true // 애니메이션 시작
+                    }
+                }
+            }
+            .onDisappear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    withAnimation(.interactiveSpring(response: 0.1, dampingFraction: 0.1, blendDuration: 0.1)) {
+                        animate = false // 애니메이션 시작
+                    }
+                }
+            }
         }
     }
     
@@ -144,94 +225,158 @@ struct DayGraphView: View {
 //
 struct TimeGraphView: View {
     var chartData: [SalesModel.CountAndAmountChartData]
+    @State private var presentedData: [SalesModel.CountAndAmountChartData] = []
+    @State private var animate: Bool = false
+    @State private var selectedMetric: String = "매출 건수"
 
     var body: some View {
         VStack {
-            Text("요일별 매출 분석")
-                .font(.headline)
-            HStack {
-                // 매출 건수 차트
-                VStack {
-                    Text("매출 건수")
-                    Chart(chartData) { data in
-                        BarMark(
-                            x: .value("요일", data.label),
-                            y: .value("매출 건수", data.count)
-                        )
-                        .foregroundStyle(.blue)
-                    }
-                    .frame(height: 200)
-                }
-                
-                // 매출 금액 차트
-                VStack {
-                    Text("매출 금액")
-                    Chart(chartData) { data in
-                        BarMark(
-                            x: .value("요일", data.label),
-                            y: .value("매출 금액", data.amount / 10000) // 스케일링 적용
-                        )
-                        .foregroundStyle(.red)
-                        .annotation(position: .top, alignment: .center) {
-                            Text("\(data.amount, specifier: "%.0f")₩")
-                                .font(.caption)
-                        }
-                    }
-                    .frame(height: 200)
-                }
-            }
-        }
-
-    }
-}
-// AgeGraphView
-struct AgeGraphView: View {
-    var chartData: [SalesModel.CountAndAmountChartData]
-    @State private var showingCount = true // 사용자가 '매출 건수'를 보고 싶은지 여부
-
-    var body: some View {
-        LazyVStack {
-            Text("연령대별 매출")
-                .font(.headline)
+            Text("시간대별 월매출")
+                .font(.largeTitle)
             
-            // '매출 건수'와 '매출 금액' 사이를 전환할 수 있는 버튼들
-            HStack {
-                Button("매출 건수") {
-                    withAnimation {
-                        showingCount = true
-                    }
-                }
-                .buttonStyle(.bordered)
-                
-                Button("매출 금액") {
-                    withAnimation {
-                        showingCount = false
-                    }
-                }
-                .buttonStyle(.bordered)
-            }
+            Text("(단위 : 만원)")
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .font(.caption2)
+                .foregroundColor(.customgray)
+                .padding(.trailing)
 
-            // 차트 표시
+            Picker("매출 데이터", selection: $selectedMetric) {
+                Text("매출 건수").tag("매출 건수")
+                Text("매출 금액").tag("매출 금액")
+            }
+            .pickerStyle(.segmented)
+            .padding()
+
             Chart(chartData) { data in
-                if showingCount {
+                if selectedMetric == "매출 건수" {
                     BarMark(
-                        x: .value("연령대", data.label),
-                        y: .value("매출건수", data.count)
+                        x: .value("시간대", data.label),
+                        y: .value("매출 건수", animate ? data.count : 0)
                     )
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                    .annotation(position: .top, alignment: .center) {
+                        Text("\(data.count, specifier: "%.0f")건")
+                            .font(.caption)
+                    }
                 } else {
                     BarMark(
-                        x: .value("연령대", data.label),
-                        y: .value("매출금액", data.amount)
+                        x: .value("시간대", data.label),
+                        y: .value("매출 금액", animate ?  data.amount / 10000 : 0)
                     )
-                    .foregroundStyle(.red)
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                    .annotation(position: .top, alignment: .center) {
+                        Text("\(data.amount / 10000, specifier: "%.0f")")
+                            .font(.caption)
+                    }
                 }
             }
             .chartLegend(.visible)
             .frame(height: 300)
+            .onAppear {
+                presentedData = chartData // 모든 데이터를 presentedData에 할당
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                        animate = true // 애니메이션 시작
+                    }
+                }
+            }
+            .onChange(of: selectedMetric) { newValue in
+                animate = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                        animate = true // 애니메이션 시작
+                    }
+                }
+            }
+            .onDisappear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    withAnimation(.interactiveSpring(response: 0.1, dampingFraction: 0.1, blendDuration: 0.1)) {
+                        animate = false // 애니메이션 시작
+                    }
+                }
+            }
         }
     }
 }
+
+// AgeGraphView
+struct AgeGraphView: View {
+    var chartData: [SalesModel.CountAndAmountChartData]
+    @State private var presentedData: [SalesModel.CountAndAmountChartData] = []
+    @State private var animate: Bool = false
+    @State private var selectedMetric: String = "매출 건수"
+
+    var body: some View {
+        VStack {
+            Text("연령대별 월매출")
+                .font(.largeTitle)
+            
+            Text("(단위 : 만원)")
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .font(.caption2)
+                .foregroundColor(.customgray)
+                .padding(.trailing)
+
+            Picker("매출 데이터", selection: $selectedMetric) {
+                Text("매출 건수").tag("매출 건수")
+                Text("매출 금액").tag("매출 금액")
+            }
+            .pickerStyle(.segmented)
+            .padding()
+
+            // 차트 표시
+            Chart(chartData) { data in
+                if selectedMetric == "매출 건수" {
+                    BarMark(
+                        x: .value("연령대", data.label),
+                        y: .value("매출 건수", animate ? data.count : 0)
+                    )
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                    .annotation(position: .top, alignment: .center) {
+                        Text("\(data.count, specifier: "%.0f")건")
+                            .font(.caption)
+                    }
+                } else {
+                    BarMark(
+                        x: .value("연령대", data.label),
+                        y: .value("매출 금액", animate ?  data.amount / 10000 : 0)
+                    )
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                    .annotation(position: .top, alignment: .center) {
+                        Text("\(data.amount / 10000, specifier: "%.0f")")
+                            .font(.caption)
+                    }
+                }
+            }
+            .chartLegend(.visible)
+            .frame(height: 300)
+            .onAppear {
+                presentedData = chartData // 모든 데이터를 presentedData에 할당
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                        animate = true // 애니메이션 시작
+                    }
+                }
+            }
+            .onChange(of: selectedMetric) { newValue in
+                animate = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
+                        animate = true // 애니메이션 시작
+                    }
+                }
+            }
+            .onDisappear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    withAnimation(.interactiveSpring(response: 0.1, dampingFraction: 0.1, blendDuration: 0.1)) {
+                        animate = false // 애니메이션 시작
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 
 struct SalesChartView: View {
@@ -255,39 +400,57 @@ struct SalesChartView: View {
                 } else {
                     // 직전분기 매출 관련 VStack
                     VStack (alignment: .leading, spacing: 10) {
-                        Text("직전분기월평균및주중주말매출금액")
-                            .font(.title)
-                            .padding(.top)
-                        HStack {
-                            Group {
-                                Text(recentQuarter + " : ")
-                                if let monthlySales = textDataSets?.monthlySales {
-                                    Text("\(monthlySales)원")
-                                } else {
-                                    Text("데이터 없음")
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.defaultbg)
+                            .frame(height: UIScreen.main.bounds.height * 0.2)
+                            .overlay(
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text("매출")
+                                        .font(.largeTitle.bold())
+                                        .padding(.bottom, 20)
+                                    HStack {
+                                        Group {
+                                            Text(recentQuarter)
+                                                .foregroundColor(.defaultfont)
+                                                .font(.title2)
+                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                            if let monthlySales = textDataSets?.monthlySales {
+                                                Text("\(monthlySales)원")
+                                            } else {
+                                                Text("데이터 없음")
+                                            }
+                                        }
+                                    }
+                                    Divider()
+                                    HStack {
+                                        Group {
+                                            Text("주중 매출")
+                                                .foregroundColor(.defaultfont)
+                                                .font(.title2)
+                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                            if let weekDaySales = textDataSets?.weekDaySales {
+                                                Text("\(weekDaySales)원")
+                                            } else {
+                                                Text("데이터 없음")
+                                            }
+                                        }
+                                    }
+                                    Divider()
+                                    HStack {
+                                        Group {
+                                            Text("주말 매출")
+                                                .foregroundColor(.defaultfont)
+                                                .font(.title2)
+                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                            if let weekendSales = textDataSets?.weekendSales {
+                                                Text("\(weekendSales)원")
+                                            } else {
+                                                Text("데이터 없음")
+                                            }
+                                        }
+                                    }
                                 }
-                            }
-                        }
-                        HStack {
-                            Group {
-                                Text("주중 매출")
-                                if let weekDaySales = textDataSets?.weekDaySales {
-                                    Text("\(weekDaySales)원")
-                                } else {
-                                    Text("데이터 없음")
-                                }
-                            }
-                        }
-                        HStack {
-                            Group {
-                                Text("주말 매출")
-                                if let weekendSales = textDataSets?.weekendSales {
-                                    Text("\(weekendSales)원")
-                                } else {
-                                    Text("데이터 없음")
-                                }
-                            }
-                        }
+                        )
                     }
                     .padding(.horizontal)
                     // 각종 차트 데이터들
@@ -301,6 +464,7 @@ struct SalesChartView: View {
                                 VStack {
                                     if !industryRatioChartDataSets.isEmpty {
                                         IndustryRatioGraphView(chartData: industryRatioChartDataSets)
+                                            .padding(.vertical, 200)
                                     }
                                 }
                                 VStack {
@@ -326,10 +490,9 @@ struct SalesChartView: View {
                             }
                         }
                     } // end of TabView
-                    .frame(height: 300) // end of VStack
-                    .tabViewStyle(.page(indexDisplayMode: .always))
-                    .scrollIndicatorsFlash(onAppear: true)
-                    .padding(.top, 20)
+                    .frame(height: 450)
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    .padding(.vertical, 20)
                 } // end of else
             } // end of outer VStack
             .onAppear() {

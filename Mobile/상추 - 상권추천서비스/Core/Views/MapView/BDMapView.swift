@@ -172,7 +172,8 @@ struct MapView: UIViewRepresentable {
 
     
     func fetchCD(mapView: NMFMapView) {
-        let url = "http://3.36.91.181:8084/api/commdist/all"
+        let url = "https://j10b206.p.ssafy.io/api/commdist/all"
+        print(url)
         AF.request(url).responseDecodable(of: [CommercialDistrict].self) { response in
             switch response.result {
             case .success(let districts):
@@ -391,12 +392,8 @@ struct BDMapView: View {
                                     else {
                                         CDInfoView(CDcode: viewModel.selectedCDCode, CDname: viewModel.selectedCDName)
                                     }
-//                                    Button("닫기") {
-//                                        viewModel.showBottomSheet = false
-//                                    }
-//                                    .padding()
                                 }
-                                .presentationDetents([.fraction(0.55), .fraction(0.9)])
+                                .presentationDetents([.fraction(0.7), .fraction(0.9)])
                                 .edgesIgnoringSafeArea(.all)
                         }
                         .sheet(isPresented: $viewModel.showBoroughSheet) {

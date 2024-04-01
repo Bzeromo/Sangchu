@@ -10,7 +10,7 @@ import Alamofire
 
 class SalesNetworkManager {
     static let shared = SalesNetworkManager()
-    private let BASE_URL = "http://3.36.91.181:8084/api/sales"
+    private let BASE_URL = "https://j10b206.p.ssafy.io/api/sales"
 
     func fetch(endpoint: String?, commercialDistrictCode: String, completion: @escaping (Result<Data, Error>) -> Void) {
         if let endpoint {

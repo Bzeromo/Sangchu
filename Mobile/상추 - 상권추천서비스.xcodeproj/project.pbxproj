@@ -44,6 +44,7 @@
 		65FB38D72BB15FF00097FD2D /* HomeNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38D62BB15FF00097FD2D /* HomeNetworkManager.swift */; };
 		65FB38D92BB160310097FD2D /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38D82BB160310097FD2D /* HomeModel.swift */; };
 		DA0AB18B2BABCCD800D8BBDF /* CDInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0AB18A2BABCCD800D8BBDF /* CDInfoView.swift */; };
+		DA1CAC152BB9B41200C88D50 /* AnimationChartExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1CAC142BB9B41200C88D50 /* AnimationChartExample.swift */; };
 		DA2162192BA9EC2E009750B6 /* CommercialDistrictOutline.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */; };
 		DA73BC6C2BB3B69800CFA087 /* MapAdditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA73BC6B2BB3B69800CFA087 /* MapAdditional.swift */; };
 		DA73BC6E2BB3FABB00CFA087 /* VariableMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA73BC6D2BB3FABB00CFA087 /* VariableMapping.swift */; };
@@ -61,6 +62,7 @@
 		DAA4188A2BB07BDF006B48B5 /* ConsumerNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA418892BB07BDF006B48B5 /* ConsumerNetworkManager.swift */; };
 		DAA4188C2BB07D4A006B48B5 /* SalesChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA4188B2BB07D4A006B48B5 /* SalesChartView.swift */; };
 		DAA4188E2BB07D58006B48B5 /* InfraChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA4188D2BB07D58006B48B5 /* InfraChartView.swift */; };
+		DAAB02DF2BBA749E0036718A /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = DAAB02DE2BBA749E0036718A /* Lottie */; };
 		DAD092202BA8A77B00A6DF92 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD0921F2BA8A77B00A6DF92 /* LocationService.swift */; };
 		DAD092222BA922C100A6DF92 /* GeoJSONModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD092212BA922C100A6DF92 /* GeoJSONModels.swift */; };
 		DAD092242BA92A1300A6DF92 /* GeoJSONLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD092232BA92A1300A6DF92 /* GeoJSONLoader.swift */; };
@@ -133,6 +135,7 @@
 		C62EB89CD48F35A78542E386 /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig"; sourceTree = "<group>"; };
 		DA0AB18A2BABCCD800D8BBDF /* CDInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDInfoView.swift; sourceTree = "<group>"; };
 		DA0AB19E2BAD18BA00D8BBDF /* Charts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Charts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA1CAC142BB9B41200C88D50 /* AnimationChartExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationChartExample.swift; sourceTree = "<group>"; };
 		DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CommercialDistrictOutline.geojson; sourceTree = "<group>"; };
 		DA73BC6B2BB3B69800CFA087 /* MapAdditional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapAdditional.swift; sourceTree = "<group>"; };
 		DA73BC6D2BB3FABB00CFA087 /* VariableMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableMapping.swift; sourceTree = "<group>"; };
@@ -164,6 +167,7 @@
 				DA7C64A22BA2062800BE74DD /* NMapsGeometry.xcframework in Frameworks */,
 				DA7C64A42BA2062800BE74DD /* NMapsMap.xcframework in Frameworks */,
 				65A66B372BA7D3B500E4E3D0 /* SwiftUIImageViewer in Frameworks */,
+				DAAB02DF2BBA749E0036718A /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +415,7 @@
 				DAA418872BB07B69006B48B5 /* ConsumerChartView.swift */,
 				DAA4188B2BB07D4A006B48B5 /* SalesChartView.swift */,
 				DAA4188D2BB07D58006B48B5 /* InfraChartView.swift */,
+				DA1CAC142BB9B41200C88D50 /* AnimationChartExample.swift */,
 			);
 			path = ChartView;
 			sourceTree = "<group>";
@@ -475,6 +480,7 @@
 			name = "상추 - 상권추천서비스";
 			packageProductDependencies = (
 				65A66B362BA7D3B500E4E3D0 /* SwiftUIImageViewer */,
+				DAAB02DE2BBA749E0036718A /* Lottie */,
 			);
 			productName = "상추 - 상권추천서비스";
 			productReference = 6577BAE92B9EB65A0071A3EA /* 상추 - 상권추천서비스.app */;
@@ -553,6 +559,7 @@
 			mainGroup = 6577BAE02B9EB65A0071A3EA;
 			packageReferences = (
 				65A66B352BA7D3B500E4E3D0 /* XCRemoteSwiftPackageReference "swiftui-image-viewer" */,
+				DAAB02DD2BBA749E0036718A /* XCRemoteSwiftPackageReference "lottie-spm" */,
 			);
 			productRefGroup = 6577BAEA2B9EB65A0071A3EA /* Products */;
 			projectDirPath = "";
@@ -734,6 +741,7 @@
 				650D1ED32BA19B3A0055B3BA /* BookMarkList.swift in Sources */,
 				DA830A062BB685100053A088 /* SalesNetworkManager.swift in Sources */,
 				65FB38D52BB085730097FD2D /* SalesModel.swift in Sources */,
+				DA1CAC152BB9B41200C88D50 /* AnimationChartExample.swift in Sources */,
 				DAD092242BA92A1300A6DF92 /* GeoJSONLoader.swift in Sources */,
 				659A1FA72BA2C70000B6FDAB /* HashTagItem.swift in Sources */,
 				DA73BC6E2BB3FABB00CFA087 /* VariableMapping.swift in Sources */,
@@ -1098,6 +1106,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		DAAB02DD2BBA749E0036718A /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.4.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1105,6 +1121,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 65A66B352BA7D3B500E4E3D0 /* XCRemoteSwiftPackageReference "swiftui-image-viewer" */;
 			productName = SwiftUIImageViewer;
+		};
+		DAAB02DE2BBA749E0036718A /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DAAB02DD2BBA749E0036718A /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

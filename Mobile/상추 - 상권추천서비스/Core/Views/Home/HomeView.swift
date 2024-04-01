@@ -213,7 +213,7 @@ struct HomeView: View {
             Spacer().frame(height: 20)
             
             // Top10 서울 상권 Section
-            Section(header: HStack(alignment: .bottom, spacing: 5){
+            Section(header: HStack(alignment: .bottom, spacing: 5) {
                 Text("서울시 상권").font(.title2).fontWeight(.semibold).foregroundColor(.black).padding(.leading , 20)
                     Text("Top 10").font(.title2).fontWeight(.semibold).foregroundStyle( LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
                 
@@ -241,6 +241,7 @@ struct HomeView: View {
                     Text("서울에서 뜨고있는 상권을 한눈에!").font(.system(size: 14)).foregroundColor(.gray).padding(.leading , 20)
                     Spacer()
                 }
+//                AnimationChartExample()
                 ScrollView(.horizontal){
                     LazyHStack{
                         if let top10 = Top10 {
