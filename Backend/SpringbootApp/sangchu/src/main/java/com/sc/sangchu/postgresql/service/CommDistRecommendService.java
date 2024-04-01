@@ -197,7 +197,7 @@ public class CommDistRecommendService {
                         .dongCode(entity.getDongCode())
                         .dongName(entity.getDongName())
                         .areaSize(entity.getAreaSize())
-                        .commercialDistrictScore(entity.getCommercialDistrictScore())
+                        .commercialDistrictScore(commEstimatedSalesEntity.getCommercialServiceTotalScore())
                         .salesScore(commEstimatedSalesEntity.getSalesScore())
                         .residentPopulationScore(entity.getResidentPopulationScore())
                         .floatingPopulationScore(entity.getFloatingPopulationScore())

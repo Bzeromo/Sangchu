@@ -253,4 +253,8 @@ public class CommEstimatedSalesEntity {
     //해당업종 매출점수
     @Column(name = "monthly_sales_score")
     private Double salesScore;
+
+    //해당업종 총 점수
+    @Column(name = "commercial_service_total_score")
+    private Double commercialServiceTotalScore;
 }
