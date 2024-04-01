@@ -38,7 +38,7 @@ load_dotenv()
 
 # PostgreSQL 연결
 engine = create_engine(
-    f'postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}')
+    f'postgresql://{os.getenv("POSTGRES_USER")}:{os.getenv("POSTGRES_PASSWORD")}@{os.getenv("POSTGRES_HOST")}:{os.getenv("POSTGRES_PORT")}/{os.getenv("POSTGRES_DB")}')
 
 # Redis 연결
 r = redis.Redis(host=os.getenv('REDIS_HOST'), port=os.getenv('REDIS_PORT'), password=os.getenv('REDIS_PASSWORD'),
@@ -496,9 +496,9 @@ tables_info = {
     'working_population_with_commercial_district': ('comm_working_population_tb', None, True)
 }
 
-# save_df_to_sql(engine, dfs, tables_info, r)
+save_df_to_sql(engine, dfs, tables_info, r)
 
-dfs['sales_commercial_district'].to_csv('files/api/추정매출-상권.csv', encoding='CP949', index=False)
+# dfs['sales_commercial_district'].to_csv('files/api/추정매출-상권.csv', encoding='CP949', index=False)
 
 end = time.time()
 
