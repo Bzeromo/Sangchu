@@ -1,34 +1,9 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-import matplotlib.pyplot as plt
 import os
 
 folder_path = 'files/chart/score'
 os.makedirs(folder_path, exist_ok=True)
-
-
-def draw_boxplot(target, title_name):
-    # 박스플롯 그리기
-    plt.figure(figsize=(8, 6))
-    target.plot(kind='box')
-    plt.title(title_name)
-
-    # 파일로 저장
-    plt.savefig(os.path.join(folder_path, title_name + '_boxplot'))
-    plt.close()
-
-
-def draw_hist(target, xlabel, title_name):
-    # 히스토그램 그리기
-    plt.hist(target, bins=20, color='skyblue', edgecolor='black')
-    plt.title(title_name)
-    plt.xlabel(xlabel)
-    plt.ylabel('Frequency')
-
-    # 파일로 저장
-    plt.savefig(os.path.join(folder_path, title_name + '_boxplot'))
-    plt.close()
-
 
 def calc_scores(df_list, result_df, target_column_list):
     # 점수지표 뽑아야 하는 데이터 프레임, 타겟 컬럼 리스트로 받음
@@ -36,44 +11,40 @@ def calc_scores(df_list, result_df, target_column_list):
         # 가장 최근 년분기 코드를 찾음
         max_year_quarter_code = df['year_quarter_code'].max()
         max_year_quarter_code_df = df[df['year_quarter_code'] == max_year_quarter_code][
-            ['commercial_district_code', target_column_list[idx]]]
-
-        draw_boxplot(df[target_column_list[idx]], str(max_year_quarter_code) + " boxplot of " + target_column_list[idx])
+            ['commercial_district_code', target_column_list[idx]]].copy()
 
         # Q1(제1사분위수), Q3(제3사분위수) 계산
         Q1 = max_year_quarter_code_df[target_column_list[idx]].quantile(0.25)
         Q3 = max_year_quarter_code_df[target_column_list[idx]].quantile(0.75)
-        IQR = Q3 - Q1
 
         # 이상치 기준 설정
+        IQR = Q3 - Q1
         lower_bound = Q1 - 1.5 * IQR
         upper_bound = Q3 + 1.5 * IQR
 
-        # 이상치 탐지 및 total_resident_population_score 설정
-        max_year_quarter_code_df[target_column_list[idx] + '_score'] = 100
-        max_year_quarter_code_df.loc[
-            max_year_quarter_code_df[target_column_list[idx]] < lower_bound, target_column_list[idx] + '_score'] = 0
+        score_column = target_column_list[idx] + '_score'
+        max_year_quarter_code_df[score_column] = 100
+        max_year_quarter_code_df.loc[max_year_quarter_code_df[target_column_list[idx]] < lower_bound, score_column] = 0
 
+        valid_idx = (max_year_quarter_code_df[target_column_list[idx]] >= lower_bound) & (
+                    max_year_quarter_code_df[target_column_list[idx]] <= upper_bound)
         # 이상치 제거
-        outliers_rm_df = max_year_quarter_code_df[(max_year_quarter_code_df[target_column_list[idx]] >= lower_bound) & (
-                max_year_quarter_code_df[target_column_list[idx]] <= upper_bound)].copy()
+        outliers_rm_df = max_year_quarter_code_df[valid_idx].copy()
 
-        # MinMaxScaler 선언 및 Fitting
-        mMscaler = MinMaxScaler()
-        scaled_values = mMscaler.fit_transform(outliers_rm_df[[target_column_list[idx]]])
+        if not outliers_rm_df.empty:
+            # MinMaxScaler 선언 및 Fitting
+            mMscaler = MinMaxScaler()
+            scaled_values = mMscaler.fit_transform(outliers_rm_df[[target_column_list[idx]]])
 
-        # 스케일링된 값을 target_column_list[idx] 열에 대체
-        max_year_quarter_code_df.loc[
-            (max_year_quarter_code_df[target_column_list[idx]] >= lower_bound) & (max_year_quarter_code_df[
-                                                                                      target_column_list[
-                                                                                          idx]] <= upper_bound),
-            target_column_list[idx] + '_score'] = scaled_values * 100
+            # 스케일링된 값을 target_column_list[idx] 열에 대체하기 전에, 해당 컬럼의 데이터 타입을 float으로 변환
+            max_year_quarter_code_df[score_column] = max_year_quarter_code_df[score_column].astype(float)
 
-        # 히스토그램 그리기
-        draw_hist(max_year_quarter_code_df[target_column_list[idx] + '_score'], target_column_list[idx] + '_score',
-                  str(max_year_quarter_code) + ' histogram of ' + target_column_list[idx] + '_score')
-        result_df = pd.merge(result_df,
-                             max_year_quarter_code_df[['commercial_district_code', target_column_list[idx] + '_score']],
+            # 스케일링된 값을 할당
+            max_year_quarter_code_df.loc[
+                valid_idx, score_column
+            ] = (scaled_values * 100).astype(float)
+
+        result_df = pd.merge(result_df, max_year_quarter_code_df[['commercial_district_code', score_column]],
                              on=['commercial_district_code'], how='left')
 
     return result_df
@@ -120,24 +91,13 @@ def calc_sales_score(sales_commercial_district_df, store_with_commercial_distric
     # 서비스업종코드별로 이상치 찾기 및 대체
     merged_df = merged_df.groupby('service_code', as_index=False).apply(replace_outliers)
 
-    # 점포당 평균 월 매출 박스플롯 그리기
-    draw_boxplot(merged_df["monthly_sales"], str(max_year_quarter_code) + " boxplot of monthly_sales")
-
-    # 히스토그램 그리기
-    draw_hist(merged_df['monthly_sales'], 'monthly_sales',
-              str(max_year_quarter_code) + ' histogram of monthly_sales')
-
-    # 히스토그램 그리기
-    draw_hist(merged_df['monthly_sales_score'], 'monthly_sales_score',
-              str(max_year_quarter_code) + ' histogram of monthly_sales_score')
-
     # 'monthly_sales_score' 열을 sales_commercial_district_df에 넣기
     sales_commercial_district_df = sales_commercial_district_df.merge(
         merged_df[['year_quarter_code', 'commercial_district_code', 'service_code', 'monthly_sales_score']],
         on=['year_quarter_code', 'commercial_district_code', 'service_code'], how='left')
 
     # 'monthly_sales_score' 열의 null 값을 0으로 대체
-    sales_commercial_district_df['monthly_sales_score'].fillna(0, inplace=True)
+    sales_commercial_district_df['monthly_sales_score'] = sales_commercial_district_df['monthly_sales_score'].fillna(0)
 
     # 상권코드에 따라 groupby 후, monthly_sales 합 구하기
     merged_df['monthly_sales_mean_score'] = merged_df.groupby('commercial_district_code')[
@@ -207,6 +167,10 @@ def calc_RDI(seoul_df, store_df, area_df, result_df):
     merged_df = year_quarter_code_and_commercial_district_code_groupby_all_store_counts.reset_index().merge(area,
                                                                                                             how='left',
                                                                                                             on='commercial_district_code')
+
+    merged_df['store_count'] = pd.to_numeric(merged_df['store_count'], errors='coerce')
+    merged_df['area_size'] = pd.to_numeric(merged_df['area_size'], errors='coerce')
+
     merged_df['store_density'] = merged_df['store_count'] / merged_df['area_size']
 
     result_df = result_df.merge(merged_df, how='left', on=['year_quarter_code',
@@ -220,9 +184,9 @@ def calc_sales_divide_store_count(sales_commercial_district_df, store_with_comme
     # sales 데이터셋의 모든 컬럼과 store 데이터셋과 병합
     merged_df = pd.merge(sales_commercial_district_df,
                          store_with_commercial_district_df[
-                             ['year_quarter_code', 'commercial_district_code', 'service_code', 'store_count']],
+                             ['year_quarter_code', 'commercial_district_code', 'service_code', 'similar_store_count']],
                          on=['year_quarter_code', 'commercial_district_code', 'service_code'], how='left')
-
+    merged_df.to_csv("files/api/check_sales.csv", encoding='CP949', index=False)
     # 점포 수로 나누는 작업
     sales_columns = sales_commercial_district_df.columns.difference(
         ['year_quarter_code', 'commercial_district_code', 'commercial_district_name', 'service_code', 'service_name',
@@ -230,11 +194,12 @@ def calc_sales_divide_store_count(sales_commercial_district_df, store_with_comme
 
     for column in sales_columns:
         merged_df[column] = merged_df.apply(
-            lambda x: x[column] / x['store_count'] / 3 if x['store_count'] > 0 else x[column], axis=1)
+            lambda x: x[column] / x['similar_store_count'] / 3, axis=1)
 
     # sales 데이터만 분리
     calc_sales_df = merged_df[
-        list(sales_columns) + ['year_quarter_code', 'commercial_district_code', 'commercial_district_name',
-                               'service_code', 'service_name', 'major_category_code', 'major_category_code_name',
-                               'middle_category_code', 'middle_category_code_name']]
+        ['year_quarter_code', 'commercial_district_code', 'commercial_district_name',
+         'service_code', 'service_name', 'major_category_code', 'major_category_code_name',
+         'middle_category_code', 'middle_category_code_name'] + list(sales_columns)]
+
     return calc_sales_df
