@@ -1,5 +1,5 @@
 import pandas as pd
-from modules.majorAndMiddleCategoryPreProcessing import \
+from modules.major_and_middle_category_preprocessing import \
     categorization_into_major_and_medium_categories_by_service_industry_code_name
 from modules.commercial_district_code_preprocessing import clean_commercial_district_codes
 from modules.calculation import calc_scores, calc_sales_score, calc_total_score, calc_RDI, calc_sales_divide_store_count
