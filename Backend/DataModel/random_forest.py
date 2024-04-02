@@ -23,7 +23,7 @@ mae = mean_absolute_error(y_test, y_pred)
 r_squared = r2_score(y_test, y_pred)
 
 # 결과 출력
-print("Mean Squared Error (MSE):", mse)
+print("Root Mean Squared Error (RMSE):", mse**0.5)
 print("Mean Absolute Error (MAE):", mae)
 print("R-squared:", r_squared)
 import numpy as np

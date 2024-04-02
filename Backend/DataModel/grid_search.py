@@ -1,6 +1,5 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
 import normalization
 
 X = normalization.X
@@ -13,17 +12,8 @@ param_grid = {
     'max_depth': [None, 5, 10, 20],
     'min_samples_split': [2, 5, 10],
     'min_samples_leaf': [1, 2, 4],
-    'min_weight_fraction_leaf': [0.0, 0.1, 0.2],
     'max_features': ['auto', 'sqrt', 'log2', None],
-    'max_leaf_nodes': [None, 10, 20, 50],
-    'min_impurity_decrease': [0.0, 0.1, 0.2],
     'bootstrap': [True, False],
-    'oob_score': [True, False],
-    'n_jobs': [None, -1],
-    'random_state': [None, 42],
-    'verbose': [0, 1, 2],
-    'warm_start': [True, False],
-    'ccp_alpha': [0.0, 0.1, 0.2]
 }
 
 # 그리드 탐색 객체 생성

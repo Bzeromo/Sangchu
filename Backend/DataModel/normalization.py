@@ -60,15 +60,13 @@ y = merge_df['monthly_sales_now']
 #                  'store_count_diff',
 #                  'total_working_population_previous',
 #                  'total_facilities_previous']]
-X = merge_df[['total_foot_traffic_previous',
-              'commercial_change_previous',
+X = merge_df[['monthly_sales_previous',
+            'total_foot_traffic_previous',
               'rdi_previous',
-              'store_density_previous',
               'total_resident_population_previous',
               'monthly_average_income_amount_previous',
               'expenditure_total_amount_previous',
              'apartment_avg_price_by_area_previous',
-             'area_size',                 
              'total_store_previous',
              'total_working_population_previous',
              'total_facilities_previous']]

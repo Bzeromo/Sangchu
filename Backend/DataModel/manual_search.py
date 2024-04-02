@@ -41,12 +41,12 @@ for n_estimators in n_estimators_range:
 print("Best Parameters:", best_params)
 print("Best MAE:", best_mae)
 
-# import numpy as np
+import numpy as np
 
-# # 실제값과 예측값을 인자로 받아 MAPE를 계산하는 함수
-# def mape(y_true, y_pred):
-#     return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+# 실제값과 예측값을 인자로 받아 MAPE를 계산하는 함수
+def mape(y_true, y_pred):
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
 
-# # 예측값과 실제값을 가지고 MAPE 계산
-# mape_value = mape(y_test, y_pred)
-# print("MAPE:", mape_value)
+# 예측값과 실제값을 가지고 MAPE 계산
+mape_value = mape(y_test, y_pred)
+print("MAPE:", mape_value)
