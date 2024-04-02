@@ -58,7 +58,7 @@ struct MapAdditional: View {
             .disabled(!isPickerTouched) // Picker가 조작되지 않았다면 버튼 비활성화
             .foregroundColor(.black)
             .buttonStyle(RoundedRectangleButtonStyle(
-                bgColor: !isPickerTouched ? Color(hex: "c6c6c6") : Color.sangchu,
+                bgColor: !isPickerTouched ? Color(hex: "c6c6c6") : Color(hex:"58b295"),
                 textColor: .black,
                 width: UIScreen.main.bounds.width * 0.8,
                 hasStroke: false,

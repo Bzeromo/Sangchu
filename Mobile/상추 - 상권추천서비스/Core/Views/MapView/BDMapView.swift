@@ -174,11 +174,10 @@ struct MapView: UIViewRepresentable {
     
     func fetchCD(mapView: NMFMapView) {
         let url = "https://j10b206.p.ssafy.io/api/commdist/all"
-        print(url)
         AF.request(url).responseDecodable(of: [CommercialDistrict].self) { response in
             switch response.result {
             case .success(let districts):
-                print(districts.count)
+                print("\(districts.count)개의 자치구 데이터 로딩")
                 // 결과 처리
                 districts.forEach { district in
                     let lng = district.latitude
@@ -319,7 +318,7 @@ struct MapView: UIViewRepresentable {
     func updateUIView(_ uiView: NMFNaverMapView, context: Context) {
         if let cameraPosition = cameraLatLng {
             // 지정된 위치로 카메라 이동
-            print("\(cameraPosition.lat) , \(cameraPosition.lng) 로 이동합니다!")
+//            print("\(cameraPosition.lat) , \(cameraPosition.lng) 로 이동합니다!")
             
             let cameraUpdate = NMFCameraUpdate(scrollTo: cameraPosition)
             cameraUpdate.animation = .easeIn
@@ -394,7 +393,7 @@ struct BDMapView: View {
                                         CDInfoView(CDcode: viewModel.selectedCDCode, CDname: viewModel.selectedCDName)
                                     }
                                 }
-                                .presentationDetents([.fraction(0.7), .fraction(0.9)])
+                                .presentationDetents([.fraction(0.8), .fraction(0.8)])
                                 .edgesIgnoringSafeArea(.all)
                         }
                         .sheet(isPresented: $viewModel.showBoroughSheet) {

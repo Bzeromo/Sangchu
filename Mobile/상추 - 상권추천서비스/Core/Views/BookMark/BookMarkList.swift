@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SwiftData
-
+import UIKit
 extension View {
     func navigationTitleView<Content: View>(_ content: () -> Content) -> some View {
         self.toolbar {
@@ -27,6 +27,7 @@ struct BookMarkList: View {
     @State private var hashCreate = false
     @State private var searchQuery = ""
     @Query private var items: [BookMarkItem]
+    @State var tmpBookMark : BookMarkItem? = nil
     
     @State private var selectedSortOption = SortOption.allCases.first!
     
@@ -49,6 +50,16 @@ struct BookMarkList: View {
         
         return filteredItems.sort(on: selectedSortOption)
         
+    }
+    
+    @State private var itemForSharing: [Any] = []
+    @State private var isSharedPresented = false
+    // 공유 기능 준비 위한 함수
+    func prepareSharingItems() {
+        itemForSharing = ["[상추] - 서울시 상권 추천 서비스", tmpBookMark?.cdTitle, tmpBookMark?.userMemo]
+        if let imageData = tmpBookMark?.image, let image = UIImage(data: imageData) {
+            itemForSharing.append(image)
+        }
     }
     
     
@@ -92,11 +103,11 @@ struct BookMarkList: View {
                                 }
                                 if let hashtag = item.hashtag {
                                     Text(hashtag.title)
-                                        .foregroundStyle(Color.blue)
+                                        .foregroundStyle(Color.green)
                                         .bold()
                                         .padding(.horizontal)
                                         .padding(.vertical, 8)
-                                        .background(Color.blue.opacity(0.1),
+                                        .background(Color.green.opacity(0.1),
                                                     in: RoundedRectangle(cornerRadius: 8,
                                                                          style: .continuous))
                                 }
@@ -104,7 +115,6 @@ struct BookMarkList: View {
                         .padding(.horizontal, 5)
                         .swipeActions {
                         Button(role: .destructive) {
-                            
                             withAnimation {
                                 context.delete(item)
                             }
@@ -113,6 +123,18 @@ struct BookMarkList: View {
                             Label("Delete", systemImage: "trash")
                                 .symbolVariant(.fill)
                         }.tint(.red)
+                            
+                            Button(action: {
+                                // 공유 시트 표시를 위해 상태를 변경
+                                withAnimation{
+                                    tmpBookMark = item
+                                    isSharedPresented = true
+                                }
+                                
+                            }) {
+                                Label("Share", systemImage: "square.and.arrow.up").foregroundColor(.green)
+                            }.tint(.blue)
+                           
                         
     //                    Button {
     //                        toDoToEdit = item
@@ -123,13 +145,10 @@ struct BookMarkList: View {
                     }
                     } // NavigationLink
                     .padding(.vertical, 5)
-                    
-                    Section{
-                        
-                    }
                 } // ForEach
             }
-            .offset(y : 130)
+            .background(Color(hex: "F4F5F7"))
+            .offset(y : 120)
             .navigationTitle(Text("북마크"))
 //            .navigationTitleView {
 //                // 커스텀 이미지를 네비게이션 타이틀로 사용
@@ -172,6 +191,18 @@ struct BookMarkList: View {
                     ContentUnavailableView.search
                 }
             }
+            .onChange(of: isSharedPresented) { newValue in
+                if newValue {
+                    prepareSharingItems()
+                }
+            }
+            .sheet(isPresented: $isSharedPresented, onDismiss: {
+                // 시트가 닫히면 상태를 초기화
+                isSharedPresented = false
+                itemForSharing = []
+            }) {
+                ActivityViewController(activityItems: itemForSharing)
+            }
             .sheet(isPresented: $hashCreate,
                    content: {
                 NavigationStack{
@@ -182,7 +213,7 @@ struct BookMarkList: View {
             .listSectionSpacing(8)
             .scrollContentBackground(.hidden)
             .padding(.horizontal, 10)
-        }.ignoresSafeArea()
+        }.ignoresSafeArea().background(Color(hex: "F4F5F7"))
             
             
          // VStack

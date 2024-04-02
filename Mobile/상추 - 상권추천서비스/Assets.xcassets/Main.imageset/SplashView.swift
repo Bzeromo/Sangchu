@@ -44,9 +44,6 @@ struct SplashView: View {
                                 .foregroundColor(.white)
                                 .multilineTextAlignment(.center)
                         }
-            
-            
-           
         }.ignoresSafeArea(.all)
     }
 }

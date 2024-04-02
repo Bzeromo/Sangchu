@@ -270,20 +270,7 @@ struct HomeView: View {
                                                             }
                                                         }.padding(.leading , 10).padding(.top, 10)
                                                        
-//                                                        HStack{
-//                                                            VStack(alignment: .leading){
-//                                                                Text("매출점수").font(.caption)
-//                                                                Text("상주인구점수").font(.caption)
-//                                                                Text("유동인구점수").font(.caption)
-//                                                                Text("다양성").font(.caption)
-//                                                            }.hidden()
-//                                                            VStack(alignment: .leading){
-//                                                                Text("\(Int(district.salesScore))").font(.caption)
-//                                                                Text("\(Int(district.residentPopulationScore))").font(.caption)
-//                                                                Text("\(Int(district.floatingPopulationScore))").font(.caption)
-//                                                                Text("\(Int(district.rdiScore))").font(.caption)
-//                                                            }.hidden()
-//                                                        }
+
                                                         Spacer()
                                                         HStack{
                                                            Spacer()
@@ -512,15 +499,12 @@ struct HomeView: View {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
-                    print("저녁")
                     do {
                         // HomeModel.CommercialDistricts 타입으로 디코딩 수정
-                        print("아침")
                         let decodedTop10 = try JSONDecoder().decode([HomeModel.CommercialDistrict].self, from: data)
-                        print("점심")
                         Top10 = decodedTop10
-                        print("저녁")
-                        
+                        print(Top10?.first?.commercialDistrictCode)
+                        print(Top10?.first?.commercialDistrictName)
                     } catch {
                         print("Decoding error: \(error)")
                     }

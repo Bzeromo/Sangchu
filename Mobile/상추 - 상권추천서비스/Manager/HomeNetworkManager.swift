@@ -14,17 +14,14 @@ class HomeNetworkManager {
     func fetch(endpoint: String?, completion: @escaping (Result<Data, Error>) -> Void) {
         if let endpoint {
             let urlString = "\(BASE_URL)\(endpoint)"
-            print(urlString)
             AF
                 .request(urlString)
                 .validate()
                 .responseData { response in
                 switch response.result {
                     case .success(let data):
-                    print("성공")
                         completion(.success(data))
                     case .failure(let error):
-                    print("실패")
                         completion(.failure(error))
                 }
             }

@@ -190,17 +190,17 @@ struct ChooseBorough: View {
                                         Text(borough.rawValue)
                                             .padding()
                                             .font(.system(size: 14))
-                                            .fontWeight(.bold)
+                                            .fontWeight(.medium)
                                             .frame(width: UIScreen.main.bounds.width * 0.28, height : UIScreen.main.bounds.height * 0.048)
                                             .background(self.selectedBorough == borough ? AnyView(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)) : AnyView(Color.white))
-                                            .foregroundStyle(self.selectedBorough == borough ? LinearGradient(colors: [Color.white , Color.white], startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
+                                            .foregroundStyle(self.selectedBorough == borough ? LinearGradient(colors: [Color.white , Color.white], startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color.black , Color.black], startPoint: .leading, endPoint: .trailing))
                                             .fontWeight(self.selectedBorough == borough ? .semibold : .regular)
                                             .clipShape(RoundedRectangle(cornerRadius: 50))
                                             .overlay(
                                                         RoundedRectangle(cornerRadius: 50)
                                                             .stroke(Color(hex:"58b295").opacity(0.7), lineWidth: 0.2)
                                                     )
-                                            .shadow(color: Color(hex:"50B792"), radius: self.selectedBorough == borough ? 0 : 1, x: 1, y: 1)
+                                            .shadow(color: Color(hex:"c6c6c6"), radius: self.selectedBorough == borough ? 0 : 1, x: 1, y: 1)
                                     }
                                     
                                 }

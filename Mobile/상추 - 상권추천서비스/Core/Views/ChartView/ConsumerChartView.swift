@@ -8,8 +8,6 @@
 import SwiftUI
 import Charts
 
-// 사용자 인터페이스를 정의하는 ContentView.swift 파일입니다.
-// 애플리케이션의 뷰를 구성하고 네트워크 요청을 통해 차트 데이터를 로드합니다.
 
 let MainColors: [Color] = [Color(hex: "50B792"),Color(hex: "3B7777")]
 
@@ -91,7 +89,7 @@ enum ConsumerEndpoints: String, CaseIterable, Identifiable {
 //            animateGraph()
 //        }
 //    }
-//    
+//
 //    func animateGraph() {
 //        presentedData = chartData.map { var data = $0; data.animate = false; return data }
 //
@@ -112,34 +110,39 @@ struct QuarterlyFloatingChartView: View {
     @State private var animate: Bool = false
 
     var body: some View {
-        HStack {
-            Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
-            Text("(단위 : 만명)")
-                .font(.caption2)
-                .foregroundStyle(Color.customgray)
-                .padding(.trailing) // 오른쪽 끝에서 약간 떨어지도록 패딩 추가
-        }
-        .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
-        Chart {
-            ForEach(presentedData) { dataPoint in
-                BarMark(
-                    x: .value("Category", dataPoint.label),
-                    y: .value("Value", animate ? dataPoint.value / 10000 : 0) // 여기서 애니메이션 적용
-                )
-                .cornerRadius(5)
-                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
-                .annotation(position: .top) {
-                    Text("\(dataPoint.value / 10000, specifier: "%.0f")")
-                        .font(.caption2.bold())
+        VStack{
+            HStack {
+                Text("분기별 유동인구")
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
+                Text("(단위 : 만명)")
+                    .font(.caption2)
+                    .foregroundStyle(Color.customgray)
+                    .padding(.trailing) // 오른쪽 끝에서 약간 떨어지도록 패딩 추가
+            }
+            .frame(width: UIScreen.main.bounds.width * 0.8)
+            Chart {
+                ForEach(presentedData) { dataPoint in
+                    BarMark(
+                        x: .value("Category", dataPoint.label),
+                        y: .value("Value", animate ? dataPoint.value / 10000 : 0) // 여기서 애니메이션 적용
+                    )
+                    .cornerRadius(5)
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                    .annotation(position: .top) {
+                        Text("\(dataPoint.value / 10000, specifier: "%.0f")")
+                            .font(.caption2.bold())
+                    }
                 }
             }
-        }
-        .frame(height: 300)
-        .chartXAxis {
-            AxisMarks(preset: .aligned, position: .bottom) { value in
-                if let category = value.as(String.self) {
-                    AxisValueLabel(category, centered: true)
-                        .font(.caption2.width(.compressed))
+            .padding().padding(.bottom, 40)
+            .chartXAxis {
+                AxisMarks(preset: .aligned, position: .bottom) { value in
+                    if let category = value.as(String.self) {
+                        AxisValueLabel(category, centered: true)
+                            .font(.caption2.width(.compressed))
+                    }
                 }
             }
         }
@@ -168,41 +171,46 @@ struct DayFloatingChartView: View {
     @State private var animate: Bool = false
 
     var body: some View {
-        HStack {
-            Spacer()
-            Text("(단위 : 명)")
-                .font(.caption2)
-                .foregroundStyle(Color.customgray)
-                .padding(.trailing)
-        }
-        .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
-        Chart {
-            ForEach(presentedData) { dataPoint in
-                BarMark(
-                    x: .value("Category", dataPoint.label),
-                    y: .value("Value", animate ? dataPoint.value / 10000  : 0)
-                )
-                .cornerRadius(5)
-                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
-                .annotation(position: .top, alignment: .center) {
-                    Text("\(dataPoint.value, specifier: "%.0f")")
-                        .font(.caption2)
-                        .foregroundColor(Color.black)
-                        .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.top, 4)
+        VStack{
+            HStack {
+                Text("요일별 유동인구")
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer()
+                Text("(단위 : 명)")
+                    .font(.caption2)
+                    .foregroundStyle(Color.customgray)
+                    .padding(.trailing)
+            }
+            Chart {
+                ForEach(presentedData) { dataPoint in
+                    BarMark(
+                        x: .value("Category", dataPoint.label),
+                        y: .value("Value", animate ? dataPoint.value / 10000  : 0)
+                    )
+                    .cornerRadius(5)
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                    .annotation(position: .top, alignment: .center) {
+                        Text("\(dataPoint.value, specifier: "%.0f")")
+                            .font(.caption2)
+                            .foregroundColor(Color.black)
+                            .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.top, 4)
+                    }
+                }
+            }
+            .padding().padding(.bottom, 40)
+            .chartXAxis {
+                AxisMarks(preset: .aligned, position: .bottom) { value in
+                    if let category = value.as(String.self) {
+                        AxisValueLabel(category, centered: true)
+                            .font(.caption2.width(.compressed))
+                    }
                 }
             }
         }
-        .chartXAxis {
-            AxisMarks(preset: .aligned, position: .bottom) { value in
-                if let category = value.as(String.self) {
-                    AxisValueLabel(category, centered: true)
-                        .font(.caption2.width(.compressed))
-                }
-            }
-        }
-        .frame(height: 300)
+        
         .onAppear {
             presentedData = chartData // 모든 데이터를 presentedData에 할당
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -228,40 +236,44 @@ struct TimeFloatingChartView: View {
     @State private var animate: Bool = false
 
     var body: some View {
-        HStack {
-            Spacer()
-            Text("(단위 : 명)")
-                .font(.caption2)
-                .foregroundStyle(Color.customgray)
-                .padding(.trailing)
-        }
-        .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
-        Chart {
-            ForEach(presentedData) { dataPoint in
-                BarMark(
-                    x: .value("Category", dataPoint.label),
-                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
-                )
-                .cornerRadius(5)
-                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
-                .annotation(position: .top, alignment: .center) {
-                    Text("\(dataPoint.value, specifier: "%.0f")")
-                        .font(.caption2)
-                        .foregroundColor(Color.black)
-                        .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
-                        .fixedSize(horizontal: false, vertical: true)
+        VStack{
+            HStack {
+                Text("시간대별 유동인구")
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer()
+                Text("(단위 : 명)")
+                    .font(.caption2)
+                    .foregroundStyle(Color.customgray)
+                    .padding(.trailing)
+            }
+            Chart {
+                ForEach(presentedData) { dataPoint in
+                    BarMark(
+                        x: .value("Category", dataPoint.label),
+                        y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                    )
+                    .cornerRadius(5)
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                    .annotation(position: .top, alignment: .center) {
+                        Text("\(dataPoint.value, specifier: "%.0f")")
+                            .font(.caption2)
+                            .foregroundColor(Color.black)
+                            .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            .padding().padding(.bottom, 40)
+            .chartXAxis {
+                AxisMarks(preset: .aligned, position: .bottom) { value in
+                    if let category = value.as(String.self) {
+                        AxisValueLabel(category, centered: true)
+                            .font(.caption2.width(.compressed))
+                    }
                 }
             }
         }
-        .chartXAxis {
-            AxisMarks(preset: .aligned, position: .bottom) { value in
-                if let category = value.as(String.self) {
-                    AxisValueLabel(category, centered: true)
-                        .font(.caption2.width(.compressed))
-                }
-            }
-        }
-        .frame(height: 300)
         .onAppear {
             presentedData = chartData // 모든 데이터를 presentedData에 할당
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -287,41 +299,45 @@ struct AgeFloatingChartView: View {
     @State private var animate: Bool = false
 
     var body: some View {
-        HStack {
-            Spacer()
-            Text("(단위 : 명)")
-                .font(.caption2)
-                .foregroundStyle(Color.customgray)
-                .padding(.trailing)
-        }
-        .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
-        Chart {
-            ForEach(presentedData) { dataPoint in
-                BarMark(
-                    x: .value("Category", dataPoint.label),
-                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
-                )
-                .cornerRadius(5)
-                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
-                .annotation(position: .top, alignment: .center) {
-                    Text("\(dataPoint.value, specifier: "%.0f")")
-                        .font(.caption2)
-                        .foregroundColor(Color.black)
-                        .fontWidth(.compressed)
-                        .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
-                        .fixedSize(horizontal: false, vertical: true)
+        VStack{
+            HStack {
+                Text("연령별 유동인구")
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer()
+                Text("(단위 : 명)")
+                    .font(.caption2)
+                    .foregroundStyle(Color.customgray)
+                    .padding(.trailing)
+            }
+            Chart {
+                ForEach(presentedData) { dataPoint in
+                    BarMark(
+                        x: .value("Category", dataPoint.label),
+                        y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                    )
+                    .cornerRadius(5)
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                    .annotation(position: .top, alignment: .center) {
+                        Text("\(dataPoint.value, specifier: "%.0f")")
+                            .font(.caption2)
+                            .foregroundColor(Color.black)
+                            .fontWidth(.compressed)
+                            .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            .padding().padding(.bottom,40)
+            .chartXAxis {
+                AxisMarks(preset: .aligned, position: .bottom) { value in
+                    if let category = value.as(String.self) {
+                        AxisValueLabel(category, centered: true)
+                            .font(.caption2.width(.compressed))
+                    }
                 }
             }
         }
-        .chartXAxis {
-            AxisMarks(preset: .aligned, position: .bottom) { value in
-                if let category = value.as(String.self) {
-                    AxisValueLabel(category, centered: true)
-                        .font(.caption2.width(.compressed))
-                }
-            }
-        }
-        .frame(height: 300)
         .onAppear {
             presentedData = chartData // 모든 데이터를 presentedData에 할당
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -347,40 +363,44 @@ struct QuarterlyResidentChartView: View {
     @State private var animate: Bool = false
 
     var body: some View {
-        HStack {
-            Spacer()
-            Text("(단위 : 명)")
-                .font(.caption2)
-                .foregroundStyle(Color.customgray)
-                .padding(.trailing)
-        }
-        .frame(width: UIScreen.main.bounds.width, alignment: .trailing)
-        Chart {
-            ForEach(presentedData) { dataPoint in
-                BarMark(
-                    x: .value("Category", dataPoint.label),
-                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
-                )
-                .cornerRadius(5)
-                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
-                .annotation(position: .top, alignment: .center) {
-                    Text("\(dataPoint.value, specifier: "%.0f")")
-                        .font(.caption2)
-                        .foregroundColor(Color.black)
-                        .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
-                        .fixedSize(horizontal: false, vertical: true)
+        VStack{
+            HStack {
+                Text("분기별 상주인구")
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer()
+                Text("(단위 : 명)")
+                    .font(.caption2)
+                    .foregroundStyle(Color.customgray)
+                    .padding(.trailing)
+            }
+            Chart {
+                ForEach(presentedData) { dataPoint in
+                    BarMark(
+                        x: .value("Category", dataPoint.label),
+                        y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                    )
+                    .cornerRadius(5)
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                    .annotation(position: .top, alignment: .center) {
+                        Text("\(dataPoint.value, specifier: "%.0f")")
+                            .font(.caption2)
+                            .foregroundColor(Color.black)
+                            .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            .padding().padding(.bottom, 40)
+            .chartXAxis {
+                AxisMarks(preset: .aligned, position: .bottom) { value in
+                    if let category = value.as(String.self) {
+                        AxisValueLabel(category, centered: true)
+                            .font(.caption2.width(.compressed))
+                    }
                 }
             }
         }
-        .chartXAxis {
-            AxisMarks(preset: .aligned, position: .bottom) { value in
-                if let category = value.as(String.self) {
-                    AxisValueLabel(category, centered: true)
-                        .font(.caption2.width(.compressed))
-                }
-            }
-        }
-        .frame(height: 300)
         .onAppear {
             presentedData = chartData // 모든 데이터를 presentedData에 할당
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -408,6 +428,12 @@ struct GenderAgeResidentChartView: View {
 
     var body: some View {
         VStack {
+            HStack{
+                Text("성/연령별 상주인구")
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer()
+            }
             // 성별 선택을 위한 Picker
             Picker("성별", selection: $selectedGender) {
                 Text("남성").tag("남성")
@@ -433,6 +459,7 @@ struct GenderAgeResidentChartView: View {
                     }
                 }
             }
+            .padding().padding(.bottom, 40)
             .chartXAxis {
                 AxisMarks(preset: .aligned, position: .bottom) { value in
                     if let category = value.as(String.self) {
@@ -441,8 +468,7 @@ struct GenderAgeResidentChartView: View {
                     }
                 }
             }
-            .frame(height: 250)
-            .onChange(of: selectedGender) { _ in
+            .onChange(of: selectedGender) {
                 // 성별이 변경될 때마다 차트를 업데이트합니다.
                 withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
                     animate = false // 애니메이션 초기화
@@ -478,32 +504,41 @@ struct QuarterlyWorkingChartView: View {
     @State private var animate: Bool = false
 
     var body: some View {
-        Chart {
-            ForEach(presentedData) { dataPoint in
-                BarMark(
-                    x: .value("Category", dataPoint.label),
-                    y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
-                )
-                .cornerRadius(5)
-                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
-                .annotation(position: .top, alignment: .center) {
-                    Text("\(dataPoint.value, specifier: "%.0f")")
-                        .font(.caption2)
-                        .foregroundColor(Color.black)
-                        .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
-                        .fixedSize(horizontal: false, vertical: true)
+        VStack{
+            HStack{
+                Text("분기별 직장인구")
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer()
+            }
+            Chart {
+                ForEach(presentedData) { dataPoint in
+                    BarMark(
+                        x: .value("Category", dataPoint.label),
+                        y: .value("Value", animate ? dataPoint.value : 0) // 여기서 애니메이션 적용
+                    )
+                    .cornerRadius(5)
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                    .annotation(position: .top, alignment: .center) {
+                        Text("\(dataPoint.value, specifier: "%.0f")")
+                            .font(.caption2)
+                            .foregroundColor(Color.black)
+                            .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            .padding().padding(.bottom, 40)
+            .chartXAxis {
+                AxisMarks(preset: .aligned, position: .bottom) { value in
+                    if let category = value.as(String.self) {
+                        AxisValueLabel(category, centered: true)
+                            .font(.caption2.width(.compressed))
+                    }
                 }
             }
         }
-        .chartXAxis {
-            AxisMarks(preset: .aligned, position: .bottom) { value in
-                if let category = value.as(String.self) {
-                    AxisValueLabel(category, centered: true)
-                        .font(.caption2.width(.compressed))
-                }
-            }
-        }
-        .frame(height: 300)
+     
         .onAppear {
             presentedData = chartData // 모든 데이터를 presentedData에 할당
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -532,13 +567,18 @@ struct GenderAgeWorkingChartView: View {
     var body: some View {
         VStack {
             // 성별 선택을 위한 Picker
+            HStack{
+                Text("성/연령별 직장인구")
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer()
+            }
             Picker("성별", selection: $selectedGender) {
                 Text("남성").tag("남성")
                 Text("여성").tag("여성")
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding()
-
             Chart {
                 ForEach(presentedData.filter { $0.label.contains(selectedGender) }) { dataPoint in
                     BarMark(
@@ -556,6 +596,7 @@ struct GenderAgeWorkingChartView: View {
                     }
                 }
             }
+            .padding().padding(.bottom, 40)
             .chartXAxis {
                 AxisMarks(preset: .aligned, position: .bottom) { value in
                     if let category = value.as(String.self) {
@@ -564,13 +605,11 @@ struct GenderAgeWorkingChartView: View {
                     }
                 }
             }
-            .frame(height: 250)
-            .onChange(of: selectedGender) { newValue in
-                // 성별이 변경될 때마다 차트를 업데이트합니다.
+            .onChange(of: selectedGender) {
                 withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
-                    animate = false // 애니메이션 초기화
+                    animate = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        animate = true // 애니메이션 재시작
+                        animate = true
                     }
                 }
             }
@@ -614,72 +653,50 @@ struct ConsumerChartView: View {
                                 // 분기별 유동인구 차트 표시
                                 VStack {
                                     if !chartDataSets[0].isEmpty {
-                                        Text("분기별 유동인구")
-                                            .font(.title2).bold()
-                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         QuarterlyFloatingChartView(chartData: chartDataSets[0])
                                     }
                                 }
                                 // 요일별 유동인구 차트 표시
                                 VStack {
                                     if !chartDataSets[1].isEmpty {
-                                        Text("요일별 유동인구")
-                                            .font(.title2).bold()
-                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         DayFloatingChartView(chartData: chartDataSets[1])
                                     }
                                 }
                                 // 시간대별 유동인구 차트 표시
                                 VStack {
                                     if !chartDataSets[2].isEmpty {
-                                        Text("시간대별 유동인구")
-                                            .font(.title2).bold()
-                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         TimeFloatingChartView(chartData: chartDataSets[2])
                                     }
                                 }
                                 // 연령별 유동인구 차트 표시
                                 VStack {
                                     if !chartDataSets[3].isEmpty {
-                                        Text("연령별 유동인구")
-                                            .font(.title2).bold()
-                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         AgeFloatingChartView(chartData: chartDataSets[3])
                                     }
                                 }
                                 // 분기별 상주인구 차트 표시
                                 VStack {
                                     if !chartDataSets[4].isEmpty {
-                                        Text("분기별 상주인구")
-                                            .font(.title2).bold()
-                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         QuarterlyResidentChartView(chartData: chartDataSets[4])
                                     }
                                 }
                                 // 성/연령별 상주인구 차트 표시
                                 VStack {
                                     if !chartDataSets[5].isEmpty {
-                                        Text("성/연령별 상주인구")
-                                            .font(.title2).bold()
-                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                                    
                                         GenderAgeResidentChartView(chartData: chartDataSets[5])
                                     }
                                 }
                                 // 분기별 직장인구 차트 표시
                                 VStack {
                                     if !chartDataSets[6].isEmpty {
-                                        Text("분기별 직장인구")
-                                            .font(.title2).bold()
-                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                                         QuarterlyWorkingChartView(chartData: chartDataSets[6])
                                     }
                                 }
                                 // 성/연령별 직장인구 차트 표시
                                 VStack {
                                     if !chartDataSets[7].isEmpty {
-                                        Text("성/연령별 직장인구")
-                                            .font(.title2).bold()
-                                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                                        
                                         GenderAgeWorkingChartView(chartData: chartDataSets[7])
                                     }
                                 }
@@ -687,7 +704,7 @@ struct ConsumerChartView: View {
                         }
                     }
                     .frame(height: 400) // end of VStack
-                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
                     .scrollIndicatorsFlash(onAppear: true)
                     .padding()
                     .onAppear {
@@ -704,7 +721,6 @@ struct ConsumerChartView: View {
 
         for (index, endpoint) in ConsumerEndpoints.allCases.enumerated() {
             group.enter() // 그룹에 작업 추가 시작
-            print("\(index)번째 요청 그룹에 들어옴")
             if endpoint.englishEndpoint.contains("floating") {
                 loadFloatingData(endpoint: endpoint, index: index, group: group)
             } else {
@@ -713,8 +729,6 @@ struct ConsumerChartView: View {
         }
 
         group.notify(queue: .main) {
-            // 모든 네트워크 요청 완료 후 실행될 코드
-            print("데이터 다 가져왔네요!")
             self.isLoading = false
         }
     }
@@ -726,45 +740,32 @@ struct ConsumerChartView: View {
                 // api 통신에 성공한 경우에 JSON을 받아와서 해석
                     case .success (let data):
                         do {
-                            print("\(index)번째 일단 데이터 통신은 성공함")
                             // ApiResponse의 형태로 디코딩한 분기별 데이터
                             let residentOrWorkingApiResponse = try JSONDecoder().decode(ConsumerModel.ResidentOrWorkingApiResponse.self, from: data)
-                            print("\(index)번째 일단 JSON디코딩까지는 성공함")
                             
                             // 분기별 - quarterlyTrends
                             if endpoint.englishEndpoint.contains("quarterly") {
                                 if let seriesData = residentOrWorkingApiResponse.quarterlyTrends?.data.series.first {
-                                    print("\(index)번째 일단 seriesData 있음!")
                                     self.chartDataSets[index] = zip(residentOrWorkingApiResponse.quarterlyTrends?.data.categories ?? [] , seriesData.data)
                                         .map { (category, value) in ConsumerModel.ChartData(label: category, value: Double(value)) }
-                                    print("\(index) 번째 차트 데이터")
-                                    print(self.chartDataSets[index])
-                                    print("\(index)번째 요청 그룹에서 나감")
                                     group.leave()
                                 }
                             }
                             // 성/연령별 - genderAge
                             else if endpoint.englishEndpoint.contains("age") {
                                 if let seriesData = residentOrWorkingApiResponse.genderAge?.data.series.first {
-                                    print("\(index)번째 일단 seriesData 있음!")
                                     self.chartDataSets[index] = zip(residentOrWorkingApiResponse.genderAge?.data.categories ?? [] , seriesData.data)
                                         .map { (category, value) in ConsumerModel.ChartData(label: category, value: Double(value)) }
-                                    print("\(index) 번째 차트 데이터")
-                                    print(self.chartDataSets[index])
-                                    print("\(index)번째 요청 그룹에서 나감")
                                     group.leave()
                                 }
                             }
                         } catch {
-                            print(String(index) + "번째에서 오류!")
                             print("Decoding error: \(error)")
-                            print("\(index)번째 요청 그룹에서 나감")
                             group.leave()
                         }
                 // api 통신 실패하면
                     case .failure(let error):
                         print("API Networking Error: \(error.localizedDescription)")
-                        print("\(index)번째 요청 그룹에서 나감")
                         group.leave()
                 }
             }
@@ -778,67 +779,47 @@ struct ConsumerChartView: View {
                 // api 통신에 성공한 경우에 JSON을 받아와서 해석
                     case .success (let data):
                         do {
-                            print("\(index)번째 일단 데이터 통신은 성공함")
                             // ApiResponse의 형태로 디코딩한 분기별 데이터
                             let floatingApiResponse = try JSONDecoder().decode(ConsumerModel.FloatingApiResponse.self, from: data)
-                            print("\(index)번째 일단 JSON디코딩까지는 성공함")
                             // 분기별 - quarterlyTrends
                             if endpoint.englishEndpoint.contains("quarterly") {
                                 if let seriesData = floatingApiResponse.quarterlyTrends?.data.series.first {
-                                    print("\(index)번째 일단 seriesData 있음!")
                                     self.chartDataSets[index] = zip(floatingApiResponse.quarterlyTrends?.data.categories ?? [] , seriesData.data)
                                         .map { (category, value) in ConsumerModel.ChartData(label: category, value: Double(value)) }
-                                    print("\(index) 번째 차트 데이터")
-                                    print(self.chartDataSets[index])
-                                    print("\(index)번째 요청 그룹에서 나감")
                                     group.leave()
                                 }
                             }
                             // 요일별 - day
                             else if endpoint.englishEndpoint.contains("day") {
                                 if let seriesData = floatingApiResponse.day?.data.series.first {
-                                    print("\(index)번째 일단 seriesData 있음!")
                                     self.chartDataSets[index] = zip(floatingApiResponse.day?.data.categories ?? [] , seriesData.data)
                                         .map { (category, value) in ConsumerModel.ChartData(label: category, value: Double(value)) }
-                                    print("\(index) 번째 차트 데이터")
-                                    print(self.chartDataSets[index])
-                                    print("\(index)번째 요청 그룹에서 나감")
                                     group.leave()
                                 }
                             }
                             // 시간대별 - time
                             else if endpoint.englishEndpoint.contains("time") {
                                 if let seriesData = floatingApiResponse.time?.data.series.first {
-                                    print("\(index)번째 일단 seriesData 있음!")
                                     self.chartDataSets[index] = zip(floatingApiResponse.time?.data.categories ?? [] , seriesData.data)
                                         .map { (category, value) in ConsumerModel.ChartData(label: category, value: Double(value)) }
-                                    print("\(index) 번째 차트 데이터")
-                                    print(self.chartDataSets[index])
-                                    print("\(index)번째 요청 그룹에서 나감")
                                     group.leave()
                                 }
                             }
                             // 연령별 - age
                             else if endpoint.englishEndpoint.contains("age") {
                                 if let seriesData = floatingApiResponse.age?.data.series.first {
-                                    print("\(index)번째 일단 seriesData 있음!")
                                     self.chartDataSets[index] = zip(floatingApiResponse.age?.data.categories ?? [] , seriesData.data)
                                         .map { (category, value) in ConsumerModel.ChartData(label: category, value: Double(value)) }
-                                    print("\(index) 번째 차트 데이터")
-                                    print(self.chartDataSets[index])
-                                    print("\(index)번째 요청 그룹에서 나감")
                                     group.leave()
                                 }
                             }
                         } catch {
                             print("Decoding error: \(error)")
-                            print("\(index)번째 요청 그룹에서 나감")
                             group.leave()
                         }
                 // api 통신 실패하면
                     case .failure(let error):
                         print("API Networking Error: \(error.localizedDescription)")
-                        print("\(index)번째 요청 그룹에서 나감")
                         group.leave()
                 }
             }

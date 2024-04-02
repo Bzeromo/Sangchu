@@ -26,9 +26,10 @@ extension Hashtag {
     
     static var defaults: [Hashtag] {
         [
-            .init(title: "🙇🏾‍♂️ 터가 안좋음"),
-            .init(title: "🤝 터가 좋음"),
-            .init(title: "🏠 고려중")
+            .init(title : "🫥 방문전"),
+            .init(title :"✅ 방문후"),
+            .init(title : "🤼‍♂️ 상주인구"),
+            .init(title : "🏃‍♀️ 유동인구"),
         ]
     }
 }

@@ -114,4 +114,10 @@ class InfraModel {
         var value: Double
     }
     
+    struct CountChartData: Identifiable {
+        let id = UUID()
+        var label: String
+        var storeCount: Double
+        var franchiseStoreCount: Double
+    }
 }

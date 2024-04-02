@@ -53,7 +53,7 @@ struct BoroughTop10: View {
     @State private var selectedGuCode: Int = VariableMapping.boroughsToGuCode["강남구"] ?? 11680
     let MainColors: [Color] = [Color(hex: "50B792"),Color(hex: "3B7777")]
     func fetchTopCD(guCode: Int) {
-        let urlString = "http://3.36.91.181:8084/api/commdist/gu/top?guCode=\(guCode)"
+        let urlString = "https://j10b206.p.ssafy.io/api/commdist/gu/top?guCode=\(guCode)"
         AF.request(urlString).responseDecodable(of: [CommercialDistrictInfo].self) { response in
             switch response.result {
             case .success(let districts):

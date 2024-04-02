@@ -6,16 +6,40 @@
 //
 
 import SwiftUI
+import UIKit
 import SwiftData
 import PhotosUI // 사진 선택기를 가져오기 위함
 import SwiftUIImageViewer
+
+struct ActivityViewController: UIViewControllerRepresentable {
+  var activityItems: [Any]
+  var applicationActivities: [UIActivity]? = nil
+  @Environment(\.presentationMode) var presentationMode
+  
+  func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityViewController>
+  ) -> UIActivityViewController {
+    let controller = UIActivityViewController(
+      activityItems: activityItems,
+      applicationActivities: applicationActivities
+    )
+    controller.completionWithItemsHandler = { (activityType, completed, returnedItems, error) in
+      self.presentationMode.wrappedValue.dismiss()
+    }
+    return controller
+  }
+  
+  func updateUIViewController(
+    _ uiViewController: UIActivityViewController,
+    context: UIViewControllerRepresentableContext<ActivityViewController>
+  ) {}
+}
 
 struct UpdateBookMarkView: View {
     
     @Environment(\.dismiss) var dismiss
     @Query private var hashtags : [Hashtag]
     @State var selectedHashtag : Hashtag?
-    
+    @Environment(\.modelContext) var context
     @State var capturedImage : UIImage? = nil
     @State private var isCustomCameraViewPresented = false
     @State private var isImageViewerPresented = false
@@ -23,6 +47,17 @@ struct UpdateBookMarkView: View {
     @State private var isImageLoaded = false // 사진 애니메이션을 위햐
     @State var selectedPhoto : PhotosPickerItem?
     @Bindable var item: BookMarkItem
+    // 공유 기능 위한 배열
+    @State private var itemForSharing: [Any] = []
+    @State private var isSharedPresented = false
+    // 공유 기능 준비 위한 함수
+    func prepareSharingItems() {
+        itemForSharing = ["[상추] - 서울시 상권 추천 서비스",item.cdTitle, item.userMemo]
+        if let imageData = item.image, let image = UIImage(data: imageData) {
+            itemForSharing.append(image)
+        }
+    }
+    
     var body: some View {
         ScrollView(.vertical){
             ZStack(alignment: .topTrailing) {
@@ -85,7 +120,9 @@ struct UpdateBookMarkView: View {
                     
                     Spacer()
                     NavigationLink(destination: BDMapView(cameraLatitude: item.latitude, cameraLongitude: item.longitude, selectedCDCode: String(item.cdCode), selectedCDName: item.cdTitle)){
-                        Text("정보보러가기").font(.system(size:13))
+                        Text("정보보러가기")
+                        .font(.system(size:13))
+                        .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                     }
                     
                 }
@@ -94,9 +131,12 @@ struct UpdateBookMarkView: View {
                 Picker("선택된 태그",selection: $selectedHashtag){
                     ForEach(hashtags) { hashtag in
                         Text(hashtag.title).tag(hashtag as Hashtag?)
+                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                     }
                     Text("없음").tag(nil as Hashtag?)
-                }.font(.title3)
+                }
+                .font(.title3)
+                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                 Spacer()
             }
            .padding(.leading , 20).padding(.trailing, 20)
@@ -111,7 +151,7 @@ struct UpdateBookMarkView: View {
                                     if isTextEditorFocused { // 텍스트 에디터가 포커스되었을 때만 버튼을 보여줌
                                         Button("완료") {
                                             isTextEditorFocused = false // 버튼을 누르면 포커스를 해제하여 키보드를 내림
-                                        }
+                                        }.foregroundStyle(Color(hex:"58b295"))
                                     }
                                 }
             ToolbarItemGroup(placement: .bottomBar) {
@@ -131,20 +171,37 @@ struct UpdateBookMarkView: View {
                 
                 Spacer()
                 Button(action: {
+                    // 공유 시트 표시를 위해 상태를 변경
+                    isSharedPresented = true
                 }) {
                     Label("공유", systemImage: "square.and.arrow.up").foregroundColor(.green)
                 }
+                .onChange(of: isSharedPresented) { newValue in
+                    if newValue {
+                        prepareSharingItems()
+                    }
+                }
+                .sheet(isPresented: $isSharedPresented, onDismiss: {
+                    // 시트가 닫히면 상태를 초기화
+                    isSharedPresented = false
+                    itemForSharing = []
+                }) {
+                    ActivityViewController(activityItems: itemForSharing)
+                }
+                
+                
                 Spacer()
                 Button(action: {
                     // 삭제 작업을 수행하는 코드를 여기에 추가하세요.
                     // 예를 들어, 선택된 사진을 초기화하는 코드를 넣을 수 있습니다.
+                    context.delete(item)
                     selectedPhoto = nil
+                    dismiss()
                 }) {
                     Label("삭제", systemImage: "trash")
                 }
             }
         }
-        .accentColor(Color("sangchu"))
         .task(id:selectedPhoto){
             if let data = try? await selectedPhoto?.loadTransferable(type: Data.self){
                 item.image = data

@@ -1,6 +1,6 @@
 //
 //  ChartView.swift
-//  상추 - 상권추천서비스
+//  상추 - 상권추천서비스
 //
 //  Created by 안상준 on 3/21/24.
 //
@@ -43,6 +43,8 @@ struct CDInfoView: View {
     @State var longitude: Double? = nil
     @State private var hasMatchingItem: Bool = true
     
+    let directionFinder = FindDirection() // 길찾기용 인스턴스
+
     
     @State private var showingAlert = false
     @State private var alertType: AlertType? = nil
@@ -108,21 +110,13 @@ struct CDInfoView: View {
                     
                 }
                 .toolbar {
-//                    ToolbarItem(placement: .topBarLeading ) {
-//                        VStack {
-//                            Spacer()
-//                            Text("[\(CDcode)]").foregroundColor(.sangchu) // 상권 코드에 sangchu 색상 적용
-//                            Text(CDname).foregroundColor(.sangchu) // 상권 이름에 sangchu 색상 적용
-//                        }
-//                    }
-                    
                     ToolbarItemGroup(placement: .primaryAction) {
                         HStack {
                             Button {
                                 alertType = .bookmark
                                 showingAlert = true
                                 if(hasMatchingItem){
-                                    var item = BookMarkItem()
+                                    let item = BookMarkItem()
                                     item.cdCode = self.CDcode
                                     item.cdTitle = self.CDname
                                     item.cdInfo = "이 상권은 망했습니다."
@@ -148,19 +142,28 @@ struct CDInfoView: View {
                                 
                             }
                         label: {
-                            if(hasMatchingItem){
+                            if (hasMatchingItem) {
                                 Image(systemName: "bookmark")
-                            }else{
+                                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                            } else{
                                 Image(systemName: "bookmark.fill")
+                                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                             }
                             
                         }
                             
                             Button {
-                                alertType = .location
-                                showingAlert = true
+                                // 길찾기 기능을 활성화하는 로직
+                                if let lat = latitude, let lng = longitude {
+                                    directionFinder.naverMap(lat: lat, lng: lng)
+                                } else {
+                                    // latitude와 longitude가 유효하지 않은 경우, 사용자에게 알림
+                                    alertType = .location
+                                    showingAlert = true
+                                }
                             } label: {
                                 Image(systemName: "location.circle")
+                                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                             }
                         }
                         .frame(width: 80)
@@ -170,10 +173,10 @@ struct CDInfoView: View {
                     switch alertType {
                     case .bookmark:
                         if(hasMatchingItem){
-                            return Alert(title: Text("북마크"), message: Text("\(CDname)가 제거되었습니다."), dismissButton: .default(Text("확인")))
+                            return Alert(title: Text("북마크"), message: Text("\(CDname)(이)가 제거되었습니다."), dismissButton: .default(Text("확인")))
                             
                         } else{
-                            return   Alert(title: Text("북마크"), message: Text("\(CDname)가 추가되었습니다.."), dismissButton: .default(Text("확인")))
+                            return   Alert(title: Text("북마크"), message: Text("\(CDname)(이)가 추가되었습니다."), dismissButton: .default(Text("확인")))
                         }
                         
                     case .location:

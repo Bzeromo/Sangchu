@@ -15,7 +15,6 @@ class ConsumerNetworkManager {
     func fetch(endpoint: String?, commercialDistrictCode: String, completion: @escaping (Result<Data, Error>) -> Void) {
         if let endpoint {
             let urlString = "\(BASE_URL)\(endpoint)?commercialDistrictCode=\(commercialDistrictCode)"
-            print(urlString)
             AF
                 .request(urlString)
                 .validate()

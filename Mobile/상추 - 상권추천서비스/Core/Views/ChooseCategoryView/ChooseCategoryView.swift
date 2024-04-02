@@ -104,18 +104,24 @@ struct ChooseCategoryView: View {
                                     .frame(width: UIScreen.main.bounds.width * 0.25, height: UIScreen.main.bounds.width * 0.25)
 
                                     .background(
-                                        Circle().fill(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
+                                        Circle().fill(
+                                            
+                                            LinearGradient(colors: selectedCategory == category ? MainColors : [Color.white, Color.white], startPoint: .leading, endPoint: .trailing))
                                         )
                                     .overlay(
                                         Circle()
-                                            .stroke(selectedCategory == category ? Color.sangchu : Color.black, lineWidth: selectedCategory == category ? 3 : 0) // 선택된 카테고리에 따라 stroke 색상 변경
+                                            .stroke(selectedCategory == category ?  Color.black : Color.sangchu, lineWidth: selectedCategory == category ? 0 : 1) // 선택된 카테고리에 따라 stroke 색상 변경
                                             .shadow(color: .gray, radius: 2, x: 1, y: 1)
                                         
                                     )
                                     Text(category.rawValue)
                                         .font(.system(size: 14))
                                         .fontWeight(.semibold)
-                                        .foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
+                                        .foregroundStyle(
+                                            selectedCategory == category ?
+                                            LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)
+                                            : LinearGradient(colors: [Color.black,Color.black], startPoint: .leading, endPoint: .trailing)
+                                        )
                                         .padding(3)
                                         .lineLimit(nil)
                                 }

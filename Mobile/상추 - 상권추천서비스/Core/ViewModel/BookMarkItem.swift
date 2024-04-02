@@ -19,7 +19,7 @@ final class BookMarkItem {
     var longitude: Double
     var userMemo : String // 사용자 메모
     var timestamp : Date // 수정된 날짜
-    var cdInfo : String // 상권 정보 인구수같은 텍스트 정보
+    var cdInfo : String // 상권 정보 인구 수 같은 텍스트 정보
     
     @Attribute(.externalStorage) // 이진 코드로 저장해 외부에 데이터를 저장
     var image : Data? // 카테고리처럼 선택사항으로

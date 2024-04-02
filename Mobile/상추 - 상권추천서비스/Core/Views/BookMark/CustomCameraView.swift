@@ -34,15 +34,10 @@ struct CustomCameraView : View
                 Button(action: {
                     cameraService.capturePhoto()
                 }) {
-                    Image(uiImage: UIImage(named: "whitee.png")!)
+                    Image(uiImage: UIImage(named: "Splash.png")!)
                         .resizable()
-                        .padding(.bottom) // 필요에 따라 조정
-                        .frame(width: 70, height: 90) // 이미지 크기에 따라 조정
+                        .frame(width: 70, height: 70) // 이미지 크기에 따라 조정
                 }
-                .overlay(
-                    Circle() // 원형 테두리
-                        .stroke(Color.white, lineWidth: 4) // 하얀색, 테두리 너비 조정
-                )
                 .clipShape(Circle()) // 테두리를 원형으로 자르기
             }
         }

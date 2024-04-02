@@ -1,6 +1,6 @@
 //
 //  SalesChartView.swift
-//  상추 - 상권추천서비스
+//  상추 - 상권추천서비스
 //
 //  Created by 안상준 on 3/25/24.
 //
@@ -63,13 +63,13 @@ struct IndustryRatioGraphView: View {
 
     var body: some View {
         VStack {
-            VStack {
-                Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
+            HStack {
                 Text("업종별 매출 비율")
                     .font(.title2).bold()
                     .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
+                
             }
-            .frame(width: UIScreen.main.bounds.width, alignment: .center)
             Chart(chartData, id: \.label) { dataItem in
                 SectorMark(
                     angle: .value("매출 비율", dataItem.valueRatio),
@@ -84,7 +84,7 @@ struct IndustryRatioGraphView: View {
                         .font(.caption.bold())
                  }
             }
-            .frame(width: UIScreen.main.bounds.width * 0.8, height: 350)
+            .padding().padding(.bottom, 40)
         }
     }
 }
@@ -97,18 +97,16 @@ struct QuarterlyGraphView: View {
 
     var body: some View {
         VStack {
-            VStack {
-                Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
+            HStack {
                 Text("분기별 월매출")
                     .font(.title2).bold()
                     .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer()
                 Text("(단위 : 백만원)")
-                    .frame(width: UIScreen.main.bounds.width, alignment:.trailing)
                     .font(.caption2)
                     .foregroundStyle(Color.customgray)
                     .padding(.trailing)
             }
-            .frame(width: UIScreen.main.bounds.width, alignment: .center)
             Chart(presentedData, id: \.id) { dataItem in
                 BarMark(
                     x: .value("Quarter", dataItem.label),
@@ -124,8 +122,8 @@ struct QuarterlyGraphView: View {
                     Text("\((dataItem.valueWeekend + dataItem.valueWeekDay) / 1000000, specifier: "%.0f")")
                 }
             }
+            .padding().padding(.bottom, 40)
             .chartLegend(.visible)
-            .frame(height: 300)
             .onAppear {
                 presentedData = chartData // 모든 데이터를 presentedData에 할당
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -153,19 +151,17 @@ struct DayGraphView: View {
     @State private var selectedMetric: String = "매출 건수"
 
     var body: some View {
-        VStack {
-            VStack {
-                Spacer() // HStack의 왼쪽 공간을 모두 차지하여, 오른쪽으로 밀어냅니다.
+        VStack(spacing:5) {
+            HStack {
                 Text("요일별 매출")
                     .font(.title2).bold()
                     .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer()
                 Text("(단위 : 만원)")
-                    .frame(width: UIScreen.main.bounds.width, alignment:.trailing)
                     .font(.caption2)
                     .foregroundStyle(Color.customgray)
                     .padding(.trailing)
             }
-            
             Picker("매출 데이터", selection: $selectedMetric) {
                 Text("매출 건수").tag("매출 건수")
                 Text("매출 금액").tag("매출 금액")
@@ -196,8 +192,8 @@ struct DayGraphView: View {
                     }
                 }
             }
+            .padding().padding(.bottom, 40)
             .chartLegend(.visible)
-            .frame(height: 300)
             .onAppear {
                 presentedData = chartData // 모든 데이터를 presentedData에 할당
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
@@ -206,7 +202,7 @@ struct DayGraphView: View {
                     }
                 }
             }
-            .onChange(of: selectedMetric) { newValue in
+            .onChange(of: selectedMetric) {
                 animate = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                     withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
@@ -234,15 +230,17 @@ struct TimeGraphView: View {
 
     var body: some View {
         VStack {
-            Text("시간대별 월매출")
-                .font(.title2).bold()
-                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
-            
-            Text("(단위 : 만원)")
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .font(.caption2)
-                .foregroundColor(.customgray)
-                .padding(.trailing)
+            HStack{
+                Text("시간대별 월매출")
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                
+                Spacer()
+                Text("(단위 : 만원)")
+                    .font(.caption2)
+                    .foregroundColor(.customgray)
+                    .padding(.trailing)
+            }
 
             Picker("매출 데이터", selection: $selectedMetric) {
                 Text("매출 건수").tag("매출 건수")
@@ -275,27 +273,27 @@ struct TimeGraphView: View {
                 }
             }
             .chartLegend(.visible)
-            .frame(height: 300)
+            .padding().padding(.bottom, 40)
             .onAppear {
-                presentedData = chartData // 모든 데이터를 presentedData에 할당
+                presentedData = chartData
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                     withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
-                        animate = true // 애니메이션 시작
+                        animate = true
                     }
                 }
             }
-            .onChange(of: selectedMetric) { newValue in
+            .onChange(of: selectedMetric) {
                 animate = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                     withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
-                        animate = true // 애니메이션 시작
+                        animate = true
                     }
                 }
             }
             .onDisappear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     withAnimation(.interactiveSpring(response: 0.1, dampingFraction: 0.1, blendDuration: 0.1)) {
-                        animate = false // 애니메이션 시작
+                        animate = false
                     }
                 }
             }
@@ -312,15 +310,18 @@ struct AgeGraphView: View {
 
     var body: some View {
         VStack {
-            Text("연령대별 월매출")
-                .font(.title2).bold()
-                .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
-            
-            Text("(단위 : 만원)")
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .font(.caption2)
-                .foregroundColor(.customgray)
-                .padding(.trailing)
+            HStack{
+                
+                
+                Text("연령대별 월매출")
+                    .font(.title2).bold()
+                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
+                Spacer()
+                Text("(단위 : 만원)")
+                    .font(.caption2)
+                    .foregroundColor(.customgray)
+                    .padding(.trailing)
+            }
 
             Picker("매출 데이터", selection: $selectedMetric) {
                 Text("매출 건수").tag("매출 건수")
@@ -354,7 +355,7 @@ struct AgeGraphView: View {
                 }
             }
             .chartLegend(.visible)
-            .frame(height: 300)
+            .padding().padding(.bottom, 40)
             .onAppear {
                 presentedData = chartData // 모든 데이터를 presentedData에 할당
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
@@ -363,7 +364,7 @@ struct AgeGraphView: View {
                     }
                 }
             }
-            .onChange(of: selectedMetric) { newValue in
+            .onChange(of: selectedMetric) {
                 animate = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                     withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
@@ -398,7 +399,7 @@ struct SalesChartView: View {
     
     var body: some View {
         ScrollView {
-            VStack (alignment: .leading, spacing: 15) {
+            VStack (alignment: .leading) {
                 if isLoading {
                     Text("데이터 로딩 중")
                         .padding(.top)
@@ -414,7 +415,7 @@ struct SalesChartView: View {
                                 VStack {
                                     if !industryRatioChartDataSets.isEmpty {
                                         IndustryRatioGraphView(chartData: industryRatioChartDataSets)
-                                            .padding(.vertical, 200)
+//                                            .padding(.vertical, 200)
                                     }
                                 }
                                 VStack {
@@ -440,64 +441,120 @@ struct SalesChartView: View {
                             }
                         }
                     } // end of TabView
-                    .frame(height: 450)
-                    .tabViewStyle(.page(indexDisplayMode: .never))
-                    .padding(.vertical, 20)
+                    .frame(height: 380)
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+                    .scrollIndicatorsFlash(onAppear: true)
+                    .padding()
                     // 직전분기 매출 관련 VStack
-                    VStack (alignment: .leading, spacing: 10) {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.defaultbg)
-                            .frame(height: UIScreen.main.bounds.height * 0.2)
-                            .overlay(
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text("매출 요약")
-                                        .font(.largeTitle.bold())
-                                        .padding(.bottom, 10)
-                                    HStack {
-                                        Group {
-                                            Text(recentQuarter)
-                                                .foregroundColor(.defaultfont)
-                                                .font(.title2)
-                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                                            if let monthlySales = textDataSets?.monthlySales {
-                                                Text("\(monthlySales)원")
-                                            } else {
-                                                Text("데이터 없음")
-                                            }
-                                        }
-                                    }
-                                    Divider()
-                                    HStack {
-                                        Group {
-                                            Text("주중")
-                                                .foregroundColor(.blue)
-                                                .font(.title2)
-                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                                            if let weekDaySales = textDataSets?.weekDaySales {
-                                                Text("\(weekDaySales)원")
-                                            } else {
-                                                Text("데이터 없음")
-                                            }
-                                        }
-                                    }
-                                    Divider()
-                                    HStack {
-                                        Group {
-                                            Text("주말")
-                                                .foregroundColor(.red)
-                                                .font(.title2)
-                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                                            if let weekendSales = textDataSets?.weekendSales {
-                                                Text("\(weekendSales)원")
-                                            } else {
-                                                Text("데이터 없음")
-                                            }
-                                        }
-                                    }
-                                }
-                        )
-                    }
-                    .padding(.horizontal)
+                    
+                    
+                    VStack(spacing:10){
+                        HStack{
+                            Text("\(recentQuarter) 매출").font(.title2).fontWeight(.semibold)
+                            Spacer()
+                        }.frame(width: UIScreen.main.bounds.width * 0.9)
+                        
+                        VStack {
+                            if let monthlySales = textDataSets?.monthlySales {
+                                HStack{
+                                    Spacer()
+                                    Text("\(monthlySales)원").font(.title).fontWeight(.semibold).foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
+                                    Spacer()
+                                }.padding(15)
+                            }
+                        }.frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.2).background(Color(hex: "f4f5f7")).padding(.leading,20).padding(.trailing,20)
+                    }.padding(.bottom,15)
+                    
+                    VStack(spacing:10){
+                        HStack{
+                            Text("주중 매출").font(.title2).fontWeight(.semibold)
+                            Spacer()
+                        }.frame(width: UIScreen.main.bounds.width * 0.9)
+                        
+                        VStack {
+                            if let weekDaySales = textDataSets?.weekDaySales {
+                                HStack{
+                                    Spacer()
+                                    Text("\(weekDaySales)원").font(.title).fontWeight(.semibold).foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
+                                    Spacer()
+                                }.padding(15)
+                            }
+                        }.frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.2).background(Color(hex: "f4f5f7")).padding(.leading,20).padding(.trailing,20)
+                    }.padding(.bottom,15)
+                    
+                    VStack(spacing:10){
+                        HStack{
+                            Text("주말 매출").font(.title2).fontWeight(.semibold)
+                            Spacer()
+                        }.frame(width: UIScreen.main.bounds.width * 0.9)
+                        
+                        VStack {
+                            if let weekendSales = textDataSets?.weekendSales {
+                                HStack{
+                                    Spacer()
+                                    Text("\(weekendSales)원").font(.title).fontWeight(.semibold).foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
+                                    Spacer()
+                                }.padding(15)
+                            }
+                        }.frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.2).background(Color(hex: "f4f5f7")).padding(.leading,20).padding(.trailing,20)
+                    }.padding(.bottom,15)
+                    
+                    
+                    
+//                    VStack (alignment: .leading, spacing: 10) {
+//                        RoundedRectangle(cornerRadius: 20)
+//                            .fill(.defaultbg)
+//                            .frame(height: UIScreen.main.bounds.height * 0.2)
+//                            .overlay(
+//                                VStack(alignment: .leading, spacing: 5) {
+//                                    Text("매출 요약")
+//                                        .font(.largeTitle.bold())
+//                                        .padding(.bottom, 10)
+//                                    HStack {
+//                                        Group {
+//                                            Text(recentQuarter)
+//                                                .foregroundColor(.defaultfont)
+//                                                .font(.title2)
+//                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+//                                            if let monthlySales = textDataSets?.monthlySales {
+//                                                Text("\(monthlySales)원")
+//                                            } else {
+//                                                Text("데이터 없음")
+//                                            }
+//                                        }
+//                                    }
+//                                    Divider()
+//                                    HStack {
+//                                        Group {
+//                                            Text("주중")
+//                                                .foregroundColor(.blue)
+//                                                .font(.title2)
+//                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+//                                            if let weekDaySales = textDataSets?.weekDaySales {
+//                                                Text("\(weekDaySales)원")
+//                                            } else {
+//                                                Text("데이터 없음")
+//                                            }
+//                                        }
+//                                    }
+//                                    Divider()
+//                                    HStack {
+//                                        Group {
+//                                            Text("주말")
+//                                                .foregroundColor(.red)
+//                                                .font(.title2)
+//                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+//                                            if let weekendSales = textDataSets?.weekendSales {
+//                                                Text("\(weekendSales)원")
+//                                            } else {
+//                                                Text("데이터 없음")
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                        )
+//                    }
+//                    .padding(.horizontal)
                 } // end of else
             } // end of outer VStack
             .onAppear() {
@@ -512,7 +569,6 @@ struct SalesChartView: View {
         
         for (index, endpoint) in SalesEndpoints.allCases.enumerated() {
             group.enter() // 그룹에 작업 추가 시작
-            print("\(index)번째 요청 그룹에 들어옴")
 
             let whereToGo = endpoint.id
             
@@ -537,8 +593,6 @@ struct SalesChartView: View {
         }
         
         group.notify(queue: .main) {
-            // 모든 네트워크 요청 완료 후 실행될 코드
-            print("데이터 다 가져왔네요!")
             self.isLoading = false
         }
         
@@ -555,7 +609,6 @@ struct SalesChartView: View {
                     do {
                         let salesRecentApiResponse = try JSONDecoder().decode(SalesModel.RecentSalesData.self, from: data)
                         self.textDataSets = salesRecentApiResponse
-                        print("데이터 처리 성공")
                     } catch {
                         print("디코딩 오류: \(error)")
                     }
@@ -575,15 +628,12 @@ struct SalesChartView: View {
                 switch result {
                 case .success(let data):
                     do {
-                        // `RatioIndustry` 모델로 데이터 디코딩
                         let industryRatioApiResponse = try JSONDecoder().decode(SalesModel.RatioIndustry.self, from: data)
-                        // 디코딩된 데이터를 `ChartData` 모델로 변환
                         let chartData = zip(industryRatioApiResponse.graphJson.data.categories, industryRatioApiResponse.graphJson.data.series).map { SalesModel.IndustryRatioChartData(label: $0, valueRatio: $1) }
                         // 변환된 `ChartData` 배열을 `chartDataSets`에 저장
                         DispatchQueue.main.async {
                             self.industryRatioChartDataSets = chartData
                         }
-                        print("업종별 매출 비율 데이터 처리 성공")
                     } catch {
                         print("업종별 디코딩 오류: \(error)")
                     }
@@ -604,7 +654,6 @@ struct SalesChartView: View {
                 case .success(let data):
                     do {
                         let quarterlyApiResponse = try JSONDecoder().decode(SalesModel.QuarterlyApiResponse.self, from: data)
-                        // QuarterlyChartData를 사용하여 데이터 처리
                         let chartData = quarterlyApiResponse.quarterlyGraph.data.series.map { series -> SalesModel.QuarterlyChartData in
                             // 주중 및 주말 매출 값을 Double로 변환, 실패 시 0.0
                             let weekDaySalesValue = Double(series.WeekDaySales) ?? 0.0
@@ -613,9 +662,7 @@ struct SalesChartView: View {
                             // QuarterlyChartData 객체 생성
                             return SalesModel.QuarterlyChartData(label: series.YearQuarter, valueWeekDay: weekDaySalesValue, valueWeekend: weekendSalesValue)
                         }
-                        // chartDataSets에 할당
                         self.quarterlyChartDataSets = chartData
-                        print("분기별 데이터 처리 성공")
                     } catch {
                         print("분기별 디코딩 오류: \(error)")
                     }
@@ -639,15 +686,11 @@ struct SalesChartView: View {
                         var chartDataArray = [SalesModel.CountAndAmountChartData]()
                         for (i, category) in dayApiResponse.graphJson.data.categories.enumerated() {
                             let salesCount = dayApiResponse.graphJson.data.series.daySalesCount[i]
-                            print(salesCount)
                             let salesAmount = dayApiResponse.graphJson.data.series.daySales[i]
-                            print(salesAmount)
                             let chartData = SalesModel.CountAndAmountChartData(label: category, count: Double(salesCount), amount: Double(salesAmount))
                             chartDataArray.append(chartData) // 배열에 추가합니다.
                         }
-                        print("여까지는 됨!")
                         self.dayChartDataSets = chartDataArray
-                        print("요일별 데이터 처리 성공")
                     } catch {
                         print("요일별 디코딩 오류: \(error)")
                     }
@@ -671,15 +714,11 @@ struct SalesChartView: View {
                         var chartDataArray: [SalesModel.CountAndAmountChartData] = []
                         for (i, category) in timeApiResponse.graphJson.data.categories.enumerated() {
                             let salesCount = Double(timeApiResponse.graphJson.data.series.timeSalesCount[i])
-                            print(salesCount)
                             let salesAmount = Double(timeApiResponse.graphJson.data.series.timeSales[i])
-                            print(salesAmount)
                             let chartData = SalesModel.CountAndAmountChartData(label: category, count: salesCount, amount: salesAmount)
                             chartDataArray.append(chartData)
                         }
-                        print("여까지는 됨!")
                         self.timeChartDataSets = chartDataArray
-                        print("시간대별 데이터 처리 성공")
                     } catch {
                         print("시간대별 디코딩 오류: \(error)")
                     }
@@ -703,15 +742,11 @@ struct SalesChartView: View {
                         var chartDataArray: [SalesModel.CountAndAmountChartData] = []
                         for (i, category) in ageApiResponse.graphJson.data.categories.enumerated() {
                             let salesCount = Double(ageApiResponse.graphJson.data.series.ageSalesCount[i])
-                            print(salesCount)
                             let salesAmount = Double(ageApiResponse.graphJson.data.series.ageSales[i])
-                            print(salesAmount)
                             let chartData = SalesModel.CountAndAmountChartData(label: category, count: salesCount, amount: salesAmount)
                             chartDataArray.append(chartData)
                         }
-                        print("여까지는 됨!")
                         self.ageChartDataSets = chartDataArray
-                        print("연령대별 데이터 처리 성공")
                     } catch {
                         print("연령대별 디코딩 오류: \(error)")
                     }
