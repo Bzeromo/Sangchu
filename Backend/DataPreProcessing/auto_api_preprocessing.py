@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 import time
 import logging
-from autoDataPreProcessing import auto_data_pre_processing
+from auto_data_preprocessing import auto_data_pre_processing
 
 # 데이터프레임으로 만들어야 할 데이터셋 코드 매핑
 dataset_codes_dict = {
