@@ -9,28 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
 import redis
 from dotenv import load_dotenv
 import os
-
-# 영역-상권 전처리
-dfs = {
-    'area_with_commercial_district': pd.read_csv('files/api/area_with_commercial_district.csv', encoding='utf-8'),
-    'store_with_commercial_district': pd.read_csv('files/api/store_with_commercial_district.csv', encoding='utf-8'),
-    'store_with_seoul': pd.read_csv('files/api/store_with_seoul.csv', encoding='utf-8'),
-    'sales_commercial_district': pd.read_csv('files/api/sales_commercial_district.csv', encoding='utf-8'),
-    'income_consumption_with_commercial_district': pd.read_csv(
-        'files/api/income_consumption_with_commercial_district.csv', encoding='utf-8'),
-    'commercial_district_change_indicator_with_commercial_district': pd.read_csv(
-        'files/api/commercial_district_change_indicator_with_commercial_district.csv', encoding='utf-8'),
-    'foot_traffic_with_commercial_district': pd.read_csv('files/api/foot_traffic_with_commercial_district.csv',
-                                                         encoding='utf-8'),
-    'resident_population_with_commercial_district': pd.read_csv(
-        'files/api/resident_population_with_commercial_district.csv', encoding='utf-8'),
-    'apartment_with_commercial_district': pd.read_csv('files/api/apartment_with_commercial_district.csv',
-                                                      encoding='utf-8'),
-    'facilities_with_commercial_district': pd.read_csv('files/api/facilities_with_commercial_district.csv',
-                                                       encoding='utf-8'),
-    'working_population_with_commercial_district': pd.read_csv(
-        'files/api/working_population_with_commercial_district.csv', encoding='utf-8'),
-}
+from sqlalchemy.types import BigInteger, Integer, Text, Float
 
 # .env 파일에서 환경 변수 로드
 load_dotenv()
@@ -43,9 +22,199 @@ engine = create_engine(
 r = redis.Redis(host=os.getenv('REDIS_HOST'), port=os.getenv('REDIS_PORT'), password=os.getenv('REDIS_PASSWORD'),
                 decode_responses=True)
 
+# 각 데이터프레임과 테이블 이름을 반복하여 함수 호출
+tables_info = {
+    'area_with_commercial_district': ('commercial_district_tb', 'commercial_district_code', False),
+    'store_with_commercial_district': ('comm_store_tb', None, True),
+    'sales_commercial_district': ('comm_estimated_sales_tb', None, True),
+    'income_consumption_with_commercial_district': ('comm_income_tb', None, True),
+    'commercial_district_change_indicator_with_commercial_district': ('comm_indicator_change_tb', None, True),
+    'foot_traffic_with_commercial_district': ('comm_floating_population_tb', None, True),
+    'resident_population_with_commercial_district': ('comm_resident_population_tb', None, True),
+    'facilities_with_commercial_district': ('comm_facilities_tb', None, True),
+    'apartment_with_commercial_district': ('comm_apartment_tb', None, True),
+    'working_population_with_commercial_district': ('comm_working_population_tb', None, True)
+}
+
+dtype_dict = {
+    'commercial_district_code': BigInteger,
+    'commercial_district_name': Text,
+    'latitude': Float,
+    'longitude': Float,
+    'gu_code': BigInteger,
+    'gu_name': Text,
+    'dong_code': BigInteger,
+    'dong_name': Text,
+    'area_size': BigInteger,
+    'commercial_district_total_score': Float,
+    'store_count_mean_score': Float,
+    'monthly_sales_mean_score': Float,
+    'total_resident_population_score': Float,
+    'total_foot_traffic_score': Float,
+    'rdi_score': Float,
+    'total_working_population_score': Float,
+    'apartment_avg_price_score': Float,
+    'facilities_score': Float,
+    'monthly_average_income_amount_score': Float,
+    'expenditure_total_amount_score': Float,
+    'year_code': Integer,
+    'quarter_code': Integer,
+    'apartment_complexes': BigInteger,
+    'household_under_20_pyeong': BigInteger,
+    'household_20_to_30_pyeong': BigInteger,
+    'household_30_to_40_pyeong': BigInteger,
+    'household_40_to_50_pyeong': BigInteger,
+    'household_over_50_pyeong': BigInteger,
+    'household_less_than_100_million_price': BigInteger,
+    'household_100_million_to_200_million_price': BigInteger,
+    'household_200_million_to_300_million_price': BigInteger,
+    'household_300_million_to_400_million_price': BigInteger,
+    'household_400_million_to_500_million_price': BigInteger,
+    'household_500_million_to_600_million_price': BigInteger,
+    'household_over_than_600_million_price': BigInteger,
+    'apartment_avg_area': BigInteger,
+    'apartment_avg_price': BigInteger,
+    'apartment_avg_price_by_area': Float,
+    'service_code': Text,
+    'service_name': Text,
+    'major_category_code': Text,
+    'major_category_name': Text,
+    'middle_category_code': Text,
+    'middle_category_name': Text,
+    'franchise_store_count': BigInteger,
+    'similar_store_count': BigInteger,
+    'store_count': BigInteger,
+    'store_count_score': Float,
+    'commercial_district_change_indicator_code': Text,
+    'commercial_district_change_indicator_name': Text,
+    'rdi': Float,
+    'store_density': Float,
+    'monthly_sales': Float,
+    'monthly_sales_count': Float,
+    'week_days_sales': Float,
+    'weekend_sales': Float,
+    'mon_sales': Float,
+    'tue_sales': Float,
+    'wed_sales': Float,
+    'thu_sales': Float,
+    'fri_sales': Float,
+    'sat_sales': Float,
+    'sun_sales': Float,
+    'time_00_to_06_sales': Float,
+    'time_06_to_11_sales': Float,
+    'time_11_to_14_sales': Float,
+    'time_14_to_17_sales': Float,
+    'time_17_to_21_sales': Float,
+    'time_21_to_24_sales': Float,
+    'man_sales': Float,
+    'woman_sales': Float,
+    'age_10_sales': Float,
+    'age_20_sales': Float,
+    'age_30_sales': Float,
+    'age_40_sales': Float,
+    'age_50_sales': Float,
+    'age_over_60_sales': Float,
+    'week_days_sales_count': Float,
+    'weekend_sales_count': Float,
+    'mon_sales_count': Float,
+    'tue_sales_count': Float,
+    'wed_sales_count': Float,
+    'thu_sales_count': Float,
+    'fri_sales_count': Float,
+    'sat_sales_count': Float,
+    'sun_sales_count': Float,
+    'man_sales_count': Float,
+    'woman_sales_count': Float,
+    'age_10_sales_count': Float,
+    'age_20_sales_count': Float,
+    'age_30_sales_count': Float,
+    'age_40_sales_count': Float,
+    'age_50_sales_count': Float,
+    'age_over_60_sales_count': Float,
+    'time_00_to_06_sales_count': Float,
+    'time_06_to_11_sales_count': Float,
+    'time_11_to_14_sales_count': Float,
+    'time_14_to_17_sales_count': Float,
+    'time_17_to_21_sales_count': Float,
+    'time_21_to_24_sales_count': Float,
+    'monthly_sales_score': Float,
+    'commercial_service_total_score': Float,
+    'facilities': Integer,
+    'bus': Float,
+    'cultural/tourist_facilities': Float,
+    'educational_facilities': Float,
+    'train/subway': Float,
+    'male_age_10_working_population': BigInteger,
+    'male_age_20_working_population': BigInteger,
+    'male_age_30_working_population': BigInteger,
+    'male_age_40_working_population': BigInteger,
+    'male_age_50_working_population': BigInteger,
+    'male_age_over_60_working_population': BigInteger,
+    'female_age_10_working_population': BigInteger,
+    'female_age_20_working_population': BigInteger,
+    'female_age_30_working_population': BigInteger,
+    'female_age_40_working_population': BigInteger,
+    'female_age_50_working_population': BigInteger,
+    'female_age_over_60_working_population': BigInteger,
+    'male_working_population': BigInteger,
+    'female_working_population': BigInteger,
+    'age_10_working_population': BigInteger,
+    'age_20_working_population': BigInteger,
+    'age_30_working_population': BigInteger,
+    'age_40_working_population': BigInteger,
+    'age_50_working_population': BigInteger,
+    'age_over_60_working_population': BigInteger,
+    'monthly_average_income_amount': BigInteger,
+    'expenditure_total_amount': BigInteger,
+    'total_foot_traffic': BigInteger,
+    'female_foot_traffic': BigInteger,
+    'male_foot_traffic': BigInteger,
+    'age_10_foot_traffic': BigInteger,
+    'age_20_foot_traffic': BigInteger,
+    'age_30_foot_traffic': BigInteger,
+    'age_40_foot_traffic': BigInteger,
+    'age_50_foot_traffic': BigInteger,
+    'age_over_60_foot_traffic': BigInteger,
+    'time_00_to_06_foot_traffic': BigInteger,
+    'time_06_to_11_foot_traffic': BigInteger,
+    'time_11_to_14_foot_traffic': BigInteger,
+    'time_14_to_17_foot_traffic': BigInteger,
+    'time_17_to_21_foot_traffic': BigInteger,
+    'time_21_to_24_foot_traffic': BigInteger,
+    'mon_foot_traffic': BigInteger,
+    'tue_foot_traffic': BigInteger,
+    'wed_foot_traffic': BigInteger,
+    'thu_foot_traffic': BigInteger,
+    'fri_foot_traffic': BigInteger,
+    'sat_foot_traffic': BigInteger,
+    'sun_foot_traffic': BigInteger,
+    'total_household': BigInteger,
+    'total_resident_population': BigInteger,
+    'male_age_10_resident_population': BigInteger,
+    'male_age_20_resident_population': BigInteger,
+    'male_age_30_resident_population': BigInteger,
+    'male_age_40_resident_population': BigInteger,
+    'male_age_50_resident_population': BigInteger,
+    'male_age_over_60_resident_population': BigInteger,
+    'female_age_10_resident_population': BigInteger,
+    'female_age_20_resident_population': BigInteger,
+    'female_age_30_resident_population': BigInteger,
+    'female_age_40_resident_population': BigInteger,
+    'female_age_50_resident_population': BigInteger,
+    'female_age_over_60_resident_population': BigInteger,
+    'female_resident_population': BigInteger,
+    'male_resident_population': BigInteger,
+    'age_10_resident_population': BigInteger,
+    'age_20_resident_population': BigInteger,
+    'age_30_resident_population': BigInteger,
+    'age_40_resident_population': BigInteger,
+    'age_50_resident_population': BigInteger,
+    'age_over_60_resident_population': BigInteger,
+}
+
 
 # 데이터프레임을 SQL 테이블로 저장하고, 필요한 경우 기본 키를 설정하거나 ID 컬럼 추가
-def save_df_to_sql(engine, dfs, tables_info, redis_client):
+def save_df_to_sql(engine, dfs, tables_info, redis_client, dtype_dict):
     # 연결을 시작
     connection = engine.connect()
     # 트랜잭션 시작
@@ -57,7 +226,7 @@ def save_df_to_sql(engine, dfs, tables_info, redis_client):
             df = dfs[df_name]
 
             # 데이터프레임을 SQL로 저장
-            df.to_sql(table_name, con=connection, if_exists='replace', index=False)
+            df.to_sql(table_name, con=connection, if_exists='replace', index=False, dtype=dtype_dict)
 
             # 기본 키 설정
             if primary_key:
@@ -373,7 +542,7 @@ def auto_data_pre_processing(dfs):
             'FAG_50_REPOP_CO': 'female_age_50_resident_population',
             'FAG_60_ABOVE_REPOP_CO': 'female_age_over_60_resident_population'
         },
-        drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM']
+        drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM', 'APT_HSHLD_CO', 'NON_APT_HSHLD_CO']
     )
 
     # 아파트-상권 데이터 로딩 및 전처리
@@ -400,7 +569,7 @@ def auto_data_pre_processing(dfs):
             'AVRG_AE': 'apartment_avg_area',
             'AVRG_MKTC': 'apartment_avg_price'
         },
-        drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM', 'APT_HSHLD_CO', 'NON_APT_HSHLD_CO'],
+        drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM'],
         is_null_to_zero=True
     )
     # 제곱미터 단위 평으로 변경
@@ -508,18 +677,4 @@ def auto_data_pre_processing(dfs):
     ]:
         dfs[df_name] = split_year_quarter(dfs[df_name])
 
-    # 각 데이터프레임과 테이블 이름을 반복하여 함수 호출
-    tables_info = {
-        'area_with_commercial_district': ('commercial_district_tb', 'commercial_district_code', False),
-        'store_with_commercial_district': ('comm_store_tb', None, True),
-        'sales_commercial_district': ('comm_estimated_sales_tb', None, True),
-        'income_consumption_with_commercial_district': ('comm_income_tb', None, True),
-        'commercial_district_change_indicator_with_commercial_district': ('comm_indicator_change_tb', None, True),
-        'foot_traffic_with_commercial_district': ('comm_floating_population_tb', None, True),
-        'resident_population_with_commercial_district': ('comm_resident_population_tb', None, True),
-        'facilities_with_commercial_district': ('comm_facilities_tb', None, True),
-        'apartment_with_commercial_district': ('comm_apartment_tb', None, True),
-        'working_population_with_commercial_district': ('comm_working_population_tb', None, True)
-    }
-
-    save_df_to_sql(engine, dfs, tables_info, r)
+    save_df_to_sql(engine, dfs, tables_info, r, dtype_dict)
