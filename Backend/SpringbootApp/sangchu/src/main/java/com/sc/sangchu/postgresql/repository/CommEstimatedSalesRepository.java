@@ -1,10 +1,12 @@
 package com.sc.sangchu.postgresql.repository;
 
+import com.sc.sangchu.dto.CommDistSetRankDTO;
 import com.sc.sangchu.dto.sales.CommQuarterlyGraphDTO;
 import com.sc.sangchu.postgresql.entity.CommEstimatedSalesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,4 +30,14 @@ public interface CommEstimatedSalesRepository extends JpaRepository<CommEstimate
                                                     @Param("year")int[] year);
 
     CommEstimatedSalesEntity findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(int year, int quarter, Long commCode, String serviceCode);
+
+    @Query("""
+            SELECT new com.sc.sangchu.dto.CommDistSetRankDTO(c.commercialDistrictCode ,row_number() over (order by c.commercialServiceTotalScore DESC))
+              FROM CommEstimatedSalesEntity c 
+             WHERE c.yearCode = :year
+               AND c.quarterCode = :quarter
+               AND c.serviceCode = :serviceCode
+            """
+    )
+    List<CommDistSetRankDTO> findByRank(@Param("year") int year, @Param("quarter") int quarter, @Param("serviceCode") String serviceCode);
 }

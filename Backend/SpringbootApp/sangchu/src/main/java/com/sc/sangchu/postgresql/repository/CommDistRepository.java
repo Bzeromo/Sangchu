@@ -19,10 +19,10 @@ public interface CommDistRepository extends JpaRepository<CommDistEntity, Intege
 //              FROM CommDistEntity c
 //            """
 //    )
-    @Query("""
-            SELECT new com.sc.sangchu.dto.CommDistSetRankDTO(c.commercialDistrictCode ,row_number() over (order by c.commercialDistrictScore))
-              FROM CommDistEntity c 
-            """
-    )
-    List<CommDistSetRankDTO> findAllByCommercialDistrictCode();
+//    @Query("""
+//            SELECT new com.sc.sangchu.dto.CommDistSetRankDTO(c.commercialDistrictCode ,row_number() over (order by c.commercialDistrictScore))
+//              FROM CommDistEntity c
+//            """
+//    )
+//    List<CommDistSetRankDTO> findAllByCommercialDistrictCode();
 }

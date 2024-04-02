@@ -271,13 +271,6 @@ public class CommDistRecommendService {
                     Long cdCode = dto.getCommercialDistrictCode();
                     String name = dto.getCommercialDistrictName();
 
-                    Long totalScoreRank = commDistRepository.findAllByCommercialDistrictCode()
-                            .stream()
-                            .filter(f -> f.getCommCode().equals(cdCode))
-                            .mapToLong(CommDistSetRankDTO::getRank)
-                            .findFirst()
-                            .orElse(0L);
-
                     // 현재 분기 매출
                     CommEstimatedSalesEntity estimatedSalesEntity = commEstimatedSalesRepository.findByYearCodeAndQuarterCodeAndCommercialDistrictCodeAndServiceCode(
                         YEAR, QUARTER, cdCode,serviceCode);
@@ -294,16 +287,25 @@ public class CommDistRecommendService {
                     CommResidentPopulationEntity commResidentPopulationEntity = commResidentPopulationRepository.findByCommercialDistrictCodeAndYearCodeAndQuarterCode(cdCode,
                         YEAR, QUARTER);
 
+                    Long totalScoreRank = commEstimatedSalesRepository.findByRank(
+                            YEAR, QUARTER, serviceCode
+                            )
+                            .stream()
+                            .filter(f -> f.getCommCode().equals(cdCode))
+                            .mapToLong(CommDistSetRankDTO::getRank)
+                            .findFirst()
+                            .orElse(0L);
+
                     return CommDistRankDTO.builder()
                             .cdCode(dto.getCommercialDistrictCode())
                             .name(name)
                             .totalScore(ValueScoreLong.builder()
                                     .value(totalScoreRank)
-                                    .score(dto.getCommercialDistrictScore())
+                                    .score(estimatedSalesEntity != null ? estimatedSalesEntity.getCommercialServiceTotalScore() : 0D)
                                     .build())
                             .sales(ValueScoreDouble.builder()
                                     .value(estimatedSalesEntity != null ? estimatedSalesEntity.getMonthlySales() : 0D)
-                                    .score(dto.getSalesScore())
+                                    .score(estimatedSalesEntity != null ? estimatedSalesEntity.getSalesScore() : 0D)
                                     .build())
                             .businessDiversity(ValueScoreLong.builder()
                                     .value(commStoreTotalCountDTO != null ? commStoreTotalCountDTO.getTotalStoreCount() : 0L)
