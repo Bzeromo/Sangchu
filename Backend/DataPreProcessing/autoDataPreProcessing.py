@@ -1,4 +1,3 @@
-import time
 import pandas as pd
 from modules.majorAndMiddleCategoryPreProcessing import \
     categorization_into_major_and_medium_categories_by_service_industry_code_name
@@ -355,6 +354,12 @@ def auto_data_pre_processing(dfs):
             'TOT_REPOP_CO': 'total_resident_population',
             'ML_REPOP_CO': 'male_resident_population',
             'FML_REPOP_CO': 'female_resident_population',
+            'AGRDE_10_REPOP_CO': 'age_10_resident_population',
+            'AGRDE_20_REPOP_CO': 'age_20_resident_population',
+            'AGRDE_30_REPOP_CO': 'age_30_resident_population',
+            'AGRDE_40_REPOP_CO': 'age_40_resident_population',
+            'AGRDE_50_REPOP_CO': 'age_50_resident_population',
+            'AGRDE_60_ABOVE_REPOP_CO': 'age_over_60_resident_population',
             'MAG_10_REPOP_CO': 'male_age_10_resident_population',
             'MAG_20_REPOP_CO': 'male_age_20_resident_population',
             'MAG_30_REPOP_CO': 'male_age_30_resident_population',
@@ -395,12 +400,12 @@ def auto_data_pre_processing(dfs):
             'AVRG_AE': 'apartment_avg_area',
             'AVRG_MKTC': 'apartment_avg_price'
         },
-        drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM'],
+        drop_cols=['TRDAR_SE_CD', 'TRDAR_SE_CD_NM', 'APT_HSHLD_CO', 'NON_APT_HSHLD_CO'],
         is_null_to_zero=True
     )
     # 제곱미터 단위 평으로 변경
     dfs['apartment_with_commercial_district']['apartment_avg_area'] = dfs['apartment_with_commercial_district'].apply(
-        lambda row: row['apartment_avg_area'] / 3.30579,
+        lambda row: round(row['apartment_avg_area'] / 3.30579),
         axis=1
     )
 
