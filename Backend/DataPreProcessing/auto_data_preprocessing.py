@@ -236,13 +236,16 @@ def save_df_to_sql(engine, dfs, tables_info, redis_client, dtype_dict):
             if add_id_column:
                 connection.execute(text(f'ALTER TABLE {table_name} ADD COLUMN id SERIAL PRIMARY KEY;'))
 
-        # 모든 변경 성공시 사항 커밋
+        # 레디스 작업을 트랜잭션 커밋 전에 수행
+        try:
+            redis_client.flushdb()  # Redis에 저장된 모든 데이터 초기화
+        except redis.RedisError as re:
+            print(f"Redis operation failed: {re}")
+            raise  # 현재 오류를 다시 발생시켜 상위로 전달
+
+        # 레디스 작업이 성공적으로 완료되면, 모든 변경 사항을 데이터베이스에 커밋
         transaction.commit()
-
-        # Redis에 저장된 모든 데이터 초기화
-        redis_client.flushdb()
-
-        print("Transaction success")
+        print("Transaction and Redis operation success")
     except SQLAlchemyError as e:
         # 오류 발생 시 롤백
         transaction.rollback()
