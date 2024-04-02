@@ -1,8 +1,8 @@
 import pandas as pd
 
 # 데이터셋 불러오기
-df_apartment = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_set/아파트-상권.csv', encoding='cp949')
-df_apartment['apartment_avg_price_by_area'] = df_apartment['apartment_avg_price'] / df_apartment['apartment_avg_area']
+df_apartment = pd.read_csv('C:/Users/SSAFY/Desktop/S10P22B206/Backend/DataModel/data_set/아파트-상권.csv', encoding='cp949')
+df_apartment['apartment_avg_price_by_area'] = (df_apartment['apartment_avg_price'] / df_apartment['apartment_avg_area']) / 3.30579
 
 # 2021년 1분기부터 2023년 3분기까지의 데이터 추출
 df_apartment_2021 = df_apartment[df_apartment['year_code'] == 2021][['year_code', 'quarter_code', 'commercial_district_code', 'apartment_avg_price_by_area']]
@@ -23,7 +23,7 @@ df_apartment.drop(columns=['year_code_previous'], inplace=True)
 print(df_apartment)
 
 # 새로운 CSV 파일 경로 지정
-output_file_path = 'C:/Users/SSAFY/Desktop/S10P22B206/Regression Analysis/data_transform/아파트-상권.csv'
+output_file_path = 'C:/Users/SSAFY/Desktop/S10P22B206/Backend/DataModel/data_transform/아파트-상권.csv'
 
 # 데이터프레임을 UTF-8 인코딩으로 CSV 파일로 저장
 df_apartment.to_csv(output_file_path, index=False, encoding='cp949')

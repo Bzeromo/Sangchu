@@ -1,3 +1,4 @@
+import pandas as pd
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
@@ -22,7 +23,7 @@ mae = mean_absolute_error(y_test, y_pred)
 r_squared = r2_score(y_test, y_pred)
 
 # 결과 출력
-print("Mean Squared Error (MSE):", mse)
+print("Root Mean Squared Error (RMSE):", mse**0.5)
 print("Mean Absolute Error (MAE):", mae)
 print("R-squared:", r_squared)
 import numpy as np
@@ -35,9 +36,13 @@ def mape(y_true, y_pred):
 mape_value = mape(y_test, y_pred)
 print("MAPE:", mape_value)
 
-# 특성 중요도 확인
+# 각 독립 변수의 중요도와 이름 출력
 importances = model.feature_importances_
+feature_names = X_train.columns
+df_feature_importance = pd.DataFrame({'Feature': feature_names, 'Importance': importances})
 
-# 각 독립 변수의 중요도 출력
-for i, importance in enumerate(importances):
-    print(f"Feature {i+1}: Importance = {importance}")
+for name, importance in zip(feature_names, importances):
+    print(f"Feature '{name}': Importance = {importance}")
+
+# CSV 파일로 저장
+df_feature_importance.to_csv('feature_importance.csv', index=False)
