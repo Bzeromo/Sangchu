@@ -116,6 +116,7 @@ enum Borough: String, CaseIterable, Identifiable {
 }
 
 struct ChooseBorough: View {
+    @Environment(\.colorScheme) var colorScheme
     @State private var selectedBorough: Borough = .강남구
     @State private var isPickerTouched: Bool = false
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
@@ -123,6 +124,7 @@ struct ChooseBorough: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State private var startAnimation : Bool = false
         
+    
     let universalSize = UIScreen.main.bounds
     
     // amplitude는 진폭 원래는 150 값이 들어있었음
@@ -148,27 +150,27 @@ struct ChooseBorough: View {
     
     var body: some View {
         ZStack{
-            getSinWave(interval: universalSize.width * 1.5 , amplitude: 150, baseline: 65 + universalSize.height / 2)
+            getSinWave(interval: universalSize.width * 1.5 , amplitude: 150, baseline: 65 + universalSize.height * 0.3)
             //.stroke(lineWidth: 2) // 선만
-                .foregroundColor(Color.red.opacity(0.3))
+                .foregroundColor(colorScheme == .light ? Color.red.opacity(0.3): Color(hex:"283c86").opacity(0.5))
                 .offset(x: startAnimation ? -1 * (universalSize.width * 1.5) : 0)
                 .animation(Animation.linear(duration: 5).repeatForever(autoreverses: false))
             
-            getSinWave(interval: universalSize.width , amplitude: 200, baseline: 70 + universalSize.height / 2)
-                .foregroundColor(Color("sangchu").opacity(0.3))
+            getSinWave(interval: universalSize.width , amplitude: 200, baseline: 70 + universalSize.height * 0.3)
+                .foregroundColor(colorScheme == .light ? Color("sangchu").opacity(0.3) : Color(hex:"#45a247").opacity(0.5))
                 .offset(x: startAnimation ? -1 * (universalSize.width) : 0)
                 .animation(Animation.linear(duration: 11).repeatForever(autoreverses: false))
             
-            getSinWave(interval: universalSize.width * 3 , amplitude: 200, baseline: 95 + universalSize.height / 2)
-                .foregroundColor(Color.black.opacity(0.2))
+            getSinWave(interval: universalSize.width * 3 , amplitude: 200, baseline: 95 + universalSize.height * 0.3)
+                .foregroundColor(colorScheme == .light ? Color.black.opacity(0.2): Color(hex:"#f12711").opacity(0.5))
                 .offset(x: startAnimation ? -1 * (universalSize.width * 3) : 0)
                 .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
             
-            getSinWave(interval: universalSize.width * 1.2 , amplitude: 50, baseline: 75 + universalSize.height / 2)
-                .foregroundColor(Color.init(red:0.6, green:0.9, blue : 1).opacity(0.4))
+            getSinWave(interval: universalSize.width * 1.2 , amplitude: 50, baseline: 75 + universalSize.height * 0.3)
+                .foregroundColor(colorScheme == .light ? Color.init(red:0.6, green:0.9, blue : 1).opacity(0.4) : Color(hex:"#4A00E0").opacity(0.5))
                 .offset(x: startAnimation ? -1 * (universalSize.width * 1.2) : 0)
                 .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
-//
+     
             
             
             // 절취선
@@ -177,7 +179,7 @@ struct ChooseBorough: View {
                 
                 HStack{
                     Spacer()
-                    Text("서울 자치구 기준 선택").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).foregroundStyle(Color.black).fontWeight(.semibold)
+                    Text("서울 자치구 기준 선택").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).foregroundStyle(colorScheme == .light ?  Color.black : Color.white).fontWeight(.semibold)
                     Spacer()
                 }
                             LazyVGrid(columns: columns, spacing: 15) {
@@ -186,22 +188,20 @@ struct ChooseBorough: View {
                                         self.selectedBorough = borough
                                         self.isPickerTouched = true
                                     }) {
-                                        
                                         Text(borough.rawValue)
                                             .padding()
                                             .font(.system(size: 14))
                                             .fontWeight(.medium)
                                             .frame(width: UIScreen.main.bounds.width * 0.28, height : UIScreen.main.bounds.height * 0.048)
-                                            .background(self.selectedBorough == borough ? AnyView(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)) : AnyView(Color.white))
-                                            .foregroundStyle(self.selectedBorough == borough ? LinearGradient(colors: [Color.white , Color.white], startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color.black , Color.black], startPoint: .leading, endPoint: .trailing))
+                                            .background(self.selectedBorough == borough ? AnyView(colorScheme == .light ? LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)) : AnyView(colorScheme == .light ? LinearGradient(colors: [Color.white, Color.white], startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color.white, Color.white], startPoint: .leading, endPoint: .trailing)))
+                                            .foregroundStyle(self.selectedBorough == borough ?
+                                                             LinearGradient(colors: colorScheme == .light ? [Color.white , Color.white] : [Color.white , Color.white] , startPoint: .leading, endPoint: .trailing)
+                                                             :
+                                                                LinearGradient(colors: colorScheme == .light ? [Color.black , Color.black] : [Color.black , Color.black] , startPoint: .leading, endPoint: .trailing))
                                             .fontWeight(self.selectedBorough == borough ? .semibold : .regular)
                                             .clipShape(RoundedRectangle(cornerRadius: 50))
-                                            .overlay(
-                                                        RoundedRectangle(cornerRadius: 50)
-                                                            .stroke(Color(hex:"58b295").opacity(0.7), lineWidth: 0.2)
-                                                    )
-                                            .shadow(color: Color(hex:"c6c6c6"), radius: self.selectedBorough == borough ? 0 : 1, x: 1, y: 1)
-                                    }
+                                            .shadow(color: colorScheme == .light ? Color(hex:"c6c6c6") : Color.gray, radius: self.selectedBorough == borough ? 1 : 0, x: 1, y: 1)
+                                    }.opacity(0.6)
                                     
                                 }
                             }
@@ -221,10 +221,9 @@ struct ChooseBorough: View {
                     .background(!isPickerTouched ?
                                 AnyView(Color(hex: "c6c6c6")) : AnyView(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)))
                     .cornerRadius(20)
+                }
+                    .padding(.bottom,20)
                     .disabled(!isPickerTouched)
-                  
-                        
-                }.padding(.bottom,20) // end of 이전/다음 버튼 HStack
                    
                 
     //            Text(selectedBorough.rawValue) // 고른 자치구 확인용
@@ -236,7 +235,7 @@ struct ChooseBorough: View {
         .onAppear{
             self.startAnimation = true
         }
-        .background(Color(hex: "F4F5F7"))
+        .background(colorScheme == .light ? Color(hex: "F4F5F7") : Color.black)
         
     } // end of body view
 } // end of ChooseBorough view

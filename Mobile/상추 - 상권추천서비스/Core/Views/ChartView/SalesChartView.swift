@@ -386,6 +386,7 @@ struct AgeGraphView: View {
 
 
 struct SalesChartView: View {
+    @Environment(\.colorScheme) var colorScheme
     @State private var isLoading = true
     @State private var textDataSets : SalesModel.RecentSalesData?
     @State private var industryRatioChartDataSets : [SalesModel.IndustryRatioChartData] = []
@@ -462,7 +463,7 @@ struct SalesChartView: View {
                                     Spacer()
                                 }.padding(15)
                             }
-                        }.frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.2).background(Color(hex: "f4f5f7")).padding(.leading,20).padding(.trailing,20)
+                        }.frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.2).background(colorScheme == .light ? Color(hex: "f4f5f7") : Color.black.opacity(0.1)) .cornerRadius(20).padding(.leading,20).padding(.trailing,20)
                     }.padding(.bottom,15)
                     
                     VStack(spacing:10){
@@ -479,7 +480,7 @@ struct SalesChartView: View {
                                     Spacer()
                                 }.padding(15)
                             }
-                        }.frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.2).background(Color(hex: "f4f5f7")).padding(.leading,20).padding(.trailing,20)
+                        }.frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.2).background(colorScheme == .light ? Color(hex: "f4f5f7") : Color.black.opacity(0.1)) .cornerRadius(20).padding(.leading,20).padding(.trailing,20)
                     }.padding(.bottom,15)
                     
                     VStack(spacing:10){
@@ -496,7 +497,7 @@ struct SalesChartView: View {
                                     Spacer()
                                 }.padding(15)
                             }
-                        }.frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.2).background(Color(hex: "f4f5f7")).padding(.leading,20).padding(.trailing,20)
+                        }.frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.2).background(colorScheme == .light ? Color(hex: "f4f5f7") : Color.black.opacity(0.1)) .cornerRadius(20).padding(.leading,20).padding(.trailing,20)
                     }.padding(.bottom,15)
                     
                     

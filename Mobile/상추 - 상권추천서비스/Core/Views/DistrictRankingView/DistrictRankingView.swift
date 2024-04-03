@@ -47,6 +47,7 @@ struct CardView: View {
     var districtData: DistrictData // 상권 정보
     var index: Int // 해당 카드의 인덱스
     @State private var districtInfo: CommercialDistrictInfo? = nil
+    @Environment(\.colorScheme) var colorScheme
     let MainColors: [Color] = [Color(hex: "50B792"),Color(hex: "3B7777")]
     func fetchCommercialDistrictInfo(for cdCode: Int) async throws {
         let urlString = "https://j10b206.p.ssafy.io/api/commdist/commercial?commercialDistrictCode=\(cdCode)"
@@ -65,79 +66,66 @@ struct CardView: View {
     var body: some View {
             if let districtInfo = districtInfo {
                     VStack{
-                        HStack{
-                            LottieView(animation: .named("Export.json"))
-                                                        .playbackMode(.playing(.toProgress(1,loopMode: .loop)))
-                                                        .frame(width: 180,height: 180)
+                        VStack(alignment: .leading, spacing: 8) {
                             VStack{
                                 HStack{
-                                    
                                     Text("\(index + 1)위")
-                                        .foregroundColor(Color.black)
+                                        .foregroundColor(colorScheme == .light ? Color.black : Color.white)
                                         .fontWeight(.bold)
                                         .font(.largeTitle)
                                     Spacer()
-                                }
-                                
-                                HStack{
-                                    Text("총점 ")
-                                        .foregroundColor(Color.black)
-                                        .font(.title2)
-                                        .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/) +
-                                    Text("\(String(format: "%.0f", districtData.totalScore.score))점")
-                                        .foregroundStyle(Color.black)
-                                        .font(.title2)
-                                        .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                                    Spacer()
-                                }
-                                HStack{
-                                    
-                                    Text("서울 내 상권 중")
-                                        .foregroundColor(.defaultfont)
-                                        .font(.caption) +
-                                    Text(" \(String(format: "%.0f", districtData.totalScore.value))등")
-                                        .foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing))
-                                        .font(.caption)
-                                    
-                                    Spacer()
-                                }
-                              
+                                    VStack{
+                                        HStack{
+                                            Text("\(String(format: "%.0f", districtData.totalScore.score))점")
+                                                .foregroundColor(colorScheme == .light ? Color.black : Color.white)
+                                                .font(.title2)
+                                                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                                            
+                                            Spacer()
+                                        }
+                                      
+                                        HStack{
+                                            Text("서울 내 상권 중")
+                                                .foregroundColor(colorScheme == .light ?  Color.black : Color.white)
+                                                .font(.caption) +
+                                            Text(" \(String(format: "%.0f", districtData.totalScore.value))등")
+                                                .foregroundStyle(colorScheme == .light ? LinearGradient(colors: [Color.black, Color.black], startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color.white, Color.white], startPoint: .leading, endPoint: .trailing))
+                                                .font(.caption)
+                                            Spacer()
+                                        }
+                                        
+                                    }
+                                }.frame(maxWidth: .infinity).padding(.leading, 40).padding(.trailing,40).padding(.top,15)
                                
-                            }
-                        }
-                        .frame(maxWidth:.infinity)
-                        .background(Color.yellow)
-                        
-                        VStack(alignment: .leading, spacing: 13) {
-                            HStack{
-                                Spacer()
-                                Text(districtData.name)
-                                    .foregroundStyle(Color.black)
-                                    .fontWeight(.bold)
-                                    .font(.title)
-                                    .lineLimit(1)
-                                Spacer()
+                                HStack{
+                                    Text(districtData.name)
+                                        .foregroundStyle(colorScheme == .light ? LinearGradient(colors: [Color(hex:"58b295"), Color(hex:"58b295")], startPoint: .leading, endPoint: .trailing) : LinearGradient(colors: [Color(hex:"58b295"), Color(hex:"58b295")], startPoint: .leading, endPoint: .trailing))
+                                        .fontWeight(.bold)
+                                        .font(.title2)
+                                        .lineLimit(1)
+                                    Spacer()
+                                }.frame(maxWidth: .infinity).padding(.leading, 40).padding(.trailing,40).padding(.top,10)
+                              
                             }
                            
-                            Divider()
                             
                             VStack{
                                 HStack{
                                     Text("매출")
-                                        .foregroundColor(.defaultfont)
+                                        .foregroundColor(colorScheme == .light ? Color.black : Color.white)
                                         .font(.title3)
                                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                     Spacer()
                                     Text("\(String(format: "%.0f", districtData.sales.score))점")
-                                        .foregroundColor(.defaultfont)
+                                        .foregroundColor(colorScheme == .light ? Color.black : Color.white)
                                         .font(.title3)
                                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                  
                                 }
                                 HStack{
                                     Text("\(String(format: "%.0f", districtData.sales.value))원")
-                                        .foregroundColor(.customgray)
-                                        .font(.body)
+                                        .foregroundColor(colorScheme == .light ?  Color.black : Color.white)
+                                        .font(.caption)
                                     Spacer()
                                 }
                                 
@@ -147,20 +135,20 @@ struct CardView: View {
                             VStack{
                                 HStack{
                                     Text("유동인구")
-                                        .foregroundColor(.defaultfont)
+                                        .foregroundColor(colorScheme == .light ? Color.black : Color.white)
                                         .font(.title3)
                                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                     Spacer()
                                     Text("\(String(format: "%.0f", districtData.footTraffic.score))점")
-                                        .foregroundColor(.defaultfont)
+                                        .foregroundColor(colorScheme == .light ? Color.black : Color.white)
                                         .font(.title3)
                                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                 
                                 }
                                 HStack{
                                     Text("\(String(format: "%.0f", districtData.footTraffic.value))명")
-                                        .foregroundColor(.customgray)
-                                        .font(.body)
+                                        .foregroundColor(colorScheme == .light ?  Color.black : Color.white)
+                                        .font(.caption)
                                     Spacer()
                                 }
                               
@@ -171,20 +159,20 @@ struct CardView: View {
                             VStack{
                                 HStack{
                                     Text("상주인구")
-                                        .foregroundColor(.defaultfont)
+                                        .foregroundColor(colorScheme == .light ? Color.black : Color.white)
                                         .font(.title3)
                                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                     Spacer()
                                     Text("\(String(format: "%.0f", districtData.residentialPopulation.score))점")
-                                        .foregroundColor(.defaultfont)
+                                        .foregroundColor(colorScheme == .light ? Color.black : Color.white)
                                         .font(.title3)
                                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                   
                                 }
                                 HStack{
                                     Text("\(String(format: "%.0f",districtData.residentialPopulation.value))명")
-                                        .foregroundColor(.customgray)
-                                        .font(.body)
+                                        .foregroundColor(colorScheme == .light ?  Color.black : Color.white)
+                                        .font(.caption)
                                     Spacer()
                                 }
                                
@@ -195,19 +183,19 @@ struct CardView: View {
                             VStack{
                                 HStack{
                                     Text("업종다양성")
-                                        .foregroundColor(.defaultfont)
+                                        .foregroundColor(colorScheme == .light ? Color.black : Color.white)
                                         .font(.title3)
                                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                     Spacer()
                                     Text("\(String(format: "%.0f", districtData.businessDiversity.score))점")
-                                        .foregroundColor(.defaultfont)
+                                        .foregroundColor(colorScheme == .light ? Color.black : Color.white)
                                         .font(.title3)
                                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                 }
                                 HStack{
                                     Text("\(String(format: "%.0f",districtData.businessDiversity.value))업종")
-                                        .foregroundColor(.customgray)
-                                        .font(.body)
+                                        .foregroundColor(colorScheme == .light ?  Color.black : Color.white)
+                                        .font(.caption)
                                     Spacer()
                                 }
                               
@@ -217,24 +205,34 @@ struct CardView: View {
                         }.frame(maxWidth : .infinity)
                                 
                         Spacer()
-                        NavigationLink(destination: BDMapView(cameraLatitude: districtInfo.longitude, cameraLongitude: districtInfo.latitude, selectedCDCode: String(districtInfo.commercialDistrictCode), selectedCDName: districtInfo.commercialDistrictName))
-                        {
-                            Text("정보 보러가기")
-                                .font(.system(size: 15))
-                                .foregroundColor(Color.black)
-                                .shadow(color: Color(hex:"c6c6c6"), radius: 1, x: 1, y: 1)
-                        }
-                        .frame(width : UIScreen.main.bounds.width * 0.35 , height : 35)
-                        .background(Color.yellow)
-                        .cornerRadius(20)
-                        .padding(.top, 15)
+                        HStack{
+                            HStack{
+                                Text("자세한 정보를 보고싶으시다면..").font(.caption2).foregroundStyle(colorScheme == .light ? Color.black : Color(hex:"c6c6c6"))
+                                Spacer()
+                            }.frame(maxWidth: .infinity)
+                            
+                            NavigationLink(destination: BDMapView(cameraLatitude: districtInfo.longitude, cameraLongitude: districtInfo.latitude, selectedCDCode: String(districtInfo.commercialDistrictCode), selectedCDName: districtInfo.commercialDistrictName))
+                            {
+                                Text("정보 보기")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(colorScheme == .light ? Color.black : Color.blue)
+                                    
+                            }
+                            .frame(width : UIScreen.main.bounds.width * 0.2 , height : 35)
+                            .background(colorScheme == .light ? Color.white : Color.white)
+                            .cornerRadius(20)
+                            .padding(.bottom, 15)
+                            .shadow(color: Color(hex:"c6c6c6"), radius: 1, x: 1, y: 1)
+                        }.frame(maxWidth: .infinity).padding(.leading, 40).padding(.trailing,40).padding(.top,15)
+                        
                         
                         Spacer()
                     }
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20) // 둥근 모서리를 가진 사각형 테두리를 정의
-                            .stroke(Color.black, lineWidth: 1) // 테두리의 색상과 선의 두께 지정
-                    )
+//                    .overlay(
+//                        RoundedRectangle(cornerRadius: 20) // 둥근 모서리를 가진 사각형 테두리를 정의
+//                            .stroke(colorScheme == .light ? Color.black : Color.white , lineWidth: 1) // 테두리의 색상과 선의 두께 지정
+//                    )
+                    .background(colorScheme == .light ? Color.white.opacity(0.4) : Color.black.opacity(0.4))
                     .cornerRadius(20)
             }else{
                 VStack{
@@ -257,6 +255,7 @@ struct CardView: View {
 
 
 struct DistrictRankingView: View {
+    @Environment(\.colorScheme) var colorScheme
     @State private var isLoading = false
     @State private var hasFetchedData = false // 데이터를 이미 가져왔는지 여부 // 무한 렌더링 방지
     @State private var filteredDistrictsData = FilteredDistrictsData(totalScoreSorted: [], salesSorted: [], footTrafficSorted: [], residentialPopulationSorted: [], businessDiversitySorted: [])
@@ -307,85 +306,111 @@ struct DistrictRankingView: View {
     }
     
     var body: some View {
-        VStack(spacing: 2) {
-            Spacer().frame(height: 120)
-                HStack{
-                    Menu {
-                        ForEach(filters, id: \.self) { filter in
-                            Button(filter) {
-                                selectedFilter = filter
-                            }
-                        }
-                    }
-                label: {
-                    HStack {
-                        Text(selectedFilter)
-                            .foregroundStyle(.defaultfont)
-                        Image(systemName: "chevron.down")
-                            .foregroundStyle(.defaultfont)
-                    }
-                    .padding(.leading, 20)
-                }
-                    Spacer()
-                }
-                
-                if isLoading {
-                    VStack {
-                        Text("분석중..").font(.title).fontWeight(.semibold).foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
-                        LottieView(animation: .named("Cal.json"))
+        ZStack{
+            getSinWave(interval: universalSize.width * 1.5 , amplitude: 150, baseline: 65 + universalSize.height * 0.3)
+            //.stroke(lineWidth: 2) // 선만
+                .foregroundColor(colorScheme == .light ? Color.red.opacity(0.3): Color(hex:"283c86").opacity(0.5))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 1.5) : 0)
+                .animation(Animation.linear(duration: 5).repeatForever(autoreverses: false))
+            
+            getSinWave(interval: universalSize.width , amplitude: 200, baseline: 70 + universalSize.height * 0.3)
+                .foregroundColor(colorScheme == .light ? Color("sangchu").opacity(0.3) : Color(hex:"#45a247").opacity(0.5))
+                .offset(x: startAnimation ? -1 * (universalSize.width) : 0)
+                .animation(Animation.linear(duration: 11).repeatForever(autoreverses: false))
+            
+            getSinWave(interval: universalSize.width * 3 , amplitude: 200, baseline: 95 + universalSize.height * 0.3)
+                .foregroundColor(colorScheme == .light ? Color.black.opacity(0.2): Color(hex:"#f12711").opacity(0.5))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 3) : 0)
+                .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
+            
+            getSinWave(interval: universalSize.width * 1.2 , amplitude: 50, baseline: 75 + universalSize.height * 0.3)
+                .foregroundColor(colorScheme == .light ? Color.init(red:0.6, green:0.9, blue : 1).opacity(0.4) : Color(hex:"#4A00E0").opacity(0.5))
+                .offset(x: startAnimation ? -1 * (universalSize.width * 1.2) : 0)
+                .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
+     
+//                    HStack{
+//                        Menu {
+//                            ForEach(filters, id: \.self) { filter in
+//                                Button(filter) {
+//                                    selectedFilter = filter
+//                                }
+//                            }
+//                        }
+//                    label: {
+//                        HStack {
+//                            Text(selectedFilter)
+//                                .foregroundStyle(.defaultfont)
+//                            Image(systemName: "chevron.down")
+//                                .foregroundStyle(.defaultfont)
+//                        }
+//                        .padding(.leading, 20)
+//                    }
+//                        Spacer()
+//                    }
+                    
+                    if !isLoading {
+                        LottieView(animation: .named(colorScheme == .light ? "Export.json" : "ExportDark.json"))
                             .playbackMode(.playing(.toProgress(1,loopMode: .loop)))
-                            .padding(.bottom, UIScreen.main.bounds.height * 0.35)
-                        
-                    }
-                }
-                else {
-                    ScrollView(.horizontal) {
-                            LazyHStack{
-                                ForEach(currentFilteredData.indices, id: \.self) { index in
-                                    HStack{
-                                        Spacer()
-                                        CardView(districtData: currentFilteredData[index], index: index)
-                                            .frame(maxWidth: .infinity)
-                                        Spacer()
+                            .padding(.bottom, UIScreen.main.bounds.height * 0.4)
+                        ScrollView(.horizontal) {
+                                LazyHStack{
+                                    ForEach(currentFilteredData.indices, id: \.self) { index in
+                                        HStack{
+                                            Spacer()
+                                            CardView(districtData: currentFilteredData[index], index: index)
+                                                .frame(maxWidth: .infinity)
+                                            Spacer()
+                                        }
+                                        .frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.35)
+                                        .scrollTransition{ content, phase in
+                                            content
+                                                .opacity(phase.isIdentity ? 1.0 : 0.5) // 그전의 것이 연하게됨
+                                        }
                                     }
-                                    .frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.7)
-                                    .scrollTransition{ content, phase in
-                                        content
-                                            .opacity(phase.isIdentity ? 1.0 : 0.5) // 그전의 것이 연하게됨
+                                }.scrollTargetLayout()
+                        }
+                        .padding(.top, UIScreen.main.bounds.height * 0.42)
+                        .contentMargins(20, for: .scrollContent)
+                        .scrollTargetBehavior(.paging) // 알맞게 페이징됨,
+                        .scrollIndicators(.hidden) // 밑에 바 숨겨줌
+                        .onAppear {
+                            if !hasFetchedData {
+                                Task {
+                                    isLoading = true
+                                    do {
+                                        // API 요청을 통해 filteredDistrictsData를 초기화
+                                        let fetchedData = try await API.fetchFilteredDistrictsData(borough: borough, category: category)
+                                        self.filteredDistrictsData = fetchedData
+                                    } catch {
+                                        print("데이터를 가져오는 데 실패했습니다.")
                                     }
+                                    isLoading = false
+                                    hasFetchedData = true
                                 }
-                            }.scrollTargetLayout()
-                            
-                        
-                    }
-                    .contentMargins(20, for: .scrollContent)
-                    .scrollTargetBehavior(.paging) // 알맞게 페이징됨,
-                    .scrollIndicators(.hidden) // 밑에 바 숨겨줌
-                    .onAppear {
-                        if !hasFetchedData {
-                            Task {
-                                isLoading = true
-                                do {
-                                    // API 요청을 통해 filteredDistrictsData를 초기화
-                                    let fetchedData = try await API.fetchFilteredDistrictsData(borough: borough, category: category)
-                                    self.filteredDistrictsData = fetchedData
-                                } catch {
-                                    print("데이터를 가져오는 데 실패했습니다.")
-                                }
-                                isLoading = false
-                                hasFetchedData = true
                             }
                         }
+                        
                     }
-                }
-                Spacer()
-            } // end of VStack
+                    else {
+                        
+                        VStack {
+                            LottieView(animation: .named("vegetables.json"))
+                                .playbackMode(.playing(.toProgress(1,loopMode: .loop)))
+                                .padding(.bottom, UIScreen.main.bounds.height * 0.35)
+                            
+                        }
+                        Text("분석중..").font(.title).fontWeight(.semibold).foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom)).padding(.bottom, UIScreen.main.bounds.height * 0.55)
+                    }
+                    Spacer()
+                 
+        }
+        // end of VStack
             .navigationTitle("\(borough)_\(category)")
             .ignoresSafeArea(.all)
             .onAppear{
                 self.startAnimation = true
             }
-            .background(Color(hex: "F4F5F7"))
+            .background(colorScheme == .light ? Color(hex: "F4F5F7") : Color.black)
         
     } // end of body view
 } // end of DistrictRankingView

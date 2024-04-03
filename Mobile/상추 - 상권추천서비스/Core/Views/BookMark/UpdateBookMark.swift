@@ -8,7 +8,7 @@
 import SwiftUI
 import UIKit
 import SwiftData
-import PhotosUI // 사진 선택기를 가져오기 위함
+import PhotosUI
 import SwiftUIImageViewer
 
 struct ActivityViewController: UIViewControllerRepresentable {
@@ -43,18 +43,47 @@ struct UpdateBookMarkView: View {
     @State var capturedImage : UIImage? = nil
     @State private var isCustomCameraViewPresented = false
     @State private var isImageViewerPresented = false
-    @FocusState private var isTextEditorFocused: Bool // 수정중일때 버튼 표시하게 하기 위함
-    @State private var isImageLoaded = false // 사진 애니메이션을 위햐
-    @State var selectedPhoto : PhotosPickerItem?
+    @FocusState private var isTextEditorFocused: Bool // 수정 중 일때 버튼 표시
+    @State private var isImageLoaded = false //
+//    @State var selectedPhoto : PhotosPickerItem?
     @Bindable var item: BookMarkItem
     // 공유 기능 위한 배열
     @State private var itemForSharing: [Any] = []
     @State private var isSharedPresented = false
+    // 공유하기 시 사진 선택
+    @State private var showingImagePicker = false
+    @State private var inputImage: UIImage?
+    
+    // 변환함수
+    func resizeAndConvertImageToJPEG(image: UIImage?, maxWidth: CGFloat = 1024, maxHeight: CGFloat = 1024, compressionQuality: CGFloat = 0.7) {
+        guard let image = image else { return }
+        let size = image.size
+
+        let widthRatio  = maxWidth  / size.width
+        let heightRatio = maxHeight / size.height
+        let ratio = min(widthRatio, heightRatio)
+        let newSize = CGSize(width: size.width * ratio, height: size.height * ratio)
+
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        guard let resizedImageData = resizedImage?.jpegData(compressionQuality: compressionQuality) else {
+            print("JPEG 변환 실패")
+            return
+        }
+        item.image = resizedImageData
+    }
     // 공유 기능 준비 위한 함수
     func prepareSharingItems() {
-        itemForSharing = ["[상추] - 서울시 상권 추천 서비스",item.cdTitle, item.userMemo]
-        if let imageData = item.image, let image = UIImage(data: imageData) {
-            itemForSharing.append(image)
+        itemForSharing = ["[상추] - 서울시 상권 추천 서비스", item.cdTitle, item.userMemo]
+        if let imageData = item.image {
+            print("JPEG Data size: \(imageData.count) bytes")
+            let jpegImage = UIImage(data: imageData)
+            itemForSharing.append(jpegImage as Any)
+        } else {
+            print("이미지 데이터 준비 실패")
         }
     }
     
@@ -94,7 +123,7 @@ struct UpdateBookMarkView: View {
                 if item.image != nil {
                     Button(role: .destructive) {
                         withAnimation {
-                            selectedPhoto = nil
+                            inputImage = nil
                             item.image = nil
                         }
                     } label: {
@@ -102,12 +131,12 @@ struct UpdateBookMarkView: View {
                             Text("")
                         } icon: {
                             Image(systemName: "xmark")
-                                .foregroundStyle(.red) // 아이콘 색상을 빨간색으로 설정
-                                .font(.system(size: 14)) // 아이콘 크기 조정
-                                .padding(6) // 아이콘 주위에 패딩 추가
-                                .background(Color.white) // 배경 색상을 흰색으로 설정
-                                .clipShape(Circle()) // 배경을 원형으로 클리핑
-                                .shadow(radius: 3) // 선택적으로 그림자 추가
+                                .foregroundStyle(.red) // 아이콘 색상
+                                .font(.system(size: 14)) // 아이콘 크기
+                                .padding(6) // 주위에 패딩
+                                .background(Color.white) // 배경 색상
+                                .clipShape(Circle()) // 원형으로 클리핑
+                                .shadow(radius: 3) // 그림자 추가
                         }
                     }.padding(.top, 6)
                 }
@@ -126,7 +155,9 @@ struct UpdateBookMarkView: View {
                     }
                     
                 }
-            }.padding(.leading , 20).padding(.trailing, 20)
+            }
+                .padding(.leading , 20).padding(.trailing, 20)
+            
             HStack{
                 Picker("선택된 태그",selection: $selectedHashtag){
                     ForEach(hashtags) { hashtag in
@@ -139,7 +170,8 @@ struct UpdateBookMarkView: View {
                 .foregroundStyle(LinearGradient(gradient: Gradient(colors: MainColors), startPoint: .top, endPoint: .bottom))
                 Spacer()
             }
-           .padding(.leading , 20).padding(.trailing, 20)
+                .padding(.leading , 20).padding(.trailing, 20)
+            
             TextEditor(text: $item.userMemo)
                             .frame(minHeight: 300, maxHeight: .infinity)
                             .padding(.leading , 20).padding(.trailing, 20)
@@ -155,19 +187,26 @@ struct UpdateBookMarkView: View {
                                     }
                                 }
             ToolbarItemGroup(placement: .bottomBar) {
-                PhotosPicker(selection: $selectedPhoto,
-                             matching: .images,
-                             photoLibrary: .shared()) {
-                    Label("사진 추가", systemImage: "photo").foregroundColor(.green)
+                // 갤러리 버튼
+                Button(action:{
+                    showingImagePicker = true
+                }) {
+                    Label("갤러리", systemImage: "photo")
                 }
+                .sheet(isPresented: $showingImagePicker) {
+                    ImagePicker(selectedImage: $inputImage)
+                }
+                .onChange(of: inputImage) { _ in
+                    resizeAndConvertImageToJPEG(image: inputImage)
+                }
+                
                 Spacer()
                 
+                // 카메라 버튼
                 Button(action: {isCustomCameraViewPresented.toggle()
                 }) {
                     Label("카메라", systemImage: "camera").sheet(isPresented: $isCustomCameraViewPresented, content: {CustomCameraView(capturedImage: $capturedImage)})
                 }
-                
-              
                 
                 Spacer()
                 Button(action: {
@@ -188,29 +227,38 @@ struct UpdateBookMarkView: View {
                 }) {
                     ActivityViewController(activityItems: itemForSharing)
                 }
-                
-                
                 Spacer()
                 Button(action: {
-                    // 삭제 작업을 수행하는 코드를 여기에 추가하세요.
-                    // 예를 들어, 선택된 사진을 초기화하는 코드를 넣을 수 있습니다.
                     context.delete(item)
-                    selectedPhoto = nil
+                    inputImage = nil
                     dismiss()
                 }) {
                     Label("삭제", systemImage: "trash")
                 }
             }
         }
-        .task(id:selectedPhoto){
-            if let data = try? await selectedPhoto?.loadTransferable(type: Data.self){
-                item.image = data
-            }
-        }
+//        .task(id: selectedPhoto) {
+//            do {
+//                if let photo = selectedPhoto,
+//                   let data = try await photo.loadTransferable(type: Data.self) {
+//                    // 사진 데이터 로드 성공
+//                    if let uiImage = UIImage(data: data) {
+//                        resizeAndConvertImageToJPEG(image: uiImage)
+//                    } else {
+//                        print("UIImage로 변환 실패")
+//                    }
+//                } else {
+//                    print("선택된 사진 로딩 실패")
+//                }
+//            } catch {
+//                print("사진 선택 작업에서 에러 발생: \(error)")
+//            }
+//        }
         .task(id: capturedImage) {
-            if let capturedImage = capturedImage,
-               let imageData = capturedImage.jpegData(compressionQuality: 1.0) {
-                item.image = imageData
+            if let capturedImage = capturedImage {
+                resizeAndConvertImageToJPEG(image: capturedImage)
+            } else {
+                print("캡처된 이미지 처리 실패")
             }
         }
         .onAppear(perform: {

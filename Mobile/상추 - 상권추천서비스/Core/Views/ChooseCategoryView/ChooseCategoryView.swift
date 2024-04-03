@@ -16,6 +16,7 @@ enum Category: String, CaseIterable, Identifiable {
 }
 
 struct ChooseCategoryView: View {
+    @Environment(\.colorScheme) var colorScheme
     let borough: String
     @State private var selectedCategory: Category? = nil
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -47,27 +48,27 @@ struct ChooseCategoryView: View {
 
     var body: some View {
         ZStack{
-            getSinWave(interval: universalSize.width * 1.5 , amplitude: 150, baseline: 65 + universalSize.height / 2)
+            getSinWave(interval: universalSize.width * 1.5 , amplitude: 150, baseline: 65 + universalSize.height * 0.3)
             //.stroke(lineWidth: 2) // 선만
-                .foregroundColor(Color.red.opacity(0.3))
+                .foregroundColor(colorScheme == .light ? Color.red.opacity(0.3): Color(hex:"283c86").opacity(0.5))
                 .offset(x: startAnimation ? -1 * (universalSize.width * 1.5) : 0)
                 .animation(Animation.linear(duration: 5).repeatForever(autoreverses: false))
             
-            getSinWave(interval: universalSize.width , amplitude: 200, baseline: 70 + universalSize.height / 2)
-                .foregroundColor(Color("sangchu").opacity(0.3))
+            getSinWave(interval: universalSize.width , amplitude: 200, baseline: 70 + universalSize.height * 0.3)
+                .foregroundColor(colorScheme == .light ? Color("sangchu").opacity(0.3) : Color(hex:"#45a247").opacity(0.5))
                 .offset(x: startAnimation ? -1 * (universalSize.width) : 0)
                 .animation(Animation.linear(duration: 11).repeatForever(autoreverses: false))
             
-            getSinWave(interval: universalSize.width * 3 , amplitude: 200, baseline: 95 + universalSize.height / 2)
-                .foregroundColor(Color.black.opacity(0.2))
+            getSinWave(interval: universalSize.width * 3 , amplitude: 200, baseline: 95 + universalSize.height * 0.3)
+                .foregroundColor(colorScheme == .light ? Color.black.opacity(0.2): Color(hex:"#f12711").opacity(0.5))
                 .offset(x: startAnimation ? -1 * (universalSize.width * 3) : 0)
                 .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
             
-            getSinWave(interval: universalSize.width * 1.2 , amplitude: 50, baseline: 75 + universalSize.height / 2)
-                .foregroundColor(Color.init(red:0.6, green:0.9, blue : 1).opacity(0.4))
+            getSinWave(interval: universalSize.width * 1.2 , amplitude: 50, baseline: 75 + universalSize.height * 0.3)
+                .foregroundColor(colorScheme == .light ? Color.init(red:0.6, green:0.9, blue : 1).opacity(0.4) : Color(hex:"#4A00E0").opacity(0.5))
                 .offset(x: startAnimation ? -1 * (universalSize.width * 1.2) : 0)
                 .animation(Animation.linear(duration: 4).repeatForever(autoreverses: false))
-            
+     
             // 절취선
             
             VStack {
@@ -77,7 +78,10 @@ struct ChooseCategoryView: View {
                 Spacer().frame(height: UIScreen.main.bounds.height * 0.12)
                 HStack{
                     Spacer()
-                    Text("요식업 업종별 선택").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).foregroundStyle(Color.black).fontWeight(.semibold)
+                    Text("요식업 업종별 선택")
+                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                        .foregroundStyle(colorScheme == .light ? Color.black : Color.white)
+                        .fontWeight(.semibold)
                     Spacer()
                 }
                 
@@ -104,23 +108,34 @@ struct ChooseCategoryView: View {
                                     .frame(width: UIScreen.main.bounds.width * 0.25, height: UIScreen.main.bounds.width * 0.25)
 
                                     .background(
-                                        Circle().fill(
-                                            
-                                            LinearGradient(colors: selectedCategory == category ? MainColors : [Color.white, Color.white], startPoint: .leading, endPoint: .trailing))
-                                        )
+                                                            Circle().fill(
+                                                                LinearGradient(
+                                                                    colors: selectedCategory == category ?
+                                                                    (colorScheme == .light ? MainColors : MainColors) :
+                                                                        (colorScheme == .light ? [Color.white, Color.white] : [Color.white, Color.white]),
+                                                                                    startPoint: .leading,
+                                                                                    endPoint: .trailing
+                                                                ).opacity(0.6)
+                                                            )
+                                                            )
                                     .overlay(
                                         Circle()
-                                            .stroke(selectedCategory == category ?  Color.black : Color.sangchu, lineWidth: selectedCategory == category ? 0 : 1) // 선택된 카테고리에 따라 stroke 색상 변경
-                                            .shadow(color: .gray, radius: 2, x: 1, y: 1)
+                                            .stroke(selectedCategory == category ?  Color.black : Color.sangchu, lineWidth: selectedCategory == category ? 0 : 0) // 선택된 카테고리에 따라 stroke 색상 변경
+                                            .shadow(color: Color(hex:"c6c6c6"), radius: 2, x: 1, y: 1)
                                         
                                     )
                                     Text(category.rawValue)
                                         .font(.system(size: 14))
                                         .fontWeight(.semibold)
+//                                        .foregroundStyle(
+//                                            selectedCategory == category ?
+//                                            LinearGradient(colors: colorScheme == .light ? MainColors : [Color.white,Color.white], startPoint: .leading, endPoint: .trailing)
+//                                            : LinearGradient(colors: colorScheme == .light ? [Color.black,Color.black] : MainColors , startPoint: .leading, endPoint: .trailing)
+//                                        )
                                         .foregroundStyle(
                                             selectedCategory == category ?
-                                            LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)
-                                            : LinearGradient(colors: [Color.black,Color.black], startPoint: .leading, endPoint: .trailing)
+                                            LinearGradient(colors: colorScheme == .light ? MainColors : MainColors, startPoint: .leading, endPoint: .trailing)
+                                            : LinearGradient(colors: colorScheme == .light ? [Color.black,Color.black] : [Color.white, Color.white] , startPoint: .leading, endPoint: .trailing)
                                         )
                                         .padding(3)
                                         .lineLimit(nil)
@@ -135,7 +150,7 @@ struct ChooseCategoryView: View {
                
                 
                 
-                NavigationLink(destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue ?? "")) {
+                NavigationLink(destination: DistrictRankingView(borough: borough, category: selectedCategory?.rawValue.replacingOccurrences(of: "_", with: "-") ?? "")) {
                     HStack {
                         selectedCategory == nil ?
                         Text("업종 선택").font(.title3).fontWeight(.semibold).foregroundStyle(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)) : Text("선택 완료").font(.title3).fontWeight(.semibold).foregroundStyle(Color.white)
@@ -143,11 +158,10 @@ struct ChooseCategoryView: View {
                     .frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.07)
                     .background(self.selectedCategory == nil ?
                                 AnyView(Color(hex: "c6c6c6")) : AnyView(LinearGradient(colors: MainColors, startPoint: .leading, endPoint: .trailing)))
-                    .cornerRadius(20)
+                    .cornerRadius(20)      
+                }
+                    .padding(.bottom,10)
                     .disabled(selectedCategory == nil)
-                  
-                        
-                }.padding(.bottom,10)
                 
             } // end of Total VStack
         }
@@ -156,7 +170,7 @@ struct ChooseCategoryView: View {
             .onAppear{
                 self.startAnimation = true
             }
-            .background(Color(hex: "F4F5F7"))
+            .background(colorScheme == .light ? Color(hex: "F4F5F7") : Color.black)
         
             
     } // end of body View

@@ -72,6 +72,16 @@ struct HomeView: View {
         }
     }
     
+    init() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .systemBackground // 배경색 설정
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.label] // 타이틀 색상 설정
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
+    
     var body: some View {
         ScrollView(.vertical) {
             scrollObservableView
@@ -503,8 +513,6 @@ struct HomeView: View {
                         // HomeModel.CommercialDistricts 타입으로 디코딩 수정
                         let decodedTop10 = try JSONDecoder().decode([HomeModel.CommercialDistrict].self, from: data)
                         Top10 = decodedTop10
-                        print(Top10?.first?.commercialDistrictCode)
-                        print(Top10?.first?.commercialDistrictName)
                     } catch {
                         print("Decoding error: \(error)")
                     }

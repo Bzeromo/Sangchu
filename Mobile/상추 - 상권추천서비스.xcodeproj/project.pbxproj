@@ -37,10 +37,13 @@
 		65FB38D72BB15FF00097FD2D /* HomeNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38D62BB15FF00097FD2D /* HomeNetworkManager.swift */; };
 		65FB38D92BB160310097FD2D /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FB38D82BB160310097FD2D /* HomeModel.swift */; };
 		DA0AB18B2BABCCD800D8BBDF /* CDInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0AB18A2BABCCD800D8BBDF /* CDInfoView.swift */; };
+		DA1977042BBD0DAE00E9E762 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1977032BBD0DAE00E9E762 /* ImagePicker.swift */; };
+		DA1977062BBD296E00E9E762 /* vegetables.json in Resources */ = {isa = PBXBuildFile; fileRef = DA1977052BBD296E00E9E762 /* vegetables.json */; };
 		DA1B56232BBAE0E30069C393 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = DA1B56222BBAE0E30069C393 /* Lottie */; };
 		DA1B56252BBAE1060069C393 /* SwiftUIImageViewer in Frameworks */ = {isa = PBXBuildFile; productRef = DA1B56242BBAE1060069C393 /* SwiftUIImageViewer */; };
 		DA2162192BA9EC2E009750B6 /* CommercialDistrictOutline.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */; };
-		DA55A29F2BBBFC1600A1D275 /* Export.json in Resources */ = {isa = PBXBuildFile; fileRef = DA55A29E2BBBFC1600A1D275 /* Export.json */; };
+		DA2617A32BBD3563003C6B29 /* ExportDark.json in Resources */ = {isa = PBXBuildFile; fileRef = DA2617A22BBD3563003C6B29 /* ExportDark.json */; };
+		DA2617A52BBD357C003C6B29 /* Export.json in Resources */ = {isa = PBXBuildFile; fileRef = DA2617A42BBD357C003C6B29 /* Export.json */; };
 		DA73BC6C2BB3B69800CFA087 /* MapAdditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA73BC6B2BB3B69800CFA087 /* MapAdditional.swift */; };
 		DA73BC6E2BB3FABB00CFA087 /* VariableMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA73BC6D2BB3FABB00CFA087 /* VariableMapping.swift */; };
 		DA7C64A02BA1FF3000BE74DD /* BDMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */; };
@@ -58,7 +61,6 @@
 		DAA4188C2BB07D4A006B48B5 /* SalesChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA4188B2BB07D4A006B48B5 /* SalesChartView.swift */; };
 		DAA4188E2BB07D58006B48B5 /* InfraChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA4188D2BB07D58006B48B5 /* InfraChartView.swift */; };
 		DAAB02E22BBAA4B50036718A /* Circlecheck.json in Resources */ = {isa = PBXBuildFile; fileRef = DAAB02E02BBAA4B50036718A /* Circlecheck.json */; };
-		DAAB02E32BBAA4B50036718A /* Cal.json in Resources */ = {isa = PBXBuildFile; fileRef = DAAB02E12BBAA4B50036718A /* Cal.json */; };
 		DAD092202BA8A77B00A6DF92 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD0921F2BA8A77B00A6DF92 /* LocationService.swift */; };
 		DAD092222BA922C100A6DF92 /* GeoJSONModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD092212BA922C100A6DF92 /* GeoJSONModels.swift */; };
 		DAD092242BA92A1300A6DF92 /* GeoJSONLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD092232BA92A1300A6DF92 /* GeoJSONLoader.swift */; };
@@ -110,8 +112,11 @@
 		C62EB89CD48F35A78542E386 /* Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig"; path = "Target Support Files/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests/Pods-상추 - 상권추천서비스-상추 - 상권추천서비스UITests.release.xcconfig"; sourceTree = "<group>"; };
 		DA0AB18A2BABCCD800D8BBDF /* CDInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDInfoView.swift; sourceTree = "<group>"; };
 		DA0AB19E2BAD18BA00D8BBDF /* Charts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Charts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA1977032BBD0DAE00E9E762 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		DA1977052BBD296E00E9E762 /* vegetables.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = vegetables.json; sourceTree = "<group>"; };
 		DA2162182BA9EC2E009750B6 /* CommercialDistrictOutline.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CommercialDistrictOutline.geojson; sourceTree = "<group>"; };
-		DA55A29E2BBBFC1600A1D275 /* Export.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Export.json; sourceTree = "<group>"; };
+		DA2617A22BBD3563003C6B29 /* ExportDark.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ExportDark.json; sourceTree = "<group>"; };
+		DA2617A42BBD357C003C6B29 /* Export.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = Export.json; path = ../../Export.json; sourceTree = "<group>"; };
 		DA73BC6B2BB3B69800CFA087 /* MapAdditional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapAdditional.swift; sourceTree = "<group>"; };
 		DA73BC6D2BB3FABB00CFA087 /* VariableMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableMapping.swift; sourceTree = "<group>"; };
 		DA7C649F2BA1FF3000BE74DD /* BDMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDMapView.swift; sourceTree = "<group>"; };
@@ -130,7 +135,6 @@
 		DAA4188B2BB07D4A006B48B5 /* SalesChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesChartView.swift; sourceTree = "<group>"; };
 		DAA4188D2BB07D58006B48B5 /* InfraChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfraChartView.swift; sourceTree = "<group>"; };
 		DAAB02E02BBAA4B50036718A /* Circlecheck.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Circlecheck.json; sourceTree = "<group>"; };
-		DAAB02E12BBAA4B50036718A /* Cal.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Cal.json; sourceTree = "<group>"; };
 		DAD0921F2BA8A77B00A6DF92 /* LocationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		DAD092212BA922C100A6DF92 /* GeoJSONModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoJSONModels.swift; sourceTree = "<group>"; };
 		DAD092232BA92A1300A6DF92 /* GeoJSONLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoJSONLoader.swift; sourceTree = "<group>"; };
@@ -173,9 +177,10 @@
 		6577BAEB2B9EB65A0071A3EA /* 상추 - 상권추천서비스 */ = {
 			isa = PBXGroup;
 			children = (
-				DAAB02E12BBAA4B50036718A /* Cal.json */,
+				DA2617A22BBD3563003C6B29 /* ExportDark.json */,
+				DA2617A42BBD357C003C6B29 /* Export.json */,
 				DAAB02E02BBAA4B50036718A /* Circlecheck.json */,
-				DA55A29E2BBBFC1600A1D275 /* Export.json */,
+				DA1977052BBD296E00E9E762 /* vegetables.json */,
 				DA9C593D2BA002D0007C4C8D /* --------------------------Info.plist */,
 				6577BB212B9EB8EE0071A3EA /* Core */,
 				6577BB1D2B9EB7B60071A3EA /* Model */,
@@ -311,6 +316,7 @@
 				659A1FA82BA2CA5F00B6FDAB /* HashTagView.swift */,
 				65A66B7A2BA97B1900E4E3D0 /* CustomCameraView.swift */,
 				65A66B7C2BA97B7100E4E3D0 /* CameraView.swift */,
+				DA1977032BBD0DAE00E9E762 /* ImagePicker.swift */,
 			);
 			path = BookMark;
 			sourceTree = "<group>";
@@ -471,15 +477,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DAAB02E32BBAA4B50036718A /* Cal.json in Resources */,
+				DA2617A52BBD357C003C6B29 /* Export.json in Resources */,
 				6577BAF62B9EB65C0071A3EA /* Preview Assets.xcassets in Resources */,
 				65D720D52BAA604B00AB353F /* SeoulBoroughOutline.geojson in Resources */,
 				6577BAF32B9EB65C0071A3EA /* Assets.xcassets in Resources */,
-				DA55A29F2BBBFC1600A1D275 /* Export.json in Resources */,
 				DA9C593C2BA00037007C4C8D /* SingleDay-Regular.ttf in Resources */,
 				DAAB02E22BBAA4B50036718A /* Circlecheck.json in Resources */,
 				DA2162192BA9EC2E009750B6 /* CommercialDistrictOutline.geojson in Resources */,
 				65A66B322BA7B70200E4E3D0 /* HashTagDefaults in Resources */,
+				DA1977062BBD296E00E9E762 /* vegetables.json in Resources */,
+				DA2617A32BBD3563003C6B29 /* ExportDark.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -561,6 +568,7 @@
 				659A1FA52BA294DA00B6FDAB /* UpdateBookMark.swift in Sources */,
 				65B69AF32BB3F85800AABE50 /* BookMarkNetworkManager.swift in Sources */,
 				650D1ED32BA19B3A0055B3BA /* BookMarkList.swift in Sources */,
+				DA1977042BBD0DAE00E9E762 /* ImagePicker.swift in Sources */,
 				DA830A062BB685100053A088 /* SalesNetworkManager.swift in Sources */,
 				65FB38D52BB085730097FD2D /* SalesModel.swift in Sources */,
 				DAD092242BA92A1300A6DF92 /* GeoJSONLoader.swift in Sources */,
@@ -709,13 +717,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 438C43K8SQ;
+				DEVELOPMENT_TEAM = X83LNW6267;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
-				INFOPLIST_KEY_NSCameraUsageDescription = "앱에서 찍은 사진을 저장하고 불러오기 위해서 카메라 및 갤러리 접근 권한이 필요합니다.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "현재 위치를 지도에 표시하기 위해서 위치 권한이 필요합니다.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "앱에서 찍은 사진을 저장하고 불러오기 위해서 카메라 접근 권한이 필요합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "지도에서 내 위치를 확인하여 길찾기 기능을 이용하기 위치 권한이 필요합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "앱에서 갤러리 내 사진을 불러와서 저장하고 공유하기 위해서 갤러리 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -725,7 +734,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sangchu.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -747,13 +756,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 438C43K8SQ;
+				DEVELOPMENT_TEAM = X83LNW6267;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "--------------------------Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
-				INFOPLIST_KEY_NSCameraUsageDescription = "앱에서 찍은 사진을 저장하고 불러오기 위해서 카메라 및 갤러리 접근 권한이 필요합니다.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "현재 위치를 지도에 표시하기 위해서 위치 권한이 필요합니다.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "앱에서 찍은 사진을 저장하고 불러오기 위해서 카메라 접근 권한이 필요합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "지도에서 내 위치를 확인하여 길찾기 기능을 이용하기 위치 권한이 필요합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "앱에서 갤러리 내 사진을 불러와서 저장하고 공유하기 위해서 갤러리 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -763,7 +773,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sangchu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

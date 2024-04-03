@@ -67,42 +67,6 @@ enum ConsumerEndpoints: String, CaseIterable, Identifiable {
     
 }
 
-// 왼쪽에서 오른쪽
-//struct QuarterlyFloatingChartView: View {
-//    var chartData: [ConsumerModel.ChartData]
-//    @State private var presentedData: [ConsumerModel.ChartData] = []
-//
-//    var body: some View {
-//        Chart {
-//            ForEach(presentedData) { dataPoint in
-//                BarMark(
-//                    x: .value("Category", dataPoint.label),
-//                    y: .value("Value", dataPoint.value)
-//                )
-//                .foregroundStyle(LinearGradient(gradient: Gradient(colors: [.green, .blue]), startPoint: .top, endPoint: .bottom))
-//                .opacity(dataPoint.animate ? 1 : 0) // 각 데이터 항목의 animate 속성에 따라 투명도 적용
-//            }
-//        }
-//        .chartYScale(domain: 0...(chartData.max(by: { $0.value < $1.value })?.value ?? 0 + 5000))
-//        .frame(height: 250)
-//        .onAppear {
-//            animateGraph()
-//        }
-//    }
-//
-//    func animateGraph() {
-//        presentedData = chartData.map { var data = $0; data.animate = false; return data }
-//
-//        for (index, dataPoint) in presentedData.enumerated() {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05) {
-//                withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
-//                    presentedData[index].animate = true
-//                }
-//            }
-//        }
-//    }
-//}
-
 // 아래에서 위 // 분기별 유동인구
 struct QuarterlyFloatingChartView: View {
     var chartData: [ConsumerModel.ChartData]
@@ -193,7 +157,6 @@ struct DayFloatingChartView: View {
                     .annotation(position: .top, alignment: .center) {
                         Text("\(dataPoint.value, specifier: "%.0f")")
                             .font(.caption2)
-                            .foregroundColor(Color.black)
                             .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
                             .fixedSize(horizontal: false, vertical: true)
                             .padding(.top, 4)
@@ -258,7 +221,6 @@ struct TimeFloatingChartView: View {
                     .annotation(position: .top, alignment: .center) {
                         Text("\(dataPoint.value, specifier: "%.0f")")
                             .font(.caption2)
-                            .foregroundColor(Color.black)
                             .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -321,7 +283,6 @@ struct AgeFloatingChartView: View {
                     .annotation(position: .top, alignment: .center) {
                         Text("\(dataPoint.value, specifier: "%.0f")")
                             .font(.caption2)
-                            .foregroundColor(Color.black)
                             .fontWidth(.compressed)
                             .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
                             .fixedSize(horizontal: false, vertical: true)
@@ -385,7 +346,6 @@ struct QuarterlyResidentChartView: View {
                     .annotation(position: .top, alignment: .center) {
                         Text("\(dataPoint.value, specifier: "%.0f")")
                             .font(.caption2)
-                            .foregroundColor(Color.black)
                             .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -453,7 +413,6 @@ struct GenderAgeResidentChartView: View {
                     .annotation(position: .top, alignment: .center) {
                         Text("\(dataPoint.value, specifier: "%.0f")")
                             .font(.caption2)
-                            .foregroundColor(Color.black)
                             .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -522,7 +481,6 @@ struct QuarterlyWorkingChartView: View {
                     .annotation(position: .top, alignment: .center) {
                         Text("\(dataPoint.value, specifier: "%.0f")")
                             .font(.caption2)
-                            .foregroundColor(Color.black)
                             .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -590,7 +548,6 @@ struct GenderAgeWorkingChartView: View {
                     .annotation(position: .top, alignment: .center) {
                         Text("\(dataPoint.value, specifier: "%.0f")")
                             .font(.caption2)
-                            .foregroundColor(Color.black)
                             .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
                             .fixedSize(horizontal: false, vertical: true)
                     }

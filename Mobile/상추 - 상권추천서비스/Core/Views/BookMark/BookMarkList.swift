@@ -22,7 +22,7 @@ struct BookMarkList: View {
     
     @Environment(\.modelContext) var context
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-
+    @Environment(\.colorScheme) var colorScheme
     @State private var showCreate = false
     @State private var hashCreate = false
     @State private var searchQuery = ""
@@ -62,12 +62,23 @@ struct BookMarkList: View {
         }
     }
     
+    func setNavigationBarTitleColor() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor.systemBackground // 배경 색상 설정
+            appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        // 네비게이션 바의 appearance 설정
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
+
     
 //    private var showNavigationBar = true
     
     var body: some View {
         ZStack(alignment : .top){
-            Spacer().frame(height: UIScreen.main.bounds.height * 0.115).background(Color.white)
+            Spacer().frame(height: UIScreen.main.bounds.height * 0.115)
             List{
                 ForEach(filteredItems){ item in
                                         NavigationLink(destination: UpdateBookMarkView(item: item)){
@@ -147,16 +158,8 @@ struct BookMarkList: View {
                     .padding(.vertical, 5)
                 } // ForEach
             }
-            .background(Color(hex: "F4F5F7"))
             .offset(y : 120)
-            .navigationTitle(Text("북마크"))
-//            .navigationTitleView {
-//                // 커스텀 이미지를 네비게이션 타이틀로 사용
-//                Image("bookmarkNavi")
-//                    .resizable()
-//                    .scaledToFit()
-//                    .frame(height: 30) // 이미지 크기 조정
-//            }
+            .padding(.bottom, 120)
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button {
@@ -180,12 +183,10 @@ struct BookMarkList: View {
                         Image(systemName: "ellipsis")
                             .symbolVariant(.circle)
                     }
-                    
                 }
-                
             } // 여기까지 툴바 추가
             .animation(.easeIn, value: filteredItems) // 이거 덕분에 자연스러운 애니메이션이 된다.
-            .searchable(text:$searchQuery, prompt : "내용 및 해시태그를 검색해보세요")
+            .searchable(text:$searchQuery, prompt : "제목 및 해시태그를 검색해보세요")
             .overlay {
                 if filteredItems.isEmpty{
                     ContentUnavailableView.search
@@ -213,12 +214,7 @@ struct BookMarkList: View {
             .listSectionSpacing(8)
             .scrollContentBackground(.hidden)
             .padding(.horizontal, 10)
-        }.ignoresSafeArea().background(Color(hex: "F4F5F7"))
-            
-            
-         // VStack
-//            .background(Color.customGray)
-//        .accentColor(Color("sangchu")) // 툴바 자식들 색상
+        }.navigationTitle("북마크").ignoresSafeArea().background(colorScheme == .light ? Color(hex: "F4F5F7") : Color.black)
     }
 }
 
@@ -261,3 +257,4 @@ private extension [BookMarkItem]{
     }
     
 }
+

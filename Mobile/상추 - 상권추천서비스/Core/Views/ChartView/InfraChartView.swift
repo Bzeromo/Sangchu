@@ -38,6 +38,7 @@ enum InfraEndpoints: String, CaseIterable, Identifiable {
 
 
 struct InfraChartView: View {
+    @Environment(\.colorScheme) var colorScheme
     @State private var countChartDataSets : [InfraModel.CountChartData] = []
     @State private var chartDataSets: [[InfraModel.ChartData]] = Array(repeating: [], count: InfraEndpoints.allCases.count)
     // 차트 데이터들이 들어가 있는 배열 상태값
@@ -92,7 +93,6 @@ struct InfraChartView: View {
                                             .annotation(position: .top, alignment: .center) {
                                                 Text("\(data.value, specifier: "%.0f")") // 데이터 값 라벨, 소수점 없이 표현!
                                                     .font(.caption2)
-                                                    .foregroundColor(Color.black)
                                                     .lineLimit(nil) // 라벨에 대한 줄바꿈 제한을 없애 줄바꿈을 허용
                                                     .fixedSize(horizontal: false, vertical: true)
                                             }
@@ -139,7 +139,6 @@ struct InfraChartView: View {
                                             .annotation(position: .top, alignment: .center) {
                                                 Text("\(data.storeCount + data.franchiseStoreCount, specifier: "%.0f")")
                                                     .font(.caption2)
-                                                    .foregroundColor(Color.black)
                                             }
                                         }
                                         .padding().padding(.bottom, 40)
@@ -212,10 +211,13 @@ struct InfraChartView: View {
                                 Text("창업 진출입시 세심한 주의가 필요한 상권").font(.system(size: 11)).foregroundStyle(Color(hex: "c6c6c6"))
                                 Text("상권 확장 : ").font(.system(size: 12)).foregroundStyle(Color(hex: "c6c6c6")).fontWeight(.semibold)  + Text("같은 업종으로 신규 업체가 경쟁력을 가지는 상권").font(.system(size: 12)).foregroundStyle(Color(hex: "c6c6c6"))
                                 Text("상권 축소 : ").font(.system(size: 12)).foregroundStyle(Color(hex: "c6c6c6")).fontWeight(.semibold)  + Text("같은 업종으로 기존 업체가 경쟁력을 가지는 상권").font(.system(size: 12)).foregroundStyle(Color(hex: "c6c6c6"))
-                                Text("정체 : ").font(.system(size: 12)).foregroundStyle(Color(hex: "c6c6c6")).fontWeight(.semibold)  + Text("같은 업종으로 창업 진출입시 세심한 주의가 필요한 상권").font(.system(size: 12)).foregroundStyle(Color(hex: "c6c6c6"))
+                                Text("정체 : ").font(.system(size: 12)).foregroundStyle(Color(hex: "c6c6c6")).fontWeight(.semibold)  + Text("같은 업종으로 창업 진출입시 세심한 주의가 상권").font(.system(size: 12)).foregroundStyle(Color(hex: "c6c6c6"))
+                                Text("필요한 상권").font(.system(size: 12)).foregroundStyle(Color(hex: "c6c6c6"))
                             }.padding(.leading,30).padding(.trailing,30).padding(.bottom,20)
                            
-                        }.background(Color(hex: "f4f5f7")).frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.4).padding(.leading,20).padding(.bottom,20).padding(.trailing,20)
+                        }.frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.43).background(colorScheme == .light ? Color(hex: "f4f5f7") : Color.black.opacity(0.1)) .cornerRadius(20).padding(.leading,20).padding(.bottom,20).padding(.trailing,20)
+                           
+                   
                     }
                        
                     
@@ -235,7 +237,9 @@ struct InfraChartView: View {
                                 
                             }
                            
-                        }.background(Color(hex: "f4f5f7")).frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.2).padding(.leading,20).padding(.bottom,20).padding(.trailing,20)
+                        }.background(colorScheme == .light ? Color(hex: "f4f5f7") : Color.black.opacity(0.1)).frame(width: UIScreen.main.bounds.width * 0.9,height: UIScreen.main.bounds.width * 0.2)
+                            .cornerRadius(20)
+                            .padding(.leading,20).padding(.bottom,20).padding(.trailing,20)
                     }
                     
                     VStack(spacing:10){
@@ -252,7 +256,7 @@ struct InfraChartView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: UIScreen.main.bounds.width * 0.12, height: UIScreen.main.bounds.width * 0.12)
-                                    Text("지하철").font(.system(size: 16)).foregroundStyle(Color(hex: "c6c6c6"))
+                                    Text("지하철").font(.system(size: 16)).foregroundStyle(colorScheme == .light ? Color(hex: "c6c6c6") : Color.white)
                                 }
                                 if let trainSubway = InfraFacility?.trainSubway {
                                     HStack{
@@ -272,7 +276,7 @@ struct InfraChartView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: UIScreen.main.bounds.width * 0.12, height: UIScreen.main.bounds.width * 0.12)
-                                    Text("버스").font(.system(size: 16)).foregroundStyle(Color(hex: "c6c6c6"))
+                                    Text("버스").font(.system(size: 16)).foregroundStyle(colorScheme == .light ? Color(hex: "c6c6c6") : Color.white)
                                 }
                                 if let bus = InfraFacility?.bus{
                                     HStack{
@@ -284,7 +288,7 @@ struct InfraChartView: View {
                                 
                                 
                             }
-                        }.frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.width * 0.3).background(Color(hex: "f4f5f7")).padding(.leading,20).padding(.bottom,20).padding(.trailing,20)
+                        }.frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.width * 0.3).background(colorScheme == .light ? Color(hex: "f4f5f7") : Color.black.opacity(0.1)).cornerRadius(20).padding(.leading,20).padding(.bottom,20).padding(.trailing,20)
                     }
                    
                     VStack(spacing:10){
@@ -301,7 +305,7 @@ struct InfraChartView: View {
                                             .resizable()
                                             .scaledToFit()
                                             .frame(width: UIScreen.main.bounds.width * 0.1, height: UIScreen.main.bounds.width * 0.1)
-                                        Text("집객").font(.system(size: 13)).foregroundStyle(Color(hex: "c6c6c6"))
+                                        Text("집객").font(.system(size: 13)).foregroundStyle(colorScheme == .light ? Color(hex: "c6c6c6") : Color.white)
                                     }
                                     if let facilities = InfraFacility?.facilities{
                                         HStack{
@@ -321,7 +325,7 @@ struct InfraChartView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: UIScreen.main.bounds.width * 0.1, height: UIScreen.main.bounds.width * 0.1)
-                                    Text("문화관광").font(.system(size: 13)).foregroundStyle(Color(hex: "c6c6c6"))
+                                    Text("문화관광").font(.system(size: 13)).foregroundStyle(colorScheme == .light ? Color(hex: "c6c6c6") : Color.white)
                                 }
                                 if let culTouristFacilities = InfraFacility?.culTouristFacilities {
                                     HStack{
@@ -341,7 +345,7 @@ struct InfraChartView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: UIScreen.main.bounds.width * 0.1, height: UIScreen.main.bounds.width * 0.1)
-                                    Text("교육").font(.system(size: 13)).foregroundStyle(Color(hex: "c6c6c6"))
+                                    Text("교육").font(.system(size: 13)).foregroundStyle(colorScheme == .light ? Color(hex: "c6c6c6") : Color.white)
                                 }
                                 if let educationalFacilities = InfraFacility?.educationalFacilities{
                                     HStack{
@@ -352,7 +356,7 @@ struct InfraChartView: View {
                                 Spacer()
                                 
                             }
-                        }.frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.width * 0.3).background(Color(hex: "f4f5f7")).padding(.leading,20).padding(.bottom,20).padding(.trailing,20)
+                        }.frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.width * 0.3).background(colorScheme == .light ? Color(hex: "f4f5f7") : Color.black.opacity(0.1)).cornerRadius(20).padding(.leading,20).padding(.bottom,20).padding(.trailing,20)
                     }
                     
                     VStack(spacing:10){
@@ -364,7 +368,7 @@ struct InfraChartView: View {
                         HStack {
                             VStack(spacing:2){
                                Spacer()
-                                    Text("세대수").font(.system(size: 16)).foregroundStyle(Color(hex: "c6c6c6"))
+                                    Text("세대수").font(.system(size: 16)).foregroundStyle(colorScheme == .light ? Color(hex: "c6c6c6") : Color.white)
                                 
                                 if let apartmentComplexes = InfraAptSet?.apartmentComplexes{
                                     HStack{
@@ -381,7 +385,7 @@ struct InfraChartView: View {
                             
                             VStack(spacing:2){
                                Spacer()
-                                    Text("평균 면적").font(.system(size: 16)).foregroundStyle(Color(hex: "c6c6c6"))
+                                    Text("평균 면적").font(.system(size: 16)).foregroundStyle(colorScheme == .light ? Color(hex: "c6c6c6") : Color.white)
                                 
                                 if let aptAvgArea = InfraAptSet?.aptAvgArea{
                                     HStack{
@@ -398,7 +402,7 @@ struct InfraChartView: View {
                             
                             VStack(spacing:2){
                                Spacer()
-                                    Text("가격(억)").font(.system(size: 16)).foregroundStyle(Color(hex: "c6c6c6"))
+                                    Text("가격(억)").font(.system(size: 16)).foregroundStyle(colorScheme == .light ? Color(hex: "c6c6c6") : Color.white)
                                 
                                 if let faptAvgPrice = InfraAptSet?.aptAvgPrice{
                                     
@@ -419,7 +423,7 @@ struct InfraChartView: View {
                                 Spacer()
                                 
                             }
-                        }.frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.width * 0.3).background(Color(hex: "f4f5f7")).padding(.leading,20).padding(.bottom,20).padding(.trailing,20)
+                        }.background(colorScheme == .light ? Color(hex: "f4f5f7") : Color.black.opacity(0.1)).frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.width * 0.3).cornerRadius(20).padding(.leading,20).padding(.bottom,20).padding(.trailing,20)
                     }
                   
                     
@@ -558,8 +562,8 @@ struct InfraChartView: View {
                                         InfraModel.CountChartData(label: category, storeCount: Double(values.0), franchiseStoreCount: Double(values.1))
                                     }
                             self.countChartDataSets = modifiedDataSet
-                            dump(self.countChartDataSets)
-                            dump(self.othersValue)
+//                            dump(self.countChartDataSets)
+//                            dump(self.othersValue)
                         }
 
 
