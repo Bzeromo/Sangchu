@@ -5,42 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efc310de-ad76-4a08-8b42-09901a39744c" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/Images/tech_stack.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12__10_16__________.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/AWSConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistController.class.uniqueId0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistDTO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistEntity$CommDistEntityBuilder.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistEntity.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistId.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistRepository.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/FileUploadDTO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/PostgreSqlConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/RedisConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/RedisService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/S3UploadService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/SangchuApplication.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/WebClientConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/buildOutputCleanup.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/checksums.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/dependencies-accessors.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/executionHistory.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/executionHistory.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/file-system.probe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/fileHashes.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/fileHashes.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/last-build.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/md5-checksums.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/outputFiles.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/previous-compilation-data.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/resourceHashesCache.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/sha1-checksums.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/________.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/리베이스_전에_커밋되지_않은_변경_내용_[변경]/shelved.patch" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/KakaoTalk_20240405_155512659.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/IMG_2101.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/KakaoTalk_20240405_155512659_01.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/IMG_2102.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/KakaoTalk_20240405_155512659_02.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/IMG_2103.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/KakaoTalk_20240405_155512659_03.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/IMG_2104.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/KakaoTalk_20240405_155512659_04.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/IMG_2105.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/KakaoTalk_20240405_155512659_05.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/IMG_2106.gif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,7 +45,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "hotfix",
+    "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/SSAFY/sangchu/S10P22B206",
     "node.js.detected.package.eslint": "true",
