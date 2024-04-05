@@ -5,8 +5,43 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efc310de-ad76-4a08-8b42-09901a39744c" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/tech_stack.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12__10_16__________.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/AWSConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistController.class.uniqueId0" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistEntity$CommDistEntityBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistEntity.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistId.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/CommDistService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/FileUploadDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/PostgreSqlConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/RedisConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/RedisService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/S3UploadService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/SangchuApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/WebClientConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/buildOutputCleanup.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/checksums.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/dependencies-accessors.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/executionHistory.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/executionHistory.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/file-system.probe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/fileHashes.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/fileHashes.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/last-build.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/md5-checksums.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/outputFiles.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/previous-compilation-data.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/resourceHashesCache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/sha1-checksums.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2024-03-12_오후_10_16,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/________.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/리베이스_전에_커밋되지_않은_변경_내용_[변경]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +63,9 @@
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2dJ7pfRpvEqwsc99qBcHdWu9lcx" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -36,7 +74,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "be/feat/redis",
+    "git-widget-placeholder": "hotfix",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/SSAFY/sangchu/S10P22B206",
     "node.js.detected.package.eslint": "true",
@@ -47,20 +85,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="S10P22B206" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="S10P22B206" />
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\SSAFY\sangchu\S10P22B206\Images" />
+      <recent name="C:\Users\SSAFY\sangchu\S10P22B206" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -75,6 +104,7 @@
       <workItem from="1710129530071" duration="2727000" />
       <workItem from="1710147150771" duration="5202000" />
       <workItem from="1710249006627" duration="1518000" />
+      <workItem from="1712273576423" duration="12747000" />
     </task>
     <servers />
   </component>
