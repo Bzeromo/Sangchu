@@ -11,7 +11,7 @@
 우리는 서울시에서 음식점을 창업하고자 하는 자영업자들을 위한 **상권 분석 및 추천 서비스**를 제공합니다.
 
 
-> <div style="text-align: center">직접 사용해보세요. (App store)</div>
+> <div style="text-align: center">직접 사용해보세요. (현재 서비스되고 있지 않습니다.)</div>
 >
 > <div style="text-align: center"> <img src="Images/img_13.png"> </div>
 
